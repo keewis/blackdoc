@@ -1,0 +1,9 @@
+name: black-doctest
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - black
+  - flake8
+  - more-itertools
+  - pytest
