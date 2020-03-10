@@ -21,7 +21,7 @@ write them back to disk:
     # on explicitly mentioned files
     python -m blackdoc file1.py file2.py
     # on the whole directory
-    python -m blackdoc file1.py file2.py
+    python -m blackdoc .
 
 
 When checking, it will report the changed files but will not write them to disk:
