@@ -56,9 +56,9 @@ docstring = """ a function to open files
 
 
 def test_classify():
-    categories, _ = zip(*blackdoc.classify(raw_docstring.split("\n")))
+    categories, _ = more_itertools.unzip(blackdoc.classify(raw_docstring.split("\n")))
 
-    assert categories == line_labels
+    assert tuple(categories) == line_labels
 
 
 def test_unclassify():
