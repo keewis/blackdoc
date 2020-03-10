@@ -233,7 +233,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-t",
-        action="store",
+        "--target-versions",
+        action="append",
         choices=[v.name.lower() for v in black.TargetVersion],
         help=(
             "Python versions that should be supported by Black's output. (default: "
