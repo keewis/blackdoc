@@ -1,4 +1,6 @@
 import copy
+import pathlib
+import sys
 import textwrap
 
 import black
@@ -193,5 +195,71 @@ def format_text(text):
     return "\n".join(format_lines(text.split("\n")))
 
 
+def collect_files(path):
+    pass
+
+
+def process(args):
+    if args.src is None:
+        print("No Path provided. Nothing to do 😴")
+        return 0
+
+    if args.src.is_dir():
+        paths = [
+            path
+            for path in collect_files(
+                args.src, include=args.include, exclude=args.exclude
+            )
+        ]
+    elif args.src.is_file():
+        paths = [args.src]
+    elif not args.src.exists():
+        print(
+            f'Error: Invalid value for "[SRC]...": Path "{args.src}" does not exist.',
+            file=sys.stderr,
+        )
+        return 2
+
+    mode = black.FileMode(line_length=args.line_length)
+    mode, paths
+
+
 if __name__ == "__main__":
-    print("command line interface not available yet")
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="run black on documentation code snippets (e.g. doctest)",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "-t",
+        action="store",
+        choices=[v.name.lower() for v in black.TargetVersion],
+        help=(
+            "Python versions that should be supported by Black's output. (default: "
+            "per-file auto-detection)"
+        ),
+        default=argparse.SUPPRESS,
+    )
+    parser.add_argument(
+        "-l",
+        "--line-length",
+        type=int,
+        default=black.DEFAULT_LINE_LENGTH,
+        help="How many characters per line to allow.",
+    )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help=(
+            "Don't write the files back, just return the status.  Return code 0 "
+            "means nothing would change.  Return code 1 means some files would be "
+            "reformatted.  Return code 123 means there was an internal error."
+        ),
+    )
+    parser.add_argument(
+        "src", action="store", type=pathlib.Path, nargs="?", default=None,
+    )
+
+    args = parser.parse_args()
+    sys.exit(process(args))
