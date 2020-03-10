@@ -252,6 +252,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-l",
         "--line-length",
+        metavar="INT",
         type=int,
         default=black.DEFAULT_LINE_LENGTH,
         help="How many characters per line to allow.",
@@ -267,6 +268,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--include",
+        metavar="TEXT",
         type=str,
         default=black.DEFAULT_INCLUDES,
         help=(
@@ -279,6 +281,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--exclude",
+        metavar="TEXT",
         type=str,
         default=black.DEFAULT_EXCLUDES,
         help=(
