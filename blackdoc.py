@@ -1,4 +1,5 @@
 import copy
+import itertools
 import pathlib
 import sys
 import textwrap
@@ -185,7 +186,7 @@ def unclassify(labelled_lines):
         yield line
 
 
-def format_lines(lines):
+def format_lines(lines, mode=None):
     labeled = classify(lines)
     grouped = group_code_units(labeled)
     blackened = blacken(grouped)
@@ -222,7 +223,29 @@ def format_and_overwrite(path, mode):
 
 
 def format_and_check(path, mode):
-    pass
+    with open(path) as f:
+        # so we don't accidentally remove the last (empty) line
+        raw_lines = itertools.chain((line.rstrip() for line in f), [""],)
+
+        lines, to_format = itertools.tee(raw_lines, 2)
+
+        try:
+            result = (
+                "reformatted"
+                if any(
+                    raw != formatted
+                    for raw, formatted in zip(lines, format_lines(to_format, mode=mode))
+                )
+                else "unchanged"
+            )
+        except Exception as e:
+            print(f"error: cannot format {path.absolute()}: {e}")
+            return "error"
+
+    if result == "reformatted":
+        print(f"would reformat {path}")
+
+    return result
 
 
 def report_changes(n_reformatted, n_unchanged, n_error):
