@@ -217,6 +217,63 @@ def collect_files(src, include, exclude):
             print(f"invalid path: {path}", file=sys.stderr)
 
 
+def format_and_overwrite(path, mode):
+    pass
+
+
+def format_and_check(path, mode):
+    pass
+
+
+def report_changes(n_reformatted, n_unchanged, n_error):
+    def noun(n):
+        return "file" if n < 2 else "files"
+
+    reports = []
+    if n_reformatted > 0:
+        reports.append(f"{n_reformatted} {noun(n_reformatted)} reformatted")
+
+    if n_unchanged > 0:
+        reports.append(f"{n_unchanged} {noun(n_unchanged)} left unchanged")
+
+    if n_error > 0:
+        reports.append(f"{n_error} {noun(n_error)} fails to reformat")
+
+    return ", ".join(reports) + "."
+
+
+def report_possible_changes(n_reformatted, n_unchanged, n_error):
+    def noun(n):
+        return "file" if n < 2 else "files"
+
+    reports = []
+    if n_reformatted > 0:
+        reports.append(f"{n_reformatted} {noun(n_reformatted)} would be reformatted")
+
+    if n_unchanged > 0:
+        reports.append(f"{n_unchanged} {noun(n_unchanged)} would be left unchanged")
+
+    if n_error > 0:
+        reports.append(f"{n_error} {noun(n_error)} would fail to reformat")
+
+    return ", ".join(reports) + "."
+
+
+def statistics(sources):
+    from collections import Counter
+
+    statistics = Counter(sources.values())
+
+    n_unchanged = statistics.pop("unchanged", 0)
+    n_reformatted = statistics.pop("reformatted", 0)
+    n_error = statistics.pop("error", 0)
+
+    if len(statistics) != 0:
+        raise RuntimeError(f"unknown results: {statistics.keys()}")
+
+    return n_reformatted, n_unchanged, n_error
+
+
 def process(args):
     if not args.src:
         print("No Path provided. Nothing to do 😴")
@@ -250,8 +307,31 @@ def process(args):
         line_length=args.line_length, target_versions=target_versions,
     )
 
-    write_back = not args.check
-    print(sources, mode, write_back)
+    actions = {
+        "inplace": format_and_overwrite,
+        "check": format_and_check,
+    }
+
+    action = actions.get(args.action)
+
+    changed_sources = {source: action(source, mode) for source in sources}
+    n_reformatted, n_unchanged, n_error = statistics(changed_sources)
+
+    report_formatters = {
+        "inplace": report_changes,
+        "check": report_possible_changes,
+    }
+
+    report = report_formatters.get(args.action)(n_reformatted, n_unchanged, n_error)
+
+    if args.action == "check" and n_reformatted > 0:
+        return_code = 1
+    else:
+        return_code = 0
+
+    print("Oh no! 💥 💔 💥" if return_code else "All done! ✨ 🍰 ✨")
+    print(report)
+    return return_code
 
 
 if __name__ == "__main__":
@@ -282,7 +362,10 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--check",
-        action="store_true",
+        dest="action",
+        action="store_const",
+        const="check",
+        default="inplace",
         help=(
             "Don't write the files back, just return the status.  Return code 0 "
             "means nothing would change.  Return code 1 means some files would be "
