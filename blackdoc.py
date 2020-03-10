@@ -13,11 +13,18 @@ prompt_categories = {
 continuation_prompt_categories = {
     "doctest": doctest_continuation_prompt,
 }
+available_prompts = set(prompt_categories.values()) | set(
+    continuation_prompt_categories.values()
+)
 
 
 def extract_prompt(line):
     stripped = line.lstrip()
-    return stripped[:4]
+    prompt_length = stripped.find(" ") + 1
+
+    prompt = stripped[:prompt_length]
+
+    return prompt if prompt in available_prompts else None
 
 
 def remove_prompt(line, prompt):

@@ -54,6 +54,33 @@ docstring = """ a function to open files
     False
 """
 
+prompts = (
+    None,
+    None,
+    None,
+    None,
+    ">>> ",
+    "... ",
+    "... ",
+    "... ",
+    ">>> ",
+    None,
+    None,
+    None,
+    None,
+    None,
+    ">>> ",
+    None,
+    None,
+)
+
+
+def test_extract_prompt():
+    extracted = tuple(
+        blackdoc.extract_prompt(line) for line in raw_docstring.split("\n")
+    )
+    assert extracted == prompts
+
 
 def test_classify():
     categories, _ = more_itertools.unzip(blackdoc.classify(raw_docstring.split("\n")))
