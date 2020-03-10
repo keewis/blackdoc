@@ -218,12 +218,12 @@ def collect_files(src, include, exclude):
 
 
 def format_and_overwrite(path, mode):
-    with open(path, mode="rb") as f:
-        content, encoding, newline = black.decode_bytes(f.read())
-
-    lines = content.split("\n")
-
     try:
+        with open(path, mode="rb") as f:
+            content, encoding, newline = black.decode_bytes(f.read())
+
+        lines = content.split("\n")
+
         new_content = "\n".join(format_lines(lines, mode))
 
         if new_content == content:
@@ -231,23 +231,23 @@ def format_and_overwrite(path, mode):
         else:
             print(f"reformatted {path}")
             result = "reformatted"
+
+        with open(path, "w", encoding=encoding, newline=newline) as f:
+            f.write(new_content)
     except Exception as e:
         print(f"error: cannot format {path.absolute()}: {e}")
         result = "error"
-
-    with open(path, "w", encoding=encoding, newline=newline) as f:
-        f.write(new_content)
 
     return result
 
 
 def format_and_check(path, mode):
-    with open(path, mode="rb") as f:
-        content, _, _ = black.decode_bytes(f.read())
-
-    lines = content.split("\n")
-
     try:
+        with open(path, mode="rb") as f:
+            content, _, _ = black.decode_bytes(f.read())
+
+        lines = content.split("\n")
+
         new_content = "\n".join(format_lines(lines, mode))
 
         if new_content == content:
