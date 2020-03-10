@@ -207,28 +207,12 @@ def collect_files(path):
 
 
 def process(args):
-    if args.src is None:
+    if not args.src:
         print("No Path provided. Nothing to do 😴")
         return 0
 
-    if args.src.is_dir():
-        paths = [
-            path
-            for path in collect_files(
-                args.src, include=args.include, exclude=args.exclude
-            )
-        ]
-    elif args.src.is_file():
-        paths = [args.src]
-    elif not args.src.exists():
-        print(
-            f'Error: Invalid value for "[SRC]...": Path "{args.src}" does not exist.',
-            file=sys.stderr,
-        )
-        return 2
-
     mode = black.FileMode(line_length=args.line_length)
-    mode, paths
+    mode
 
 
 if __name__ == "__main__":
@@ -292,7 +276,12 @@ if __name__ == "__main__":
         ),
     )
     parser.add_argument(
-        "src", action="store", type=pathlib.Path, nargs="?", default=None,
+        "src",
+        action="store",
+        type=pathlib.Path,
+        nargs="*",
+        default=None,
+        help="one or more paths to work on",
     )
 
     args = parser.parse_args()
