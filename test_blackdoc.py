@@ -1,11 +1,6 @@
-import itertools
-import textwrap
-
 import more_itertools
-import pytest
 
 import blackdoc
-
 
 raw_docstring = """ a function to open files
 
@@ -43,7 +38,7 @@ line_labels = (
     "none",
     "none",
 )
-code_units = [1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+code_units = (1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 docstring = """ a function to open files
 
     with a very long description
@@ -77,7 +72,7 @@ def test_group_code_units():
     labelled_lines = list(zip(line_labels, raw_docstring.split("\n")))
     grouped = list(blackdoc.group_code_units(labelled_lines))
 
-    assert list(len(unit.split("\n")) for _, unit in grouped) == code_units
+    assert tuple(len(unit.split("\n")) for _, unit in grouped) == code_units
 
 
 def test_blacken():
