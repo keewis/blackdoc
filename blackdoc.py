@@ -259,6 +259,29 @@ if __name__ == "__main__":
         ),
     )
     parser.add_argument(
+        "--include",
+        type=str,
+        default=black.DEFAULT_INCLUDES,
+        help=(
+            "A regular expression that matches files and directories that should be "
+            "included on recursive searches.  An empty value means all files are "
+            "included regardless of the name.  Use forward slashes for directories on "
+            "all platforms (Windows, too).  Exclusions are calculated first, inclusions "
+            "later."
+        ),
+    )
+    parser.add_argument(
+        "--exclude",
+        type=str,
+        default=black.DEFAULT_EXCLUDES,
+        help=(
+            "A regular expression that matches files and directories that should be "
+            "excluded on recursive searches.  An empty value means no paths are excluded. "
+            "Use forward slashes for directories on all platforms (Windows, too).  "
+            "Exclusions are calculated first, inclusions later."
+        ),
+    )
+    parser.add_argument(
         "src", action="store", type=pathlib.Path, nargs="?", default=None,
     )
 
