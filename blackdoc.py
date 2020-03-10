@@ -245,7 +245,13 @@ def process(args):
         print("No Python files are present to be formatted. Nothing to do 😴")
         return 0
 
-    print(sources)
+    target_versions = set(getattr(args, "target_versions", ()))
+    mode = black.FileMode(
+        line_length=args.line_length, target_versions=target_versions,
+    )
+
+    write_back = not args.check
+    print(sources, mode, write_back)
 
 
 if __name__ == "__main__":
