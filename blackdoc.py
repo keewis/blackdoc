@@ -202,8 +202,19 @@ def format_text(text):
     return "\n".join(format_lines(text.split("\n")))
 
 
-def collect_files(path):
-    pass
+def collect_files(src, include, exclude):
+    root = black.find_project_root(tuple(src))
+    report = black.Report()
+
+    for path in src:
+        if path.is_dir():
+            yield from black.gen_python_files_in_dir(
+                path, root, include, exclude, report, black.get_gitignore(root),
+            )
+        elif path.is_file() or str(path) == "-":
+            yield path
+        else:
+            print(f"invalid path: {path}", file=sys.stderr)
 
 
 def process(args):
@@ -211,8 +222,30 @@ def process(args):
         print("No Path provided. Nothing to do 😴")
         return 0
 
-    mode = black.FileMode(line_length=args.line_length)
-    mode
+    try:
+        include_regex = black.re_compile_maybe_verbose(args.include)
+    except black.re.error:
+        print(
+            f"Invalid regular expression for include given: {args.include!r}",
+            file=sys.stderr,
+        )
+        return 2
+
+    try:
+        exclude_regex = black.re_compile_maybe_verbose(args.exclude)
+    except black.re.error:
+        print(
+            f"Invalid regular expression for exclude given: {args.exclude!r}",
+            file=sys.stderr,
+        )
+        return 2
+
+    sources = set(collect_files(args.src, include_regex, exclude_regex))
+    if len(sources) == 0:
+        print("No Python files are present to be formatted. Nothing to do 😴")
+        return 0
+
+    print(sources)
 
 
 if __name__ == "__main__":
