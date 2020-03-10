@@ -1,5 +1,4 @@
 import copy
-import itertools
 import pathlib
 import sys
 import textwrap
@@ -223,27 +222,22 @@ def format_and_overwrite(path, mode):
 
 
 def format_and_check(path, mode):
-    with open(path) as f:
-        # so we don't accidentally remove the last (empty) line
-        raw_lines = itertools.chain((line.rstrip() for line in f), [""],)
+    with open(path, mode="rb") as f:
+        content, _, _ = black.decode_bytes(f.read())
 
-        lines, to_format = itertools.tee(raw_lines, 2)
+    lines = content.split("\n")
 
-        try:
-            result = (
-                "reformatted"
-                if any(
-                    raw != formatted
-                    for raw, formatted in zip(lines, format_lines(to_format, mode=mode))
-                )
-                else "unchanged"
-            )
-        except Exception as e:
-            print(f"error: cannot format {path.absolute()}: {e}")
-            return "error"
+    try:
+        new_content = "\n".join(format_lines(lines, mode))
 
-    if result == "reformatted":
-        print(f"would reformat {path}")
+        if new_content == content:
+            result = "unchanged"
+        else:
+            print(f"would reformat {path}")
+            result = "reformatted"
+    except Exception as e:
+        print(f"error: cannot format {path.absolute()}: {e}")
+        result = "error"
 
     return result
 
