@@ -1,11 +1,6 @@
-import itertools
-import textwrap
-
 import more_itertools
-import pytest
 
 import blackdoc
-
 
 raw_docstring = """ a function to open files
 
@@ -43,7 +38,7 @@ line_labels = (
     "none",
     "none",
 )
-code_units = [1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+code_units = (1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1)
 docstring = """ a function to open files
 
     with a very long description
@@ -59,11 +54,38 @@ docstring = """ a function to open files
     False
 """
 
+prompts = (
+    None,
+    None,
+    None,
+    None,
+    ">>> ",
+    "... ",
+    "... ",
+    "... ",
+    ">>> ",
+    None,
+    None,
+    None,
+    None,
+    None,
+    ">>> ",
+    None,
+    None,
+)
+
+
+def test_extract_prompt():
+    extracted = tuple(
+        blackdoc.extract_prompt(line) for line in raw_docstring.split("\n")
+    )
+    assert extracted == prompts
+
 
 def test_classify():
-    categories, _ = zip(*blackdoc.classify(raw_docstring.split("\n")))
+    categories, _ = more_itertools.unzip(blackdoc.classify(raw_docstring.split("\n")))
 
-    assert categories == line_labels
+    assert tuple(categories) == line_labels
 
 
 def test_unclassify():
@@ -77,7 +99,7 @@ def test_group_code_units():
     labelled_lines = list(zip(line_labels, raw_docstring.split("\n")))
     grouped = list(blackdoc.group_code_units(labelled_lines))
 
-    assert list(len(unit.split("\n")) for _, unit in grouped) == code_units
+    assert tuple(len(unit.split("\n")) for _, unit in grouped) == code_units
 
 
 def test_blacken():
