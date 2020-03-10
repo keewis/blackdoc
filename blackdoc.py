@@ -4,7 +4,6 @@ import textwrap
 import black
 import more_itertools
 
-
 doctest_prompt = ">>> "
 doctest_continuation_prompt = "... "
 
@@ -180,8 +179,9 @@ def unclassify(labelled_lines):
 def format_lines(lines):
     labeled = classify(lines)
     grouped = group_code_units(labeled)
-    reformatted = blacken(lines)
-    return unclassify(reformatted)
+    blackened = blacken(grouped)
+
+    return unclassify(blackened)
 
 
 def format_file(path):
@@ -194,4 +194,4 @@ def format_text(text):
 
 
 if __name__ == "__main__":
-    import argparse
+    print("command line interface not available yet")
