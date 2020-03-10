@@ -186,7 +186,7 @@ def format_lines(lines):
 
 def format_file(path):
     with open(path) as f:
-        return format_lines(f)
+        return "\n".join(format_lines(line.rstrip() for line in f)) + "\n"
 
 
 def format_text(text):
