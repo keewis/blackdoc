@@ -188,7 +188,7 @@ def unclassify(labelled_lines):
 def format_lines(lines, mode=None):
     labeled = classify(lines)
     grouped = group_code_units(labeled)
-    blackened = blacken(grouped)
+    blackened = blacken(grouped, mode=mode)
 
     return unclassify(blackened)
 
