@@ -5,11 +5,27 @@ blocks. It is a rewrite of https://gist.github.com/mattharrison/2a1a263597d80e99
 
 Usage
 -----
-There is no commandline interface, yet. Until it is added, use:
+The commandline interface supports two modes: checking and inplace
+reformatting.
 
 .. code:: bash
 
-    # preview
-    python -c 'import blackdoc; import pathlib; path = pathlib.Path("file.py"); print(blackdoc.format_file(path))'
-    # inplace conversion
-    python -c 'import blackdoc; import pathlib; path = pathlib.Path("file.py"); path.write_text(blackdoc.format_file(path))'
+    python -m blackdoc --help
+
+
+In inplace reformatting mode, it will reformat the doctest lines and
+write them back to disk:
+
+.. code:: bash
+
+    # on explicitly mentioned files
+    python -m blackdoc file1.py file2.py
+    # on the whole directory
+    python -m blackdoc .
+
+
+When checking, it will report the changed files but will not write them to disk:
+
+.. code:: bash
+
+    python -m blackdoc --check .
