@@ -339,7 +339,10 @@ def process(args):
         print("No Python files are present to be formatted. Nothing to do 😴")
         return 0
 
-    target_versions = set(getattr(args, "target_versions", ()))
+    target_versions = set(
+        black.TargetVersion[version.upper()]
+        for version in getattr(args, "target_versions", ())
+    )
     mode = black.FileMode(
         line_length=args.line_length, target_versions=target_versions,
     )
