@@ -28,5 +28,4 @@ def reformat_code(line_unit, category, indentation_depth):
 
 
 for module in (none, doctest):
-    name = module.__name__.split(".")[-1]
-    register_format(name, module)
+    register_format(module.name, module)
