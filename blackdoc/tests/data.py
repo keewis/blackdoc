@@ -15,3 +15,4 @@ docstring = """ a function to open files
     >>> file.closed
     False
 """
+lines = docstring.split("\n")
