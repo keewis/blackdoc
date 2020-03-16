@@ -1,5 +1,6 @@
 from .blacken import blacken
 from .classification import classify, unclassify
+from .formats import register_format  # noqa
 
 
 def line_numbers(lines):
