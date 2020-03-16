@@ -8,8 +8,9 @@ def test_detection_func():
 
     line_range = (1, 2)
     line = lines[0]
+    name = none.name
 
-    assert none.detection_func(enumerate(lines, start=1)) == (line_range, line)
+    assert none.detection_func(enumerate(lines, start=1)) == (line_range, name, line)
 
 
 def test_extraction_func():

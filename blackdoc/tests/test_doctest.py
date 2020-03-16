@@ -12,8 +12,12 @@ from .data import lines
     "lines,expected",
     (
         pytest.param(lines[0], None, id="no_doctest"),
-        pytest.param(lines[8], ((1, 2), lines[8]), id="single_line"),
-        pytest.param(lines[4:8], ((1, 5), "\n".join(lines[4:8])), id="multiple_lines"),
+        pytest.param(lines[8], ((1, 2), doctest.name, lines[8]), id="single_line"),
+        pytest.param(
+            lines[4:8],
+            ((1, 5), doctest.name, "\n".join(lines[4:8])),
+            id="multiple_lines",
+        ),
     ),
 )
 def test_detection_func(lines, expected):

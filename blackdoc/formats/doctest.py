@@ -2,6 +2,7 @@ import itertools
 
 import more_itertools
 
+name = "doctest"
 prompt = ">>> "
 continuation_prompt = "... "
 
@@ -40,7 +41,7 @@ def detection_func(lines):
     if set(line_numbers) != set(range(line_range[0], line_range[1])):
         raise RuntimeError("line numbers are not contiguous")
 
-    return line_range, "\n".join(lines)
+    return line_range, name, "\n".join(lines)
 
 
 def extraction_func(line):
