@@ -16,3 +16,23 @@ docstring = """ a function to open files
     False
 """
 lines = docstring.split("\n")
+code_units = (1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+line_labels = (
+    "none",
+    "none",
+    "none",
+    "none",
+    "doctest",
+    "doctest",
+    "doctest",
+    "doctest",
+    "doctest",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "doctest",
+    "none",
+    "none",
+)
