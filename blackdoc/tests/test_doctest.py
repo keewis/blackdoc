@@ -11,7 +11,7 @@ from .data import lines
 @pytest.mark.parametrize(
     "lines,expected",
     (
-        pytest.param(lines[0], None, id="no_doctest"),
+        pytest.param(lines[0], None, id="no_line"),
         pytest.param(lines[8], ((1, 2), doctest.name, lines[8]), id="single_line"),
         pytest.param(
             lines[4:8],

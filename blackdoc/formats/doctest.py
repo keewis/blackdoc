@@ -38,7 +38,7 @@ def detection_func(lines):
     line_numbers, lines = map(tuple, more_itertools.unzip(detected_lines))
 
     line_range = min(line_numbers), max(line_numbers) + 1
-    if set(line_numbers) != set(range(line_range[0], line_range[1])):
+    if line_numbers != tuple(range(line_range[0], line_range[1])):
         raise RuntimeError("line numbers are not contiguous")
 
     return line_range, name, "\n".join(lines)
