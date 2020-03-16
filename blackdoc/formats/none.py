@@ -7,8 +7,8 @@ def detection_func(lines):
 
 
 def extraction_func(line):
-    return 0, line
+    return line
 
 
-def reformatting_func(line, indentation_depth):
+def reformatting_func(line):
     return line

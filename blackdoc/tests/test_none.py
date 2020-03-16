@@ -14,14 +14,13 @@ def test_detection_func():
 
 def test_extraction_func():
     lines = docstring.split("\n")
-    depth = 0
     line = lines[0]
 
-    assert none.extraction_func(line) == (depth, line)
+    assert none.extraction_func(line) == line
 
 
 def test_reformatting_func():
     lines = docstring.split("\n")
     line = lines[0]
 
-    assert none.reformatting_func(line, indentation_depth=0) == line
+    assert none.reformatting_func(line) == line
