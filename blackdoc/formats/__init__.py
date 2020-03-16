@@ -1,5 +1,6 @@
 import textwrap
 
+from . import none
 from .register import detection_funcs  # noqa
 from .register import extraction_funcs, reformatting_funcs, register_format
 
@@ -25,5 +26,6 @@ def reformat_code(line_unit, category, indentation_depth):
     return textwrap.indent(reformatted, " " * indentation_depth)
 
 
-for module in ():
-    register_format(module.__name__, module)
+for module in (none,):
+    name = module.__name__.split(".")[-1]
+    register_format(name, module)
