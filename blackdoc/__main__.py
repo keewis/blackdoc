@@ -3,6 +3,7 @@ import pathlib
 import sys
 
 import black
+from blib2to3.pgen2.tokenize import TokenError
 
 from . import format_lines
 
@@ -39,7 +40,7 @@ def format_and_overwrite(path, mode):
 
         with open(path, "w", encoding=encoding, newline=newline) as f:
             f.write(new_content)
-    except Exception as e:
+    except TokenError as e:
         print(f"error: cannot format {path.absolute()}: {e}")
         result = "error"
 
@@ -60,7 +61,7 @@ def format_and_check(path, mode):
         else:
             print(f"would reformat {path}")
             result = "reformatted"
-    except Exception as e:
+    except TokenError as e:
         print(f"error: cannot format {path.absolute()}: {e}")
         result = "error"
 
