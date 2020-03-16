@@ -1,7 +1,7 @@
 import textwrap
 
 from .register import detection_funcs  # noqa
-from .register import extraction_funcs, reformatting_funcs
+from .register import extraction_funcs, reformatting_funcs, register_format
 
 
 def extract_code(line_unit, category):
@@ -23,3 +23,7 @@ def reformat_code(line_unit, category, indentation_depth):
     reformatted = func(line_unit)
 
     return textwrap.indent(reformatted, " " * indentation_depth)
+
+
+for module in ():
+    register_format(module.__name__, module)
