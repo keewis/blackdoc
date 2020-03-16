@@ -7,13 +7,14 @@ from .register import extraction_funcs, reformatting_funcs, register_format
 
 def extract_code(line_unit, category):
     dedented = textwrap.dedent(line_unit)
-    indentation_level = line_unit.find(dedented[:5])
+    indentation_depth = line_unit.find(dedented[:5])
 
     func = extraction_funcs.get(category, None)
     if func is None:
         raise RuntimeError(f"unknown code format: {category}")
 
-    return indentation_level, func(dedented)
+    prompt_length, extracted = func(dedented)
+    return indentation_depth, prompt_length, extracted
 
 
 def reformat_code(line_unit, category, indentation_depth):

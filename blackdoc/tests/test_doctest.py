@@ -37,7 +37,11 @@ def test_detection_func(lines, expected):
     ),
 )
 def test_extraction_func(line):
-    expected = "\n".join(line.lstrip()[4:] for line in line.split("\n"))
+    prompt_length = len(doctest.prompt)
+    expected = (
+        prompt_length,
+        "\n".join(line.lstrip()[4:] for line in line.split("\n")),
+    )
     actual = doctest.extraction_func(line)
 
     assert expected == actual

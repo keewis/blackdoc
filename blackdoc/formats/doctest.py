@@ -51,7 +51,7 @@ def extraction_func(line):
 
     extracted_line = "\n".join(line[4:] for line in lines)
 
-    return extracted_line
+    return len(prompt), extracted_line
 
 
 def reformatting_func(line):

@@ -15,9 +15,10 @@ def test_detection_func():
 
 def test_extraction_func():
     lines = docstring.split("\n")
+    prompt_length = 0
     line = lines[0]
 
-    assert none.extraction_func(line) == line
+    assert none.extraction_func(line) == (prompt_length, line)
 
 
 def test_reformatting_func():
