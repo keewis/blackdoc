@@ -18,8 +18,9 @@ def continuation_lines(lines):
         if not line.lstrip().startswith(continuation_prompt):
             break
 
-        # consume the line
-        next(lines)
+        # actually consume the item
+        more_itertools.consume(lines, n=1)
+
         yield line_number, line
 
 
