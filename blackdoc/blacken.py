@@ -28,12 +28,12 @@ def parse_message(message):
 
 
 def blacken(lines, mode=None):
-    for original_line_range, category, line_unit in lines:
-        if category == "none":
+    for original_line_range, code_format, line_unit in lines:
+        if code_format == "none":
             yield line_unit
             continue
 
-        indentation_depth, prompt_length, code = extract_code(line_unit, category)
+        indentation_depth, prompt_length, code = extract_code(line_unit, code_format)
 
         current_mode = black.FileMode() if mode is None else copy.copy(mode)
         current_mode.line_length -= indentation_depth + prompt_length
@@ -57,6 +57,6 @@ def blacken(lines, mode=None):
             lineno = original_line_number + (apparent_line_number - 1)
             raise black.InvalidInput(f"{message}: {lineno}:{column}: {faulty_line}")
 
-        reformatted = reformat_code(blackened, category, indentation_depth)
+        reformatted = reformat_code(blackened, code_format, indentation_depth)
 
         yield reformatted

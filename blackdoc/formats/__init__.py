@@ -5,22 +5,22 @@ from .register import detection_funcs  # noqa
 from .register import extraction_funcs, reformatting_funcs, register_format
 
 
-def extract_code(line_unit, category):
+def extract_code(line_unit, code_format):
     dedented = textwrap.dedent(line_unit)
     indentation_depth = line_unit.find(dedented[:5])
 
-    func = extraction_funcs.get(category, None)
+    func = extraction_funcs.get(code_format, None)
     if func is None:
-        raise RuntimeError(f"unknown code format: {category}")
+        raise RuntimeError(f"unknown code format: {code_format}")
 
     prompt_length, extracted = func(dedented)
     return indentation_depth, prompt_length, extracted
 
 
-def reformat_code(line_unit, category, indentation_depth):
-    func = reformatting_funcs.get(category, None)
+def reformat_code(line_unit, code_format, indentation_depth):
+    func = reformatting_funcs.get(code_format, None)
     if func is None:
-        raise RuntimeError(f"unknown code format: {category}")
+        raise RuntimeError(f"unknown code format: {code_format}")
 
     reformatted = func(line_unit)
 
