@@ -16,8 +16,9 @@ def classify(lines):
         if not detected:
             yield detection_funcs["none"](lines)
         elif len(detected) > 1:
+            formatted_match_names = ", ".join(sorted(detected.keys()))
             raise RuntimeError(
-                f"cannot classify line: {', '.join(detected.values())} claim it: {lines.peek()}"
+                f"cannot classify line: {formatted_match_names} claim it: {lines.peek()}"
             )
         else:
             yield more_itertools.one(detected.values())
