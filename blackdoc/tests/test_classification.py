@@ -32,20 +32,20 @@ def print_classification(labeled):
         print_line_with_range(name, range, unit)
 
 
-def test_classify():
+def test_detect_format():
     lines = enumerate(data.lines, start=1)
 
-    classified = tuple(classification.classify(lines))
+    labeled = tuple(classification.detect_format(lines))
 
-    print_classification(classified)
+    print_classification(labeled)
 
-    actual = tuple(max_ - min_ for (min_, max_), _, _ in classified)
+    actual = tuple(max_ - min_ for (min_, max_), _, _ in labeled)
     expected = data.code_units
     assert expected == actual
 
     actual = tuple(
         more_itertools.collapse(
-            [name] * len(lines.split("\n")) for _, name, lines in classified
+            [name] * len(lines.split("\n")) for _, name, lines in labeled
         )
     )
     expected = data.line_labels

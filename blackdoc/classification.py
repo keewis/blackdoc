@@ -3,7 +3,7 @@ import more_itertools
 from .formats import detection_funcs
 
 
-def classify(lines):
+def detect_format(lines):
     lines = more_itertools.peekable(lines)
     while lines:
         maybe_detected = (
@@ -18,7 +18,8 @@ def classify(lines):
         elif len(detected) > 1:
             formatted_match_names = ", ".join(sorted(detected.keys()))
             raise RuntimeError(
-                f"cannot classify line: {formatted_match_names} claim it: {lines.peek()}"
+                "cannot detect code format for line:"
+                f" it is claimed by {formatted_match_names}: {lines.peek()}"
             )
         else:
             yield more_itertools.one(detected.values())
