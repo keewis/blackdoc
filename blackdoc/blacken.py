@@ -21,7 +21,7 @@ def update_line_number(message, original_number):
 def blacken(lines, mode=None):
     for original_line_range, category, line_unit in lines:
         if category == "none":
-            yield category, line_unit
+            yield line_unit
             continue
 
         indentation_depth, prompt_length, code = extract_code(line_unit, category)
@@ -44,4 +44,4 @@ def blacken(lines, mode=None):
 
         reformatted = reformat_code(blackened, category, indentation_depth)
 
-        yield category, reformatted
+        yield reformatted

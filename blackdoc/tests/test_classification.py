@@ -50,11 +50,3 @@ def test_detect_format():
     )
     expected = data.line_labels
     assert expected == actual
-
-
-def test_unclassify():
-    labeled = tuple(zip(data.line_labels, data.lines))
-    actual = tuple(classification.unclassify(labeled))
-    expected = tuple(data.lines)
-
-    assert expected == actual

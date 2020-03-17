@@ -23,8 +23,3 @@ def detect_format(lines):
             )
         else:
             yield more_itertools.one(detected.values())
-
-
-def unclassify(labelled_lines):
-    for _, line in labelled_lines:
-        yield line

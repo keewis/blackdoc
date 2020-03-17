@@ -1,5 +1,5 @@
 from .blacken import blacken
-from .classification import detect_format, unclassify
+from .classification import detect_format
 from .formats import register_format  # noqa
 
 
@@ -13,4 +13,4 @@ def format_lines(lines, mode=None):
     labeled = detect_format(numbered)
     blackened = blacken(labeled, mode=mode)
 
-    return unclassify(blackened)
+    return blackened
