@@ -5,7 +5,7 @@ import pytest
 
 from blackdoc.formats import doctest
 
-from .data import lines
+from .data.doctest import lines
 
 
 @pytest.mark.parametrize(
