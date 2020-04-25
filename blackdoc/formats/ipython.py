@@ -8,6 +8,8 @@ name = "ipython"
 prompt_re = re.compile(r"^(?P<indent>[ ]*)(?P<prompt>In \[(?P<count>\d+)\]: )")
 continuation_prompt_re = re.compile(r"^(?P<indent>[ ]*)\.\.\.: ")
 
+prompt_template = "In [{count}]: "
+
 
 def continuation_lines(lines, indent, prompt_length):
     while True:
@@ -73,7 +75,7 @@ def metadata(line):
 
 def extraction_func(line):
     def remove_prompt(line, count):
-        n = len(f"In [{count}]: ")
+        n = len(prompt_template.format(count=count))
         return line[n:]
 
     lines = line.split("\n")
