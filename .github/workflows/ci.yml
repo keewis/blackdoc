@@ -41,33 +41,33 @@ jobs:
       shell: bash -l {0}
       run: python -m pytest
 
-  windows:
-    name: Windows
-    runs-on: windows-latest
-
-    steps:
-    - name: checkout the repository
-      uses: actions/checkout@v2
-
-    - name: setup conda
-      uses: goanpeca/setup-miniconda@v1.1.2
-      with:
-        miniconda-version: "latest"
-        activate-environment: blackdoc-tests
-        environment-file: ci/requirements/py38.yml
-        channels: conda-forge
-
-    - name: install blackdoc
-      shell: bash -l {0}
-      run: python -m pip install -e .
-
-    - name: show versions
-      shell: bash -l {0}
-      run: conda list
-
-    - name: run tests
-      shell: bash -l {0}
-      run: python -m pytest
+#  windows:
+#    name: Windows
+#    runs-on: windows-latest
+#
+#    steps:
+#    - name: checkout the repository
+#      uses: actions/checkout@v2
+#
+#    - name: setup conda
+#      uses: goanpeca/setup-miniconda@v1.1.2
+#      with:
+#        miniconda-version: "latest"
+#        activate-environment: blackdoc-tests
+#        environment-file: ci/requirements/py38.yml
+#        channels: conda-forge
+#
+#    - name: install blackdoc
+#      shell: bash -l {0}
+#      run: python -m pip install -e .
+#
+#    - name: show versions
+#      shell: bash -l {0}
+#      run: conda list
+#
+#    - name: run tests
+#      shell: bash -l {0}
+#      run: python -m pytest
 
   macos:
     name: MacOS
