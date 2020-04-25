@@ -9,6 +9,7 @@ prompt_re = re.compile(r"^(?P<indent>[ ]*)(?P<prompt>In \[(?P<count>\d+)\]: )")
 continuation_prompt_re = re.compile(r"^(?P<indent>[ ]*)\.\.\.: ")
 
 prompt_template = "In [{count}]: "
+continuation_template = "...: "
 
 
 def continuation_lines(lines, indent, prompt_length):
@@ -87,3 +88,21 @@ def extraction_func(line):
     extracted = "\n".join(remove_prompt(line, **parameters) for line in lines)
 
     return parameters, extracted
+
+
+def reformatting_func(line, count):
+    prompt = prompt_template.format(count=count)
+    continuation_prompt = (
+        " " * (len(prompt) - len(continuation_template)) + continuation_template
+    )
+
+    lines = iter(line.split("\n"))
+
+    reformatted = "\n".join(
+        itertools.chain(
+            more_itertools.always_iterable(prompt + more_itertools.first(lines)),
+            (continuation_prompt + line for line in lines),
+        )
+    )
+
+    return reformatted
