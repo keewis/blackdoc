@@ -12,10 +12,10 @@ def test_detection_func():
 
 
 def test_extraction_func():
-    prompt_length = 0
+    parameters = {}
     line = lines[0]
 
-    assert none.extraction_func(line) == (prompt_length, line)
+    assert none.extraction_func(line) == (parameters, line)
 
 
 def test_reformatting_func():
