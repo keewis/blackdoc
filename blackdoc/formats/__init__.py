@@ -1,6 +1,6 @@
 import textwrap
 
-from . import doctest, none
+from . import doctest, ipython, none
 from .register import detection_funcs  # noqa
 from .register import extraction_funcs, reformatting_funcs, register_format
 
@@ -27,5 +27,5 @@ def reformat_code(line_unit, code_format, indentation_depth, **parameters):
     return textwrap.indent(reformatted, " " * indentation_depth)
 
 
-for module in (none, doctest):
+for module in (none, doctest, ipython):
     register_format(module.name, module)
