@@ -1,4 +1,7 @@
-from importlib.metadata import version
+try:
+    from importlib.metadata import version
+except ImportError:
+    from importlib_metadata import version
 
 from .blacken import blacken
 from .classification import detect_format
