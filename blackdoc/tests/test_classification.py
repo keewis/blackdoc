@@ -2,7 +2,7 @@ import more_itertools
 
 from blackdoc import classification
 
-from . import data
+from .data import doctest as data
 
 
 def print_line_with_range(name, range_, unit):
