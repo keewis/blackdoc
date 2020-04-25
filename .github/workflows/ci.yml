@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        environment: ["py38", "py38-upstream-dev"]
+        environment: ["py36", "py37", "py38", "py38-upstream-dev"]
 
     steps:
     - name: checkout the repository
