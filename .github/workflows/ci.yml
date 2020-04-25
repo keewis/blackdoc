@@ -31,3 +31,60 @@ jobs:
     - name: run tests
       shell: bash -l {0}
       run: python -m pytest
+
+  flake8:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: checkout the repository
+      uses: actions/checkout@v2
+
+    - name: setup conda
+      uses: goanpeca/setup-miniconda@v1.1.2
+      with:
+        miniconda-version: "latest"
+        activate-environment: blackdoc-tests
+        environment-file: ci/requirements/py38.yml
+
+    - name: run flake8
+      shell: bash -l {0}
+      run: python -m flake8 .
+
+  isort:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: checkout the repository
+      uses: actions/checkout@v2
+
+    - name: setup conda
+      uses: goanpeca/setup-miniconda@v1.1.2
+      with:
+        miniconda-version: "latest"
+        activate-environment: blackdoc-tests
+        environment-file: ci/requirements/py38.yml
+
+    - name: run isort
+      shell: bash -l {0}
+      run: python -m isort -rc --check .
+
+  black:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: checkout the repository
+      uses: actions/checkout@v2
+
+    - name: setup conda
+      uses: goanpeca/setup-miniconda@v1.1.2
+      with:
+        miniconda-version: "latest"
+        activate-environment: blackdoc-tests
+        environment-file: ci/requirements/py38.yml
+
+    - name: run black
+      shell: bash -l {0}
+      run: python -m black --check .
