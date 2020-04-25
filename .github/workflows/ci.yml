@@ -9,7 +9,6 @@ on:
     branches: [ master ]
 
 jobs:
-  # This workflow contains a single job called "build"
   py38:
     runs-on: ubuntu-latest
 
@@ -20,12 +19,16 @@ jobs:
 
     - name: setup conda
       uses: goanpeca/setup-miniconda@v1.1.2
-      with:
-        activate-environment: blackdoc-tests
-        environment-file: ci/requirements/py38.yml
 
     - name: update conda
+      shell: bash -l {0}
       run: conda update -c defaults -n base conda
+
+    - name: create environment
+      shell: bash -l {0}
+      run: |
+        conda env create -f ci/requirements/py38.yml
+        source activate blackdoc-tests
 
     - name: install blackdoc
       shell: bash -l {0}
