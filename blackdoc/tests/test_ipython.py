@@ -3,6 +3,7 @@ import textwrap
 import more_itertools
 import pytest
 
+from blackdoc import blacken
 from blackdoc.formats import ipython
 
 from .data import ipython as data
@@ -72,3 +73,17 @@ def test_extraction_func(line, expected):
 def test_reformatting_func(line, count, expected):
     actual = ipython.reformatting_func(line, count=count)
     assert expected == actual
+
+
+def test_blacken():
+    labeled = list(
+        (
+            (min_ + 1, max_ + 1),
+            data.line_labels[min_],
+            "\n".join(data.lines[slice(min_, max_)]),
+        )
+        for min_, max_ in data.line_ranges
+    )
+    actual = tuple(blacken(labeled))
+
+    assert len(actual) == 15
