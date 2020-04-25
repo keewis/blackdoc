@@ -4,7 +4,7 @@ import sys
 
 import black
 
-from . import format_lines
+from . import __version__, format_lines
 
 
 def collect_files(src, include, exclude):
@@ -179,6 +179,8 @@ def process(args):
     return return_code
 
 
+program = pathlib.Path(__file__).parent.name
+
 parser = argparse.ArgumentParser(
     description="run black on documentation code snippets (e.g. doctest)",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -238,6 +240,12 @@ parser.add_argument(
         "Use forward slashes for directories on all platforms (Windows, too).  "
         "Exclusions are calculated first, inclusions later."
     ),
+)
+parser.add_argument(
+    "--version",
+    action="version",
+    help="Show the version and exit.",
+    version=f"{program} {__version__}",
 )
 parser.add_argument(
     "src",

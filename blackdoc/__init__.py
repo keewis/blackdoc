@@ -1,6 +1,18 @@
+try:
+    from importlib.metadata import version
+except ImportError:
+    from importlib_metadata import version
+
 from .blacken import blacken
 from .classification import detect_format
 from .formats import register_format  # noqa
+
+try:
+    __version__ = version("black-doctest")
+except Exception:
+    # Local copy or not installed with setuptools.
+    # Disable minimum version checks on downstream libraries.
+    __version__ = "999"
 
 
 def line_numbers(lines):
