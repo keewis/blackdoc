@@ -20,26 +20,14 @@ jobs:
     - name: setup conda
       uses: goanpeca/setup-miniconda@v1.1.2
       with:
-        activate-environment: ""
-
-    - name: update conda
-      shell: bash -l {0}
-      run: conda update -c defaults -n base conda
-
-    - name: create environment
-      shell: bash -l {0}
-      run: conda env create -f ci/requirements/py38.yml
+        miniconda-version: "latest"
+        activate-environment: blackdoc-tests
+        environment-file: ci/requirements/py38.yml
 
     - name: install blackdoc
       shell: bash -l {0}
-      run: |
-        conda activate blackdoc-tests
-        echo $CONDA_DEFAULT_ENV
-        python -m pip install -e .
+      run: python -m pip install -e .
 
     - name: run tests
       shell: bash -l {0}
-      run: |
-        conda activate blackdoc-tests
-        echo $CONDA_DEFAULT_ENV
-        python -m pytest
+      run: python -m pytest
