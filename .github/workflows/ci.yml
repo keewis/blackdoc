@@ -30,18 +30,16 @@ jobs:
       shell: bash -l {0}
       run: conda env create -f ci/requirements/py38.yml
 
-    - name: activate the environment
-      shell: bash -l {0}
-      run: conda activate blackdoc-tests
-
     - name: install blackdoc
       shell: bash -l {0}
       run: |
+        conda activate blackdoc-tests
         echo $CONDA_DEFAULT_ENV
         python -m pip install -e .
 
     - name: run tests
       shell: bash -l {0}
       run: |
+        conda activate blackdoc-tests
         echo $CONDA_DEFAULT_ENV
         python -m pytest
