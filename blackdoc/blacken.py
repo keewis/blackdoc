@@ -33,10 +33,12 @@ def blacken(lines, mode=None):
             yield line_unit
             continue
 
-        indentation_depth, prompt_length, code = extract_code(line_unit, code_format)
+        indentation_depth, parameters, code = extract_code(line_unit, code_format)
 
         current_mode = black.FileMode() if mode is None else copy.copy(mode)
-        current_mode.line_length -= indentation_depth + prompt_length
+        current_mode.line_length -= indentation_depth + parameters.pop(
+            "prompt_length", 0
+        )
 
         original_line_number, _ = original_line_range
 
@@ -57,6 +59,8 @@ def blacken(lines, mode=None):
             lineno = original_line_number + (apparent_line_number - 1)
             raise black.InvalidInput(f"{message}: {lineno}:{column}: {faulty_line}")
 
-        reformatted = reformat_code(blackened, code_format, indentation_depth)
+        reformatted = reformat_code(
+            blackened, code_format, indentation_depth, **parameters
+        )
 
         yield reformatted

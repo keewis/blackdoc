@@ -13,16 +13,16 @@ def extract_code(line_unit, code_format):
     if func is None:
         raise RuntimeError(f"unknown code format: {code_format}")
 
-    prompt_length, extracted = func(dedented)
-    return indentation_depth, prompt_length, extracted
+    parameters, extracted = func(dedented)
+    return indentation_depth, parameters, extracted
 
 
-def reformat_code(line_unit, code_format, indentation_depth):
+def reformat_code(line_unit, code_format, indentation_depth, **parameters):
     func = reformatting_funcs.get(code_format, None)
     if func is None:
         raise RuntimeError(f"unknown code format: {code_format}")
 
-    reformatted = func(line_unit)
+    reformatted = func(line_unit, **parameters)
 
     return textwrap.indent(reformatted, " " * indentation_depth)
 
