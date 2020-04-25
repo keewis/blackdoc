@@ -31,7 +31,7 @@ jobs:
     - name: setup environment
       run: |
         conda env create -f ci/requirements/py38.yml
-        conda activate blackdoc-tests
+        source activate blackdoc-tests
 
     - name: install blackdoc
       run: python -m pip install -e .
