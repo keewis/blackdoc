@@ -1,6 +1,6 @@
 import textwrap
 
-from . import doctest, none
+from . import doctest, ipython, none
 from .register import detection_funcs  # noqa
 from .register import extraction_funcs, reformatting_funcs, register_format
 
@@ -13,19 +13,19 @@ def extract_code(line_unit, code_format):
     if func is None:
         raise RuntimeError(f"unknown code format: {code_format}")
 
-    prompt_length, extracted = func(dedented)
-    return indentation_depth, prompt_length, extracted
+    parameters, extracted = func(dedented)
+    return indentation_depth, parameters, extracted
 
 
-def reformat_code(line_unit, code_format, indentation_depth):
+def reformat_code(line_unit, code_format, indentation_depth, **parameters):
     func = reformatting_funcs.get(code_format, None)
     if func is None:
         raise RuntimeError(f"unknown code format: {code_format}")
 
-    reformatted = func(line_unit)
+    reformatted = func(line_unit, **parameters)
 
     return textwrap.indent(reformatted, " " * indentation_depth)
 
 
-for module in (none, doctest):
+for module in (none, doctest, ipython):
     register_format(module.name, module)

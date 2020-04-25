@@ -1,11 +1,9 @@
 from blackdoc.formats import none
 
-from .data import docstring
+from .data.doctest import lines
 
 
 def test_detection_func():
-    lines = docstring.split("\n")
-
     line_range = (1, 2)
     line = lines[0]
     name = none.name
@@ -14,15 +12,13 @@ def test_detection_func():
 
 
 def test_extraction_func():
-    lines = docstring.split("\n")
-    prompt_length = 0
+    parameters = {}
     line = lines[0]
 
-    assert none.extraction_func(line) == (prompt_length, line)
+    assert none.extraction_func(line) == (parameters, line)
 
 
 def test_reformatting_func():
-    lines = docstring.split("\n")
     line = lines[0]
 
     assert none.reformatting_func(line) == line

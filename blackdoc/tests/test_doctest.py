@@ -5,7 +5,7 @@ import pytest
 
 from blackdoc.formats import doctest
 
-from .data import lines
+from .data.doctest import lines
 
 
 @pytest.mark.parametrize(
@@ -39,7 +39,7 @@ def test_detection_func(lines, expected):
 def test_extraction_func(line):
     prompt_length = len(doctest.prompt)
     expected = (
-        prompt_length,
+        {"prompt_length": prompt_length},
         "\n".join(line.lstrip()[4:] for line in line.split("\n")),
     )
     actual = doctest.extraction_func(line)
