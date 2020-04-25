@@ -19,6 +19,8 @@ jobs:
 
     - name: setup conda
       uses: goanpeca/setup-miniconda@v1.1.2
+      with:
+        activate-environment: ""
 
     - name: update conda
       shell: bash -l {0}
@@ -28,7 +30,7 @@ jobs:
       shell: bash -l {0}
       run: |
         conda env create -f ci/requirements/py38.yml
-        source activate blackdoc-tests
+        conda activate blackdoc-tests
 
     - name: install blackdoc
       shell: bash -l {0}
