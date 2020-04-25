@@ -1,13 +1,18 @@
-black-doctest
-=============
+blackdoc
+========
 
-.. image:: https://github.com/keewis/black-doctest/workflows/CI/badge.svg?branch=master
-    :target: https://github.com/keewis/black-doctest/actions
+.. image:: https://github.com/keewis/blackdoc/workflows/CI/badge.svg?branch=master
+    :target: https://github.com/keewis/blackdoc/actions
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/python/black
 
-`black-doctest` is a tool that applies `black` to code in doctest
-blocks. It is a rewrite of https://gist.github.com/mattharrison/2a1a263597d80e99cf85e898b800ec32
+**blackdoc** is a tool that applies `black`_ to code in documentation.
+
+It was originally a rewrite of a `gist`_ and called
+**black-doctest**. In April 2020, it was renamed to **blackdoc**.
+
+.. _gist: https://gist.github.com/mattharrison/2a1a263597d80e99cf85e898b800ec32
+.. _black: https://github.com/psf/black
 
 Usage
 -----

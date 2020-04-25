@@ -8,7 +8,7 @@ from .classification import detect_format
 from .formats import register_format  # noqa
 
 try:
-    __version__ = version("black-doctest")
+    __version__ = version("blackdoc")
 except Exception:
     # Local copy or not installed with setuptools.
     # Disable minimum version checks on downstream libraries.
