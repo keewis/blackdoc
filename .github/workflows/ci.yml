@@ -22,6 +22,7 @@ jobs:
         miniconda-version: "latest"
         activate-environment: blackdoc-tests
         environment-file: ci/requirements/py38.yml
+        channels: conda-forge
 
     - name: install blackdoc
       shell: bash -l {0}
@@ -94,6 +95,7 @@ jobs:
         miniconda-version: "latest"
         activate-environment: blackdoc-tests
         environment-file: ci/requirements/py38.yml
+        channels: conda-forge
 
     - name: run flake8
       shell: bash -l {0}
@@ -113,6 +115,7 @@ jobs:
         miniconda-version: "latest"
         activate-environment: blackdoc-tests
         environment-file: ci/requirements/py38.yml
+        channels: conda-forge
 
     - name: run isort
       shell: bash -l {0}
@@ -132,6 +135,7 @@ jobs:
         miniconda-version: "latest"
         activate-environment: blackdoc-tests
         environment-file: ci/requirements/py38.yml
+        channels: conda-forge
 
     - name: run black
       shell: bash -l {0}
