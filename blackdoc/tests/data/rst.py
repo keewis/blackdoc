@@ -10,30 +10,93 @@ As an example:
         mode="a",
     )
 
+
+.. code-block:: python
+
+    with open(
+        "very_long_filepath",
+        mode="a",
+    ) as f:
+        content = f.read()
+
 A new example, this time with ipython:
 
-.. ipython:: python
+.. ipython::
 
+    file = open(
+        "very_long_filepath",
+        mode="a",
+    )
     file
+
+with ipython prompts:
+
+.. ipython::
+    :okerror:
+
+    In [1]: file = open(
+       ...:     "very_long_filepath",
+       ...:     mode="a",
+       ...: )
+
+    In [2]: file
+
+    In [3]: file.read_binary()
 """
 lines = content.splitlines()
-code_units = (1, 1, 1, 7, 1, 1, 1, 3, 1)
+code_units = (1, 1, 9, 9, 1, 9, 1, 12, 1)
+line_ranges = (
+    (0, 1),
+    (1, 2),
+    (2, 11),
+    (11, 20),
+    (20, 21),
+    (21, 33),
+    (33, 34),
+)
 line_labels = (
     "none",
     "none",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
     "none",
-    "rst-codeblock",
-    "rst-codeblock",
-    "rst-codeblock",
-    "rst-codeblock",
-    "rst-codeblock",
-    "rst-codeblock",
-    "rst-codeblock",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
     "none",
-    "none",
-    "none",
-    "rst-codeblock",
-    "rst-codeblock",
-    "rst-codeblock",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
+    "rst",
     "none",
 )
