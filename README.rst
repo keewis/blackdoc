@@ -9,7 +9,7 @@ blackdoc
 `blackdoc` is a tool that applies `black` to code in documentation.
 
 It was originally a rewrite of a
-`gist <https://gist.github.com/mattharrison/2a1a263597d80e99cf85e898b800ec32>`
+`gist <https://gist.github.com/mattharrison/2a1a263597d80e99cf85e898b800ec32>`_
 under the name `black-doctest`. It was renamed to `black-doctest` in
 April 2020.
 
