@@ -8,8 +8,8 @@ blackdoc
 
 **blackdoc** is a tool that applies `black`_ to code in documentation.
 
-It was originally a rewrite of a `gist`_ under the name
-**black-doctest**. It was renamed to **blackdoc** in April 2020.
+It was originally a rewrite of a `gist`_ and called
+**black-doctest**. In April 2020, it was renamed to **blackdoc**.
 
 .. _gist: https://gist.github.com/mattharrison/2a1a263597d80e99cf85e898b800ec32
 .. _black: https://github.com/psf/black
