@@ -42,6 +42,7 @@ with ipython prompts:
     In [2]: file
 
     In [3]: file.read_binary()
+
 """
 lines = content.splitlines()
 code_units = (1, 1, 9, 9, 1, 9, 1, 12, 1)
@@ -51,8 +52,8 @@ line_ranges = (
     (2, 11),
     (11, 20),
     (20, 21),
-    (21, 33),
-    (33, 34),
+    (21, 30),
+    (31, 44),
 )
 line_labels = (
     "none",
