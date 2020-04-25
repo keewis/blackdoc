@@ -13,7 +13,7 @@ from .data import ipython as data
     (
         pytest.param(data.lines[0], None, id="no_line"),
         pytest.param(
-            data.lines[8], ((1, 2), ipython.name, data.lines[8]), id="single_line"
+            data.lines[9], ((1, 2), ipython.name, data.lines[9]), id="single_line"
         ),
         pytest.param(
             data.lines[4:8],
@@ -35,8 +35,8 @@ def test_detection_func(lines, expected):
     "line,expected",
     (
         pytest.param(
-            textwrap.dedent(data.lines[8]),
-            ({"count": 2}, textwrap.dedent(data.lines[8])[8:]),
+            textwrap.dedent(data.lines[9]),
+            ({"count": 2}, textwrap.dedent(data.lines[9])[8:]),
             id="single_line",
         ),
         pytest.param(
@@ -53,14 +53,22 @@ def test_extraction_func(line, expected):
 
 
 @pytest.mark.parametrize(
-    "expected",
+    "line,count,expected",
     (
-        pytest.param(textwrap.dedent(data.lines[8]), id="single_line"),
-        pytest.param(textwrap.dedent("\n".join(data.lines[4:8])), id="multiple_lines"),
+        pytest.param(
+            textwrap.dedent(data.lines[9])[8:],
+            2,
+            textwrap.dedent(data.lines[9]),
+            id="single_line",
+        ),
+        pytest.param(
+            "\n".join(line[12:] for line in data.lines[4:8]),
+            1,
+            textwrap.dedent("\n".join(data.lines[4:8])),
+            id="multiple_lines",
+        ),
     ),
 )
-def test_reformatting_func(expected):
-    line = "\n".join(line.lstrip()[4:] for line in expected.split("\n"))
-
-    actual = ipython.reformatting_func(line)
+def test_reformatting_func(line, count, expected):
+    actual = ipython.reformatting_func(line, count=count)
     assert expected == actual
