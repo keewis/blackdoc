@@ -5,7 +5,7 @@ import more_itertools
 
 name = "ipython"
 
-prompt_re = re.compile(r"^(?P<indent>[ ]*)(?P<prompt>In \[\d+\]: )")
+prompt_re = re.compile(r"^(?P<indent>[ ]*)(?P<prompt>In \[(?P<count>\d+)\]: )")
 continuation_prompt_re = re.compile(r"^(?P<indent>[ ]*)\.\.\.: ")
 
 
@@ -54,3 +54,34 @@ def detection_func(lines):
         raise RuntimeError("line numbers are not contiguous")
 
     return line_range, name, "\n".join(lines)
+
+
+def is_ipython(line):
+    is_prompt = prompt_re.match(line)
+    is_continuation_prompt = continuation_prompt_re.match(line)
+    return is_prompt or is_continuation_prompt
+
+
+def metadata(line):
+    match = prompt_re.match(line)
+    if not match:
+        return {}
+
+    groups = match.groupdict()
+    return {"count": int(groups["count"])}
+
+
+def extraction_func(line):
+    def remove_prompt(line, count):
+        n = len(f"In [{count}]: ")
+        return line[n:]
+
+    lines = line.split("\n")
+    parameters = metadata(lines[0])
+
+    if not all(is_ipython(line) for line in lines):
+        raise RuntimeError(f"misformatted code unit: {line}")
+
+    extracted = "\n".join(remove_prompt(line, **parameters) for line in lines)
+
+    return parameters, extracted

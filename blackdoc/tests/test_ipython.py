@@ -32,18 +32,21 @@ def test_detection_func(lines, expected):
 
 
 @pytest.mark.parametrize(
-    "line",
+    "line,expected",
     (
-        pytest.param(textwrap.dedent(data.lines[8]), id="single_line"),
-        pytest.param(textwrap.dedent("\n".join(data.lines[4:8])), id="multiple_lines"),
+        pytest.param(
+            textwrap.dedent(data.lines[8]),
+            ({"count": 2}, textwrap.dedent(data.lines[8])[8:]),
+            id="single_line",
+        ),
+        pytest.param(
+            textwrap.dedent("\n".join(data.lines[4:8])),
+            ({"count": 1}, "\n".join(line[12:] for line in data.lines[4:8])),
+            id="multiple_lines",
+        ),
     ),
 )
-def test_extraction_func(line):
-    prompt_length = len(ipython.prompt)
-    expected = (
-        prompt_length,
-        "\n".join(line.lstrip()[4:] for line in line.split("\n")),
-    )
+def test_extraction_func(line, expected):
     actual = ipython.extraction_func(line)
 
     assert expected == actual
