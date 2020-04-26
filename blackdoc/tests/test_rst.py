@@ -3,6 +3,7 @@ import textwrap
 import more_itertools
 import pytest
 
+from .. import blacken
 from ..formats import rst
 from .data import rst as data
 
@@ -101,3 +102,13 @@ def test_reformatting_func(code, directive, expected):
     actual = rst.reformatting_func(code, **directive)
 
     assert expected == actual
+
+
+def test_blacken():
+    labeled = tuple(
+        ((min_ + 1, max_ + 1), label, "\n".join(data.lines[slice(min_, max_)]))
+        for label, (min_, max_) in zip(data.line_labels, data.line_ranges)
+    )
+    actual = tuple(blacken(labeled))
+
+    assert len(actual) == 32
