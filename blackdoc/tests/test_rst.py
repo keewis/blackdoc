@@ -64,7 +64,7 @@ def test_detection_func(lines, expected):
             textwrap.dedent("\n".join(data.lines[27:34])),
             (
                 {"name": "ipython", "language": None, "options": ()},
-                textwrap.dedent("\n".join(data.lines[29:34])),
+                rst.hide_magic(textwrap.dedent("\n".join(data.lines[29:34]))),
             ),
             id="ipython",
         ),

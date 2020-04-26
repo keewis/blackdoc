@@ -28,6 +28,7 @@ A new example, this time with ipython:
 
 .. ipython::
 
+    %%time
     file = open(
         "very_long_filepath",
         mode="a",
@@ -71,8 +72,7 @@ line_ranges = (
     (24, 25),
     (25, 26),
     (26, 27),
-    (27, 34),
-    (34, 35),
+    (27, 35),
     (35, 36),
     (36, 37),
     (37, 38),
@@ -91,8 +91,9 @@ line_ranges = (
     (50, 51),
     (51, 52),
     (52, 53),
-    (53, 56),
-    (56, 57),
+    (53, 54),
+    (54, 57),
+    (57, 58),
 )
 line_labels = (
     "none",

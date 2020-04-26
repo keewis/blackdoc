@@ -4,7 +4,7 @@ import textwrap
 
 import more_itertools
 
-from .ipython import prompt_re
+from .ipython import hide_magic, prompt_re, reveal_magic
 
 name = "rst"
 
@@ -113,9 +113,9 @@ def extraction_func(code):
             f"misformatted code block: newline after options required but found: {line}"
         )
 
-    code = textwrap.dedent("\n".join(lines))
+    code_ = hide_magic(textwrap.dedent("\n".join(lines)))
 
-    return directive, code
+    return directive, code_
 
 
 def reformatting_func(code, name, language, options):
@@ -126,7 +126,7 @@ def reformatting_func(code, name, language, options):
     )
 
     options_ = textwrap.indent("\n".join(options), indent) if options else None
-    code_ = textwrap.indent(code, indent)
+    code_ = textwrap.indent(reveal_magic(code), indent)
 
     return "\n".join(
         line for line in (directive, options_, "", code_) if line is not None
