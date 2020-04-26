@@ -1,3 +1,5 @@
+import textwrap
+
 import more_itertools
 import pytest
 
@@ -39,3 +41,38 @@ def test_detection_func(lines, expected):
 
     actual = rst.detection_func(lines)
     assert actual == expected
+
+
+@pytest.mark.parametrize(
+    "code,expected",
+    (
+        pytest.param(
+            textwrap.dedent("\n".join(data.lines[8:15])),
+            (
+                {"name": "code", "language": "python", "options": (":okwarning:",)},
+                textwrap.dedent("\n".join(data.lines[11:15])),
+            ),
+            id="code",
+        ),
+        pytest.param(
+            textwrap.dedent("\n".join(data.lines[17:24])),
+            (
+                {"name": "code-block", "language": "python", "options": ()},
+                textwrap.dedent("\n".join(data.lines[19:24])),
+            ),
+            id="code_block",
+        ),
+        pytest.param(
+            textwrap.dedent("\n".join(data.lines[27:34])),
+            (
+                {"name": "ipython", "language": None, "options": ()},
+                textwrap.dedent("\n".join(data.lines[29:34])),
+            ),
+            id="ipython",
+        ),
+    ),
+)
+def test_extraction_func(code, expected):
+    actual = rst.extraction_func(code)
+
+    assert expected == actual

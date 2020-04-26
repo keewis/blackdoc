@@ -1,5 +1,6 @@
 import itertools
 import re
+import textwrap
 
 import more_itertools
 
@@ -74,3 +75,28 @@ def detection_func(lines):
         raise RuntimeError("line numbers are not contiguous")
 
     return line_range, name, "\n".join(lines)
+
+
+def extraction_func(code):
+    lines = more_itertools.peekable(iter(code.split("\n")))
+
+    match = directive_re.fullmatch(more_itertools.first(lines))
+    if not match:
+        raise RuntimeError(f"misformatted code block:\n{code}")
+
+    directive = match.groupdict()
+    directive.pop("indent")
+
+    directive["options"] = tuple(
+        line.strip() for line in take_while(lines, lambda line: line.strip())
+    )
+
+    line = more_itertools.first(lines)
+    if line.strip():
+        raise RuntimeError(
+            f"misformatted code block: newline after options required but found: {line}"
+        )
+
+    code = textwrap.dedent("\n".join(lines))
+
+    return directive, code
