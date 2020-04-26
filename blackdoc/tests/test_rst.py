@@ -76,3 +76,32 @@ def test_extraction_func(code, expected):
     actual = rst.extraction_func(code)
 
     assert expected == actual
+
+
+@pytest.mark.parametrize(
+    "code,directive,expected",
+    (
+        pytest.param(
+            textwrap.dedent("\n".join(data.lines[11:15])),
+            {"name": "code", "language": "python", "options": (":okwarning:",)},
+            textwrap.dedent("\n".join(data.lines[8:15])),
+            id="code",
+        ),
+        pytest.param(
+            textwrap.dedent("\n".join(data.lines[19:24])),
+            {"name": "code-block", "language": "python", "options": ()},
+            textwrap.dedent("\n".join(data.lines[17:24])),
+            id="code_block",
+        ),
+        pytest.param(
+            textwrap.dedent("\n".join(data.lines[29:34])),
+            {"name": "ipython", "language": None, "options": ()},
+            textwrap.dedent("\n".join(data.lines[27:34])),
+            id="ipython",
+        ),
+    ),
+)
+def test_reformatting_func(code, directive, expected):
+    actual = rst.reformatting_func(code, **directive)
+
+    assert expected == actual

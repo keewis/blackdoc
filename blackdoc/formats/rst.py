@@ -100,3 +100,18 @@ def extraction_func(code):
     code = textwrap.dedent("\n".join(lines))
 
     return directive, code
+
+
+def reformatting_func(code, name, language, options):
+    indent = " " * 4
+
+    directive = " ".join(
+        [f".. {name}::"] + ([language] if language is not None else [])
+    )
+
+    options_ = textwrap.indent("\n".join(options), indent) if options else None
+    code_ = textwrap.indent(code, indent)
+
+    return "\n".join(
+        line for line in (directive, options_, "", code_) if line is not None
+    )
