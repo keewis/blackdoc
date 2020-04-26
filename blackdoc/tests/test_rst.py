@@ -29,16 +29,19 @@ from .data import rst as data
             ((1, 8), rst.name, "\n".join(data.lines[27:34])),
             id="ipython",
         ),
-        pytest.param(data.lines[37:48], None, id="ipython-prompt",),
+        pytest.param(data.lines[38:47], None, id="ipython-prompt",),
     ),
 )
 def test_detection_func(lines, expected):
-    lines = more_itertools.peekable(
-        enumerate(more_itertools.always_iterable(lines), start=1)
-    )
+    lines = tuple(more_itertools.always_iterable(lines))
+    lines_ = more_itertools.peekable(enumerate(lines, start=1))
 
-    actual = rst.detection_func(lines)
+    actual = rst.detection_func(lines_)
+
+    leftover_lines = tuple(lines_)
+
     assert actual == expected
+    assert expected is not None or len(lines) == len(leftover_lines)
 
 
 @pytest.mark.parametrize(

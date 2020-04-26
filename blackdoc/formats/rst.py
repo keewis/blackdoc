@@ -28,16 +28,25 @@ def take_while(iterable, predicate):
 
 
 def continuation_lines(lines, indent):
+    options = tuple(take_while(lines, lambda x: x[1].strip()))
+    newlines = tuple(take_while(lines, lambda x: not x[1].strip()))
+    _, next_line = lines.peek((0, None))
+    if next_line is None:
+        return
+
+    if prompt_re.match(next_line):
+        lines.prepend(*options, *newlines)
+        raise RuntimeError("ipython prompt detected")
+
+    yield from options
+    yield from newlines
+
     while True:
         newlines = tuple(take_while(lines, lambda x: not x[1].strip()))
         try:
             line_number, line = lines.peek()
         except StopIteration:
             break
-
-        if prompt_re.match(line):
-            lines.prepend(*newlines)
-            raise RuntimeError("ipython prompt detected")
 
         current_indent = len(line) - len(line.lstrip())
         if current_indent <= indent:
@@ -72,6 +81,7 @@ def detection_func(lines):
         return None
 
     indent = len(directive.pop("indent"))
+
     try:
         detected_lines = list(
             itertools.chain(
