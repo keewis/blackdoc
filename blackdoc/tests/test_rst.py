@@ -9,20 +9,25 @@ from .data import rst as data
     "lines,expected",
     (
         pytest.param(data.lines[0], None, id="none"),
+        pytest.param(data.lines[2:5], None, id="no_code"),
         pytest.param(
-            data.lines[2:11], ((3, 12), rst.code_block, data.lines[2:11]), id="code",
+            data.lines[8:15],
+            ((1, 8), rst.name, "\n".join(data.lines[8:15])),
+            id="code",
         ),
         pytest.param(
-            data.lines[11:20],
-            ((12, 21), rst.code_block, data.lines[11:20]),
+            data.lines[17:24],
+            ((1, 8), rst.name, "\n".join(data.lines[17:24])),
             id="code-block",
         ),
         pytest.param(
-            data.lines[21:30], ((22, 31), rst.ipython, data.lines[21:30]), id="ipython",
+            data.lines[27:34],
+            ((1, 8), rst.name, "\n".join(data.lines[27:34])),
+            id="ipython",
         ),
         pytest.param(
-            data.lines[31:44],
-            ((32, 45), rst.ipython_prompt, data.lines[31:44]),
+            data.lines[37:48],
+            ((1, 12), rst.name, "\n".join(data.lines[37:48])),
             id="ipython-prompt",
         ),
     ),
