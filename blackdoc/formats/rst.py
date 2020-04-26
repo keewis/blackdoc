@@ -68,6 +68,9 @@ def detection_func(lines):
     if directive["name"] not in ("code", "code-block", "ipython"):
         return None
 
+    if directive["language"] not in ("python", None):
+        return None
+
     indent = len(directive.pop("indent"))
     try:
         detected_lines = list(

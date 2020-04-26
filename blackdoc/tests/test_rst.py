@@ -13,6 +13,7 @@ from .data import rst as data
     (
         pytest.param(data.lines[0], None, id="none"),
         pytest.param(data.lines[2:5], None, id="no_code"),
+        pytest.param(data.lines[51:54], None, id="code_other_language"),
         pytest.param(
             data.lines[8:15],
             ((1, 8), rst.name, "\n".join(data.lines[8:15])),
@@ -111,4 +112,4 @@ def test_blacken():
     )
     actual = tuple(blacken(labeled))
 
-    assert len(actual) == 32
+    assert len(actual) == 37

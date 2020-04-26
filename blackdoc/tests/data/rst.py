@@ -48,6 +48,11 @@ with ipython prompts:
 
     In [3]: file.read_binary()
 
+a code block with a different language:
+
+.. code:: sh
+
+    find . -name "*.py"
 """
 lines = content.splitlines()
 line_ranges = (
@@ -83,6 +88,11 @@ line_ranges = (
     (47, 48),
     (48, 49),
     (49, 50),
+    (50, 51),
+    (51, 52),
+    (52, 53),
+    (53, 56),
+    (56, 57),
 )
 line_labels = (
     "none",
@@ -101,6 +111,10 @@ line_labels = (
     "none",
     "none",
     "rst",
+    "none",
+    "none",
+    "none",
+    "none",
     "none",
     "none",
     "none",
