@@ -52,11 +52,11 @@ def test_detection_func(lines, expected):
                 "\n".join(
                     line[12:]
                     if not ipython.magic_re.match(line[12:])
-                    else f"#{ipython.magic_comment}{line[12:]}"
+                    else f"# {ipython.magic_comment}{line[12:]}"
                     for line in data.lines[18:20]
                 ),
             ),
-            id="lines_with_magic",
+            id="lines_with_cell_magic",
         ),
         pytest.param(
             textwrap.dedent("\n".join(data.lines[21:25])),
@@ -65,11 +65,11 @@ def test_detection_func(lines, expected):
                 "\n".join(
                     line[12:]
                     if not ipython.magic_re.match(line[12:])
-                    else f"#{ipython.magic_comment}{line[12:]}"
+                    else f"# {ipython.magic_comment}{line[12:]}"
                     for line in data.lines[21:25]
                 ),
             ),
-            id="lines_with_magic",
+            id="lines_with_line_decorator",
         ),
     ),
 )
@@ -114,7 +114,7 @@ def test_extraction_func(line, expected):
             ),
             5,
             textwrap.dedent("\n".join(data.lines[21:25])),
-            id="lines_with_cell_magic",
+            id="lines_with_line_decorator",
         ),
     ),
 )
