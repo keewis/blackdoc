@@ -1,5 +1,10 @@
 content = """\
 Long description of the function's assumptions and on how to call it.
+
+.. note::
+
+    this is not a code block
+
 As an example:
 
 .. code:: python
