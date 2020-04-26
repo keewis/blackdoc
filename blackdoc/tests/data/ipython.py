@@ -15,9 +15,12 @@ docstring = """ a function to open files
 
     In [3]: file.closed
     Out[3]: False
+
+    In [4]: %%time
+       ...: file.close()
 """
 lines = docstring.split("\n")
-code_units = (1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+code_units = (1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1)
 line_ranges = (
     (0, 1),
     (1, 2),
@@ -34,6 +37,8 @@ line_ranges = (
     (15, 16),
     (16, 17),
     (17, 18),
+    (18, 20),
+    (20, 21),
 )
 line_labels = (
     "none",
@@ -53,5 +58,8 @@ line_labels = (
     "none",
     "ipython",
     "none",
+    "none",
+    "ipython",
+    "ipython",
     "none",
 )

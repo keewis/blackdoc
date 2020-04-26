@@ -11,6 +11,9 @@ continuation_prompt_re = re.compile(r"^(?P<indent>[ ]*)\.\.\.: ")
 prompt_template = "In [{count}]: "
 continuation_template = "...: "
 
+magic_prefixes = "%!@"
+magic_comment = "<ipython-magic>"
+
 
 def continuation_lines(lines, indent, prompt_length):
     while True:
@@ -74,20 +77,55 @@ def metadata(line):
     return {"count": int(groups["count"])}
 
 
-def extraction_func(line):
+def hide_magic(code, prefix_chars=magic_prefixes):
+    def comment_magic(line):
+        stripped = line.lstrip()
+        indent = len(line) - len(stripped)
+
+        if not stripped or stripped[0] not in prefix_chars:
+            return line
+
+        return " " * indent + "#" + magic_comment + stripped
+
+    lines = code.split("\n")
+    processed = tuple(comment_magic(line) for line in lines)
+
+    return "\n".join(processed)
+
+
+def reveal_magic(code, prefix_chars=magic_prefixes):
+    def uncomment_magic(line):
+        stripped = line.lstrip()
+
+        if len(stripped) < (len(magic_comment) + 1):
+            return line
+
+        if not stripped.startswith("#" + magic_comment):
+            return line
+
+        indent = len(line) - len(stripped)
+        return " " * indent + stripped[len(magic_comment) + 1 :]
+
+    lines = code.split("\n")
+    processed = tuple(uncomment_magic(line) for line in lines)
+
+    return "\n".join(processed)
+
+
+def extraction_func(code):
     def remove_prompt(line, count):
         n = len(prompt_template.format(count=count))
         return line[n:]
 
-    lines = line.split("\n")
+    lines = code.split("\n")
     parameters = metadata(lines[0])
 
     if not all(is_ipython(line) for line in lines):
-        raise RuntimeError(f"misformatted code unit: {line}")
+        raise RuntimeError(f"misformatted code unit: {code}")
 
     extracted = "\n".join(remove_prompt(line, **parameters) for line in lines)
 
-    return parameters, extracted
+    return parameters, hide_magic(extracted)
 
 
 def reformatting_func(line, count):
@@ -96,7 +134,7 @@ def reformatting_func(line, count):
         " " * (len(prompt) - len(continuation_template)) + continuation_template
     )
 
-    lines = iter(line.split("\n"))
+    lines = iter(reveal_magic(line).split("\n"))
 
     reformatted = "\n".join(
         itertools.chain(

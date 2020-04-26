@@ -45,6 +45,19 @@ def test_detection_func(lines, expected):
             ({"count": 1}, "\n".join(line[12:] for line in data.lines[4:8])),
             id="multiple_lines",
         ),
+        pytest.param(
+            textwrap.dedent("\n".join(data.lines[18:20])),
+            (
+                {"count": 4},
+                "\n".join(
+                    line[12:]
+                    if line[12] not in ipython.magic_prefixes
+                    else f"#{ipython.magic_comment}{line[12:]}"
+                    for line in data.lines[18:20]
+                ),
+            ),
+            id="lines_with_magic",
+        ),
     ),
 )
 def test_extraction_func(line, expected):
@@ -68,6 +81,17 @@ def test_extraction_func(line, expected):
             textwrap.dedent("\n".join(data.lines[4:8])),
             id="multiple_lines",
         ),
+        pytest.param(
+            "\n".join(
+                line[12:]
+                if line[12] not in ipython.magic_prefixes
+                else f"#{ipython.magic_comment}{line[12:]}"
+                for line in data.lines[18:20]
+            ),
+            4,
+            textwrap.dedent("\n".join(data.lines[18:20])),
+            id="lines_with_magic",
+        ),
     ),
 )
 def test_reformatting_func(line, count, expected):
@@ -86,4 +110,4 @@ def test_blacken():
     )
     actual = tuple(blacken(labeled))
 
-    assert len(actual) == 15
+    assert len(actual) == 17
