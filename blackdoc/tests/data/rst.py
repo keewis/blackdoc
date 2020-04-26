@@ -50,7 +50,6 @@ with ipython prompts:
 
 """
 lines = content.splitlines()
-code_units = (1, 1, 9, 9, 1, 9, 1, 12, 1)
 line_ranges = (
     (0, 1),
     (1, 2),
