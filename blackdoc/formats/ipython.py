@@ -85,7 +85,7 @@ def hide_magic(code):
         if not stripped or not magic_re.match(stripped):
             return line
 
-        return " " * indent + "#" + magic_comment + stripped
+        return " " * indent + f"# {magic_comment}" + stripped
 
     lines = code.split("\n")
     processed = tuple(comment_magic(line) for line in lines)
@@ -97,14 +97,11 @@ def reveal_magic(code):
     def uncomment_magic(line):
         stripped = line.lstrip()
 
-        if len(stripped) < (len(magic_comment) + 1):
-            return line
-
-        if not stripped.startswith("#" + magic_comment):
+        if magic_comment not in line:
             return line
 
         indent = len(line) - len(stripped)
-        return " " * indent + stripped[len(magic_comment) + 1 :]
+        return " " * indent + stripped[len(magic_comment) + 2 :]
 
     lines = code.split("\n")
     processed = tuple(uncomment_magic(line) for line in lines)
