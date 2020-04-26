@@ -220,7 +220,7 @@ parser.add_argument(
     "--include",
     metavar="TEXT",
     type=str,
-    default=black.DEFAULT_INCLUDES,
+    default="|".join([black.DEFAULT_INCLUDES, r"\.rst$"]),
     help=(
         "A regular expression that matches files and directories that should be "
         "included on recursive searches.  An empty value means all files are "
