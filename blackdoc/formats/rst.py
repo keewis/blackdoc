@@ -4,6 +4,8 @@ import textwrap
 
 import more_itertools
 
+from .ipython import prompt_re
+
 name = "rst"
 
 directive_re = re.compile(
@@ -33,6 +35,10 @@ def continuation_lines(lines, indent):
         except StopIteration:
             break
 
+        if prompt_re.match(line):
+            lines.prepend(*newlines)
+            raise RuntimeError("ipython prompt detected")
+
         current_indent = len(line) - len(line.lstrip())
         if current_indent <= indent:
             # put back the newlines, if any
@@ -49,9 +55,9 @@ def continuation_lines(lines, indent):
 
 def detection_func(lines):
     try:
-        _, line = lines.peek()
+        line_number, line = lines.peek()
     except StopIteration:
-        line = ""
+        return None
 
     match = directive_re.match(line)
     if not match:
@@ -63,11 +69,18 @@ def detection_func(lines):
         return None
 
     indent = len(directive.pop("indent"))
-    detected_lines = list(
-        itertools.chain(
-            [more_itertools.first(lines)], continuation_lines(lines, indent),
+    try:
+        detected_lines = list(
+            itertools.chain(
+                [more_itertools.first(lines)], continuation_lines(lines, indent),
+            )
         )
-    )
+    except RuntimeError as e:
+        if str(e) != "ipython prompt detected":
+            raise
+
+        lines.prepend((line_number, line))
+        return None
 
     line_numbers, lines = map(tuple, more_itertools.unzip(detected_lines))
     line_range = min(line_numbers), max(line_numbers) + 1

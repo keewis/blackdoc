@@ -27,11 +27,7 @@ from .data import rst as data
             ((1, 8), rst.name, "\n".join(data.lines[27:34])),
             id="ipython",
         ),
-        pytest.param(
-            data.lines[37:48],
-            ((1, 12), rst.name, "\n".join(data.lines[37:48])),
-            id="ipython-prompt",
-        ),
+        pytest.param(data.lines[37:48], None, id="ipython-prompt",),
     ),
 )
 def test_detection_func(lines, expected):
