@@ -51,9 +51,22 @@ def test_detection_func(lines, expected):
                 {"count": 4},
                 "\n".join(
                     line[12:]
-                    if line[12] not in ipython.magic_prefixes
+                    if not ipython.magic_re.match(line[12:])
                     else f"#{ipython.magic_comment}{line[12:]}"
                     for line in data.lines[18:20]
+                ),
+            ),
+            id="lines_with_magic",
+        ),
+        pytest.param(
+            textwrap.dedent("\n".join(data.lines[21:25])),
+            (
+                {"count": 5},
+                "\n".join(
+                    line[12:]
+                    if not ipython.magic_re.match(line[12:])
+                    else f"#{ipython.magic_comment}{line[12:]}"
+                    for line in data.lines[21:25]
                 ),
             ),
             id="lines_with_magic",
@@ -84,13 +97,24 @@ def test_extraction_func(line, expected):
         pytest.param(
             "\n".join(
                 line[12:]
-                if line[12] not in ipython.magic_prefixes
+                if not ipython.magic_re.match(line)
                 else f"#{ipython.magic_comment}{line[12:]}"
                 for line in data.lines[18:20]
             ),
             4,
             textwrap.dedent("\n".join(data.lines[18:20])),
-            id="lines_with_magic",
+            id="lines_with_cell_magic",
+        ),
+        pytest.param(
+            "\n".join(
+                line[12:]
+                if not ipython.magic_re.match(line)
+                else f"#{ipython.magic_comment}{line[12:]}"
+                for line in data.lines[21:25]
+            ),
+            5,
+            textwrap.dedent("\n".join(data.lines[21:25])),
+            id="lines_with_cell_magic",
         ),
     ),
 )
@@ -110,4 +134,4 @@ def test_blacken():
     )
     actual = tuple(blacken(labeled))
 
-    assert len(actual) == 17
+    assert len(actual) == 19

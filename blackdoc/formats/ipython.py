@@ -11,7 +11,7 @@ continuation_prompt_re = re.compile(r"^(?P<indent>[ ]*)\.\.\.: ")
 prompt_template = "In [{count}]: "
 continuation_template = "...: "
 
-magic_prefixes = "%!@"
+magic_re = re.compile(r"^(!.*|%.*|@[a-zA-Z_][a-zA-Z0-9_]* .+)")
 magic_comment = "<ipython-magic>"
 
 
@@ -77,12 +77,12 @@ def metadata(line):
     return {"count": int(groups["count"])}
 
 
-def hide_magic(code, prefix_chars=magic_prefixes):
+def hide_magic(code):
     def comment_magic(line):
         stripped = line.lstrip()
         indent = len(line) - len(stripped)
 
-        if not stripped or stripped[0] not in prefix_chars:
+        if not stripped or not magic_re.match(stripped):
             return line
 
         return " " * indent + "#" + magic_comment + stripped
@@ -93,7 +93,7 @@ def hide_magic(code, prefix_chars=magic_prefixes):
     return "\n".join(processed)
 
 
-def reveal_magic(code, prefix_chars=magic_prefixes):
+def reveal_magic(code):
     def uncomment_magic(line):
         stripped = line.lstrip()
 
