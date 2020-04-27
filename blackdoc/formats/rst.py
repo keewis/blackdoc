@@ -123,13 +123,17 @@ def extraction_func(code):
             f"misformatted code block: newline after options required but found: {line}"
         )
 
-    code_ = hide_magic(textwrap.dedent("\n".join(lines)))
+    lines_ = tuple(lines)
+    indent = len(lines_[0]) - len(lines_[0].lstrip())
+    directive["prompt_length"] = indent
+
+    code_ = hide_magic(textwrap.dedent("\n".join(lines_)))
 
     return directive, code_
 
 
-def reformatting_func(code, name, language, options):
-    indent = " " * 4
+def reformatting_func(code, name, language, options, prompt_length=4):
+    indent = " " * prompt_length
 
     directive = " ".join(
         [f".. {name}::"] + ([language] if language is not None else [])

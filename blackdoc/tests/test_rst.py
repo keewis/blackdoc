@@ -50,7 +50,12 @@ def test_detection_func(lines, expected):
         pytest.param(
             textwrap.dedent("\n".join(data.lines[8:15])),
             (
-                {"name": "code", "language": "python", "options": (":okwarning:",)},
+                {
+                    "name": "code",
+                    "language": "python",
+                    "options": (":okwarning:",),
+                    "prompt_length": 4,
+                },
                 textwrap.dedent("\n".join(data.lines[11:15])),
             ),
             id="code",
@@ -58,7 +63,12 @@ def test_detection_func(lines, expected):
         pytest.param(
             textwrap.dedent("\n".join(data.lines[17:24])),
             (
-                {"name": "code-block", "language": "python", "options": ()},
+                {
+                    "name": "code-block",
+                    "language": "python",
+                    "options": (),
+                    "prompt_length": 4,
+                },
                 textwrap.dedent("\n".join(data.lines[19:24])),
             ),
             id="code_block",
@@ -66,7 +76,12 @@ def test_detection_func(lines, expected):
         pytest.param(
             textwrap.dedent("\n".join(data.lines[27:34])),
             (
-                {"name": "ipython", "language": None, "options": ()},
+                {
+                    "name": "ipython",
+                    "language": None,
+                    "options": (),
+                    "prompt_length": 4,
+                },
                 rst.hide_magic(textwrap.dedent("\n".join(data.lines[29:34]))),
             ),
             id="ipython",
@@ -84,19 +99,29 @@ def test_extraction_func(code, expected):
     (
         pytest.param(
             textwrap.dedent("\n".join(data.lines[11:15])),
-            {"name": "code", "language": "python", "options": (":okwarning:",)},
+            {
+                "name": "code",
+                "language": "python",
+                "options": (":okwarning:",),
+                "prompt_length": 4,
+            },
             textwrap.dedent("\n".join(data.lines[8:15])),
             id="code",
         ),
         pytest.param(
             textwrap.dedent("\n".join(data.lines[19:24])),
-            {"name": "code-block", "language": "python", "options": ()},
+            {
+                "name": "code-block",
+                "language": "python",
+                "options": (),
+                "prompt_length": 4,
+            },
             textwrap.dedent("\n".join(data.lines[17:24])),
             id="code_block",
         ),
         pytest.param(
             textwrap.dedent("\n".join(data.lines[29:34])),
-            {"name": "ipython", "language": None, "options": ()},
+            {"name": "ipython", "language": None, "options": (), "prompt_length": 4},
             textwrap.dedent("\n".join(data.lines[27:34])),
             id="ipython",
         ),
