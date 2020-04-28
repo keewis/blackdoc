@@ -8,12 +8,12 @@ Long description of the function's assumptions and on how to call it.
 As an example:
 
 .. code:: python
-    :okwarning:
+   :okwarning:
 
-    file = open(
-        "very_long_filepath",
-        mode="a",
-    )
+   file = open(
+       "very_long_filepath",
+       mode="a",
+   )
 
 
 .. code-block:: python
