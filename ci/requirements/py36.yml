@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.6
-  - black=19.10b0
+  - black
   - flake8
   - importlib-metadata
   - isort
