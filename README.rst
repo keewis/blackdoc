@@ -17,6 +17,7 @@ It was originally a rewrite of a `gist`_ and called
 Installation
 ------------
 Dependencies:
+
 - `black`_
 - `more-itertools`_
 
