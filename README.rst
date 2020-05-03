@@ -14,6 +14,20 @@ It was originally a rewrite of a `gist`_ and called
 .. _gist: https://gist.github.com/mattharrison/2a1a263597d80e99cf85e898b800ec32
 .. _black: https://github.com/psf/black
 
+Installation
+------------
+Dependencies:
+- `black`_
+- `more-itertools`_
+
+.. _more-itertools: https://github.com/more-itertools/more-itertools
+
+Install it with:
+
+.. code:: bash
+
+    python -m pip install blackdoc
+
 Usage
 -----
 The commandline interface supports two modes: checking and inplace
