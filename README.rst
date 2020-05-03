@@ -55,3 +55,9 @@ When checking, it will report the changed files but will not write them to disk:
 .. code:: bash
 
     python -m blackdoc --check .
+
+It is also possible to use the entrypoint script:
+
+.. code:: bash
+
+    blackdoc --check .
