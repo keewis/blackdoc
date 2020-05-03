@@ -60,4 +60,4 @@ It is also possible to use the entrypoint script:
 
 .. code:: bash
 
-    blackdoc --check .
+    blackdoc --help
