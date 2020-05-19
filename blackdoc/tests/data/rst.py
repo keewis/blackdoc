@@ -49,6 +49,21 @@ with ipython prompts:
 
     In [3]: file.read_binary()
 
+with cell decorator:
+
+.. ipython::
+    :okerror:
+
+    @verbatim
+    In [1]: file = open(
+       ...:     "very_long_filepath",
+       ...:     mode="a",
+       ...: )
+
+    In [2]: file
+
+    In [3]: file.read_binary()
+
 a code block with a different language:
 
 .. code:: sh
@@ -92,8 +107,21 @@ line_ranges = (
     (51, 52),
     (52, 53),
     (53, 54),
-    (54, 57),
+    (54, 55),
+    (55, 56),
+    (56, 57),
     (57, 58),
+    (58, 59),
+    (59, 60),
+    (60, 61),
+    (61, 62),
+    (62, 63),
+    (63, 64),
+    (64, 65),
+    (65, 66),
+    (66, 67),
+    (67, 70),
+    (70, 71),
 )
 line_labels = (
     "none",
@@ -112,6 +140,19 @@ line_labels = (
     "none",
     "none",
     "rst",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
     "none",
     "none",
     "none",

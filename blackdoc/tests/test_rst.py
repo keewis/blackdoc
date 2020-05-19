@@ -13,7 +13,7 @@ from .data import rst as data
     (
         pytest.param(data.lines[0], None, id="none"),
         pytest.param(data.lines[2:5], None, id="no_code"),
-        pytest.param(data.lines[51:54], None, id="code_other_language"),
+        pytest.param(data.lines[67:70], None, id="code_other_language"),
         pytest.param(
             data.lines[8:15],
             ((1, 8), rst.name, "\n".join(data.lines[8:15])),
@@ -30,6 +30,7 @@ from .data import rst as data
             id="ipython",
         ),
         pytest.param(data.lines[38:47], None, id="ipython-prompt"),
+        pytest.param(data.lines[52:64], None, id="ipython-prompt-cell-decorator"),
     ),
 )
 def test_detection_func(lines, expected):
@@ -140,4 +141,4 @@ def test_blacken():
     )
     actual = tuple(blacken(labeled))
 
-    assert len(actual) == 37
+    assert len("\n".join(actual).split("\n")) == 62

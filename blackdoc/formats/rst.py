@@ -30,16 +30,18 @@ def take_while(iterable, predicate):
 def continuation_lines(lines, indent):
     options = tuple(take_while(lines, lambda x: x[1].strip()))
     newlines = tuple(take_while(lines, lambda x: not x[1].strip()))
+    decorator_lines = tuple(take_while(lines, lambda x: x[1].lstrip().startswith("@")))
     _, next_line = lines.peek((0, None))
     if next_line is None:
         return
 
     if prompt_re.match(next_line):
-        lines.prepend(*options, *newlines)
+        lines.prepend(*options, *newlines, *decorator_lines)
         raise RuntimeError("ipython prompt detected")
 
     yield from options
     yield from newlines
+    yield from decorator_lines
 
     while True:
         newlines = tuple(take_while(lines, lambda x: not x[1].strip()))
