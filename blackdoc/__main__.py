@@ -179,82 +179,87 @@ def process(args):
     return return_code
 
 
-program = pathlib.Path(__file__).parent.name
+def main():
+    program = pathlib.Path(__file__).parent.name
 
-parser = argparse.ArgumentParser(
-    description="run black on documentation code snippets (e.g. doctest)",
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-)
-parser.add_argument(
-    "-t",
-    "--target-versions",
-    action="append",
-    choices=[v.name.lower() for v in black.TargetVersion],
-    help=(
-        "Python versions that should be supported by Black's output. (default: "
-        "per-file auto-detection)"
-    ),
-    default=argparse.SUPPRESS,
-)
-parser.add_argument(
-    "-l",
-    "--line-length",
-    metavar="INT",
-    type=int,
-    default=black.DEFAULT_LINE_LENGTH,
-    help="How many characters per line to allow.",
-)
-parser.add_argument(
-    "--check",
-    dest="action",
-    action="store_const",
-    const="check",
-    default="inplace",
-    help=(
-        "Don't write the files back, just return the status.  Return code 0 "
-        "means nothing would change.  Return code 1 means some files would be "
-        "reformatted.  Return code 123 means there was an internal error."
-    ),
-)
-parser.add_argument(
-    "--include",
-    metavar="TEXT",
-    type=str,
-    default="|".join([black.DEFAULT_INCLUDES, r"\.rst$"]),
-    help=(
-        "A regular expression that matches files and directories that should be "
-        "included on recursive searches.  An empty value means all files are "
-        "included regardless of the name.  Use forward slashes for directories on "
-        "all platforms (Windows, too).  Exclusions are calculated first, inclusions "
-        "later."
-    ),
-)
-parser.add_argument(
-    "--exclude",
-    metavar="TEXT",
-    type=str,
-    default=black.DEFAULT_EXCLUDES,
-    help=(
-        "A regular expression that matches files and directories that should be "
-        "excluded on recursive searches.  An empty value means no paths are excluded. "
-        "Use forward slashes for directories on all platforms (Windows, too).  "
-        "Exclusions are calculated first, inclusions later."
-    ),
-)
-parser.add_argument(
-    "--version",
-    action="version",
-    help="Show the version and exit.",
-    version=f"{program} {__version__}",
-)
-parser.add_argument(
-    "src",
-    action="store",
-    type=pathlib.Path,
-    nargs="*",
-    default=None,
-    help="one or more paths to work on",
-)
+    parser = argparse.ArgumentParser(
+        description="run black on documentation code snippets (e.g. doctest)",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "-t",
+        "--target-versions",
+        action="append",
+        choices=[v.name.lower() for v in black.TargetVersion],
+        help=(
+            "Python versions that should be supported by Black's output. (default: "
+            "per-file auto-detection)"
+        ),
+        default=argparse.SUPPRESS,
+    )
+    parser.add_argument(
+        "-l",
+        "--line-length",
+        metavar="INT",
+        type=int,
+        default=black.DEFAULT_LINE_LENGTH,
+        help="How many characters per line to allow.",
+    )
+    parser.add_argument(
+        "--check",
+        dest="action",
+        action="store_const",
+        const="check",
+        default="inplace",
+        help=(
+            "Don't write the files back, just return the status.  Return code 0 "
+            "means nothing would change.  Return code 1 means some files would be "
+            "reformatted.  Return code 123 means there was an internal error."
+        ),
+    )
+    parser.add_argument(
+        "--include",
+        metavar="TEXT",
+        type=str,
+        default=black.DEFAULT_INCLUDES,
+        help=(
+            "A regular expression that matches files and directories that should be "
+            "included on recursive searches.  An empty value means all files are "
+            "included regardless of the name.  Use forward slashes for directories on "
+            "all platforms (Windows, too).  Exclusions are calculated first, inclusions "
+            "later."
+        ),
+    )
+    parser.add_argument(
+        "--exclude",
+        metavar="TEXT",
+        type=str,
+        default=black.DEFAULT_EXCLUDES,
+        help=(
+            "A regular expression that matches files and directories that should be "
+            "excluded on recursive searches.  An empty value means no paths are excluded. "
+            "Use forward slashes for directories on all platforms (Windows, too).  "
+            "Exclusions are calculated first, inclusions later."
+        ),
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        help="Show the version and exit.",
+        version=f"{program} {__version__}",
+    )
+    parser.add_argument(
+        "src",
+        action="store",
+        type=pathlib.Path,
+        nargs="*",
+        default=None,
+        help="one or more paths to work on",
+    )
 
-args = parser.parse_args()
-sys.exit(process(args))
+    args = parser.parse_args()
+    sys.exit(process(args))
+
+
+if __name__ == "__main__":
+    main()
