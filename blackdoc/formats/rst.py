@@ -128,6 +128,7 @@ def extraction_func(code):
     lines_ = tuple(lines)
     indent = len(lines_[0]) - len(lines_[0].lstrip())
     directive["prompt_length"] = indent
+    directive["n_header_lines"] = len(directive["options"]) + 2
 
     code_ = hide_magic(textwrap.dedent("\n".join(lines_)))
 
