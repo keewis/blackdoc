@@ -41,6 +41,7 @@ def blacken(lines, mode=None):
         )
 
         original_line_number, _ = original_line_range
+        original_line_number += parameters.pop("n_header_lines", 0)
 
         try:
             blackened = black.format_str(code, mode=current_mode).rstrip()
@@ -58,6 +59,14 @@ def blacken(lines, mode=None):
 
             lineno = original_line_number + (apparent_line_number - 1)
             raise black.InvalidInput(f"{message}: {lineno}:{column}: {faulty_line}")
+        except IndentationError as e:
+            lineno = original_line_number + (e.lineno - 1)
+            line = e.text.rstrip()
+
+            # TODO: try to find the actual line, this exception is
+            # only raised when the indentation causes the code to
+            # become ambiguous
+            raise black.InvalidInput(f"Invalid indentation: {lineno}: {line}")
 
         reformatted = reformat_code(
             blackened, code_format, indentation_depth, **parameters
