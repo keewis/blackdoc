@@ -4,7 +4,20 @@ import sys
 
 import black
 
-from . import __version__, format_lines
+from . import __version__, format_lines, formats
+
+
+def check_format_names(string):
+    names = string.split(",")
+    allowed_names = set(formats.detection_funcs.keys()) - set(["none"])
+    for name in names:
+        if name in allowed_names:
+            continue
+
+        raise argparse.ArgumentTypeError(
+            f"invalid choice: {name!r} (choose from {', '.join(sorted(allowed_names))})"
+        )
+    return names
 
 
 def collect_files(src, include, exclude):
@@ -120,6 +133,18 @@ def process(args):
     if not args.src:
         print("No Path provided. Nothing to do 😴")
         return 0
+
+    if args.formats:
+        to_disable = (
+            set(formats.detection_funcs.keys()) - set(args.formats) - set(["none"])
+        )
+
+        for format in to_disable:
+            del formats.detection_funcs[format]
+
+    if args.disable_formats:
+        for format in args.disable_formats:
+            formats.detection_funcs.pop(format, None)
 
     try:
         include_regex = black.re_compile_maybe_verbose(args.include)
@@ -240,6 +265,21 @@ def main():
             "excluded on recursive searches.  An empty value means no paths are excluded. "
             "Use forward slashes for directories on all platforms (Windows, too).  "
             "Exclusions are calculated first, inclusions later."
+        ),
+    )
+    parser.add_argument(
+        "--formats",
+        metavar="FMT[,FMT[,FMT...]]",
+        type=check_format_names,
+        help="Use only the specified formats.",
+    )
+    parser.add_argument(
+        "--disable-formats",
+        metavar="FMT[,FMT[,FMT...]]",
+        type=check_format_names,
+        help=(
+            "Disable the given formats. If both --formats and --disable-formats are present, "
+            "--disable-formats will also disable formats passed with --formats",
         ),
     )
     parser.add_argument(
