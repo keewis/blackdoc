@@ -169,3 +169,28 @@ jobs:
     - name: run black
       shell: bash -l {0}
       run: python -m black --check .
+
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout the repository
+      uses: actions/checkout@v2
+
+    - name: setup conda
+      uses: goanpeca/setup-miniconda@v1.1.2
+      with:
+        miniconda-version: "latest"
+        activate-environment: docs
+        environment-file: ci/requirements/doc.yml
+        channels: conda-forge
+
+    - name: show versions
+      shell: bash -l {0}
+      run: conda list
+
+    - name: run sphinx
+      shell: bash -l {0}
+      run: |
+        cd doc
+        python -m sphinx -M html -d _build/doctrees -Ea -WT --keep-going -n . _build/html
