@@ -22,7 +22,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: setup conda
-      uses: goanpeca/setup-miniconda@v1.3.1
+      uses: goanpeca/setup-miniconda@v1
       with:
         miniconda-version: "latest"
         activate-environment: blackdoc-tests
