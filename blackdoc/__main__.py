@@ -279,7 +279,7 @@ def main():
         type=check_format_names,
         help=(
             "Disable the given formats. If both --formats and --disable-formats are present, "
-            "--disable-formats will also disable formats passed with --formats",
+            "--disable-formats will also disable formats passed with --formats"
         ),
     )
     parser.add_argument(
