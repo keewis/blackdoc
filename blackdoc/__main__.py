@@ -212,6 +212,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="run black on documentation code snippets (e.g. doctest)",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        prog=program,
     )
     parser.add_argument(
         "-t",
