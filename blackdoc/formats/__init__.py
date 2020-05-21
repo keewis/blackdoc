@@ -4,6 +4,9 @@ import more_itertools
 
 from . import doctest, ipython, none, rst
 from .register import detection_funcs  # noqa
+from .register import disable  # noqa
+from .register import format_include_patterns  # noqa
+from .register import include_patterns  # noqa
 from .register import extraction_funcs, reformatting_funcs, register_format
 
 

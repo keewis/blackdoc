@@ -6,6 +6,24 @@ reformatting_funcs = {}
 include_patterns = {}
 
 
+def format_include_patterns():
+    patterns = set(include_patterns.values())
+    joined_patterns = "|".join(patterns)
+
+    if "|" not in joined_patterns:
+        return joined_patterns
+    else:
+        return f"({joined_patterns})"
+
+
+def disable(name):
+    if name not in detection_funcs:
+        raise ValueError(f"unknown format: {name}")
+
+    del detection_funcs[name]
+    include_patterns.pop(name, None)
+
+
 def register_format(name, obj):
     """ register a new format """
     if name in detection_funcs:
