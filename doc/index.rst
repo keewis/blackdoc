@@ -74,7 +74,7 @@ If we run
 
     python -m blackdoc directory
 
-on it, we get
+we get
 
 .. literalinclude:: directory/reformatted.py
 
