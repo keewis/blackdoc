@@ -2,7 +2,7 @@ blackdoc: apply black to code in documentation
 ==============================================
 
 **blackdoc** extracts code from documentation, applies **black** to it
-and writes it back to the file.
+and, in reformatting mode, writes the formatted code back to the file.
 
 The currently supported formats are:
 
@@ -12,7 +12,7 @@ The currently supported formats are:
 
 Installation
 ------------
-**blackdoc** depends on
+Its dependencies are:
 
 - `black`_
 - `more-itertools`_
@@ -25,9 +25,73 @@ It has not been released, yet, so use:
 
    python -m pip install git+https://github.com/keewis/blackdoc
 
-for installation.
+for installing.
 
 
 .. _more-itertools: https://more-itertools.readthedocs.io/
 .. _black: https://black.readthedocs.io/en/stable/
 .. _importlib-metadata: https://importlib-metadata.readthedocs.io/en/latest/
+
+
+Usage
+-----
+**blackdoc** tries to copy as much of the CLI of **black** as
+possible. This means that most calls to **black** can be directly
+translated to **blackdoc**:
+
+To reformat specific files, use:
+
+.. code:: sh
+
+   python -m blackdoc file1 file2 ...
+
+while passing directories reformats all files in those directories
+that match the file format specified by ``--include`` and
+``--exclude``:
+
+.. code:: sh
+
+   python -m blackdoc directory1 directory2 ...
+
+mixing directories and files is also possible.
+
+As an example, having a structure like::
+
+    directory
+    ├── file.py
+    └── file.rst
+
+with
+
+.. literalinclude:: directory/file.py
+
+.. literalinclude:: directory/file.rst
+   :language: rst
+
+If we run
+
+.. code:: sh
+
+    python -m blackdoc directory
+
+on it, we get
+
+.. literalinclude:: directory/reformatted.py
+
+.. literalinclude:: directory/reformatted.rst
+   :language: rst
+
+If instead we run
+
+.. code:: sh
+
+    python -m blackdoc --check directory
+
+the result is::
+
+    would reformat directory/file.rst
+    would reformat directory/file.py
+    Oh no! 💥 💔 💥
+    2 files would be reformatted.
+
+with a non-zero exit status.
