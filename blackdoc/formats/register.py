@@ -16,12 +16,14 @@ def format_include_patterns():
         return f"({joined_patterns})"
 
 
-def disable(name):
-    if name not in detection_funcs:
-        raise ValueError(f"unknown format: {name}")
+def disable(*names):
+    unknown_names = tuple(name for name in names if name not in detection_funcs)
+    if any(unknown_names):
+        raise ValueError(f"unknown formats: {','.join(unknown_names)}")
 
-    del detection_funcs[name]
-    include_patterns.pop(name, None)
+    for name in names:
+        del detection_funcs[name]
+        include_patterns.pop(name, None)
 
 
 def register_format(name, obj):

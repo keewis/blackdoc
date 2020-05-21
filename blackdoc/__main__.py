@@ -137,13 +137,16 @@ def process(args):
     selected_formats = getattr(args, "formats", None)
     if selected_formats:
         formats.disable(
-            set(formats.detection_funcs.keys()) - set(selected_formats) - set(["none"])
+            *(
+                set(formats.detection_funcs.keys())
+                - set(selected_formats)
+                - set(["none"])
+            )
         )
 
     disabled_formats = getattr(args, "disable_formats", None)
     if disabled_formats:
-        for format in disabled_formats:
-            formats.detection_funcs.pop(format, None)
+        formats.disable(*disabled_formats)
 
     try:
         include_regex = black.re_compile_maybe_verbose(args.include)
