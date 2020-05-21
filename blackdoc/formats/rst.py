@@ -12,6 +12,8 @@ directive_re = re.compile(
     "(?P<indent>[ ]*).. (?P<name>[a-z][-a-z]*)::(?: (?P<language>[a-z]+))?"
 )
 
+include_pattern = r"\.rst$"
+
 
 def take_while(iterable, predicate):
     while True:
