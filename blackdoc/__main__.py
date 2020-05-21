@@ -134,16 +134,18 @@ def process(args):
         print("No Path provided. Nothing to do 😴")
         return 0
 
-    if args.formats:
+    selected_formats = getattr(args, "formats", None)
+    if selected_formats:
         to_disable = (
-            set(formats.detection_funcs.keys()) - set(args.formats) - set(["none"])
+            set(formats.detection_funcs.keys()) - set(selected_formats) - set(["none"])
         )
 
         for format in to_disable:
             del formats.detection_funcs[format]
 
-    if args.disable_formats:
-        for format in args.disable_formats:
+    disabled_formats = getattr(args, "disable_formats", None)
+    if disabled_formats:
+        for format in disabled_formats:
             formats.detection_funcs.pop(format, None)
 
     try:
@@ -272,15 +274,17 @@ def main():
         metavar="FMT[,FMT[,FMT...]]",
         type=check_format_names,
         help="Use only the specified formats.",
+        default=argparse.SUPPRESS,
     )
     parser.add_argument(
         "--disable-formats",
         metavar="FMT[,FMT[,FMT...]]",
         type=check_format_names,
         help=(
-            "Disable the given formats. If both --formats and --disable-formats are present, "
-            "--disable-formats will also disable formats passed with --formats"
+            "Disable the given formats. "
+            "This option also affects formats explicitly set."
         ),
+        default=argparse.SUPPRESS,
     )
     parser.add_argument(
         "--version",
