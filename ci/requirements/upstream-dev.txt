@@ -1,6 +1,5 @@
 git+https://github.com/psf/black
 git+https://github.com/more-itertools/more-itertools
 pytest
-pip
 flake8
 isort
