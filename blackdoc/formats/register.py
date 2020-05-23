@@ -1,5 +1,7 @@
 import warnings
 
+import more_itertools
+
 detection_funcs = {}
 extraction_funcs = {}
 reformatting_funcs = {}
@@ -16,7 +18,8 @@ def format_include_patterns():
         return f"({joined_patterns})"
 
 
-def disable(*names):
+def disable(format_names):
+    names = tuple(more_itertools.always_iterable(format_names))
     unknown_names = tuple(name for name in names if name not in detection_funcs)
     if any(unknown_names):
         raise ValueError(f"unknown formats: {','.join(unknown_names)}")
