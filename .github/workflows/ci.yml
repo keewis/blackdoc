@@ -19,9 +19,9 @@ jobs:
         dependencies: ["normal", "upstream-dev"]
         exclude:
           - python-version: 3.6
-            environment: upstream-dev
+            dependencies: "upstream-dev"
           - python-version: 3.7
-            environment: upstream-dev
+            dependencies: "upstream-dev"
 
     steps:
     - name: checkout the repository
