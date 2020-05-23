@@ -26,7 +26,6 @@ def disable(format_names):
 
     for name in names:
         del detection_funcs[name]
-        include_patterns.pop(name, None)
 
 
 def register_format(name, obj):
