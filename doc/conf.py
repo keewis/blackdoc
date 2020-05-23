@@ -17,6 +17,8 @@ author = f"{project} developers"
 year = dt.datetime.now().year
 copyright = f"{year}, {author}"
 
+# The master toctree document.
+master_doc = "index"
 
 # -- General configuration ---------------------------------------------------
 
