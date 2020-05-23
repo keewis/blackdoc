@@ -136,17 +136,13 @@ def process(args):
 
     selected_formats = getattr(args, "formats", None)
     if selected_formats:
-        to_disable = (
+        formats.disable(
             set(formats.detection_funcs.keys()) - set(selected_formats) - set(["none"])
         )
 
-        for format in to_disable:
-            del formats.detection_funcs[format]
-
     disabled_formats = getattr(args, "disable_formats", None)
     if disabled_formats:
-        for format in disabled_formats:
-            formats.detection_funcs.pop(format, None)
+        formats.disable(disabled_formats)
 
     try:
         include_regex = black.re_compile_maybe_verbose(args.include)
@@ -168,7 +164,7 @@ def process(args):
 
     sources = set(collect_files(args.src, include_regex, exclude_regex))
     if len(sources) == 0:
-        print("No Python files are present to be formatted. Nothing to do 😴")
+        print("No files are present to be formatted. Nothing to do 😴")
         return 0
 
     target_versions = set(
@@ -249,7 +245,7 @@ def main():
         "--include",
         metavar="TEXT",
         type=str,
-        default=black.DEFAULT_INCLUDES,
+        default=formats.format_include_patterns(),
         help=(
             "A regular expression that matches files and directories that should be "
             "included on recursive searches.  An empty value means all files are "

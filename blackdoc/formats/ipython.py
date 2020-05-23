@@ -14,6 +14,8 @@ continuation_template = "...: "
 magic_re = re.compile(r"^(!.*|%.*|@[a-zA-Z_][a-zA-Z0-9_]* .+)")
 magic_comment = "<ipython-magic>"
 
+include_pattern = r"\.pyi?$"
+
 
 def continuation_lines(lines, indent, prompt_length):
     while True:

@@ -5,6 +5,7 @@ import more_itertools
 name = "doctest"
 prompt = ">>> "
 continuation_prompt = "... "
+include_pattern = r"\.pyi?$"
 
 
 def continuation_lines(lines):
