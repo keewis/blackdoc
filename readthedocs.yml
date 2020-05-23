@@ -3,7 +3,12 @@ version: 2
 build:
   image: latest
 
-conda:
-  environment: ci/requirements/doc.yml
+sphinx:
+  configuration: doc/conf.py
+
+python:
+  version: 3.8
+  install:
+    - requirements: ci/requirements/doc.txt
 
 formats: []
