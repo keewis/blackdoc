@@ -30,7 +30,13 @@ jobs:
         python-version: ${{ matrix.python-version }}
 
     - name: install dependencies
-      run: python -m pip install -r ci/requirements/${{ matrix.dependencies | "normal" }}.txt
+      run: |
+        if [ -n "${{ matrix.dependencies }}" ]; then
+            dependencies="${{ matrix.dependencies }}"
+        else
+            dependencies="normal"
+        fi
+        python -m pip install -r ci/requirements/$dependencies.txt
 
     - name: install blackdoc
       run: python -m pip install .
