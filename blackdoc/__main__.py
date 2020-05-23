@@ -164,7 +164,7 @@ def process(args):
 
     sources = set(collect_files(args.src, include_regex, exclude_regex))
     if len(sources) == 0:
-        print("No Python files are present to be formatted. Nothing to do 😴")
+        print("No files are present to be formatted. Nothing to do 😴")
         return 0
 
     target_versions = set(
