@@ -1,0 +1,5 @@
+more-itertools
+black
+pytest
+flake8
+isort
