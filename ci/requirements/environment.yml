@@ -1,11 +1,10 @@
-name: blackdoc-tests
+name: blackdoc
 channels:
   - conda-forge
 dependencies:
-  - python=3.6
+  - python=3.8
   - black
   - flake8
-  - importlib-metadata
   - isort
   - more-itertools
   - pytest

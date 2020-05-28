@@ -1,0 +1,5 @@
+git+https://github.com/psf/black
+git+https://github.com/more-itertools/more-itertools
+pytest
+flake8
+isort

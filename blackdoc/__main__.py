@@ -4,7 +4,20 @@ import sys
 
 import black
 
-from . import __version__, format_lines
+from . import __version__, format_lines, formats
+
+
+def check_format_names(string):
+    names = string.split(",")
+    allowed_names = set(formats.detection_funcs.keys()) - set(["none"])
+    for name in names:
+        if name in allowed_names:
+            continue
+
+        raise argparse.ArgumentTypeError(
+            f"invalid choice: {name!r} (choose from {', '.join(sorted(allowed_names))})"
+        )
+    return names
 
 
 def collect_files(src, include, exclude):
@@ -121,6 +134,16 @@ def process(args):
         print("No Path provided. Nothing to do 😴")
         return 0
 
+    selected_formats = getattr(args, "formats", None)
+    if selected_formats:
+        formats.disable(
+            set(formats.detection_funcs.keys()) - set(selected_formats) - set(["none"])
+        )
+
+    disabled_formats = getattr(args, "disable_formats", None)
+    if disabled_formats:
+        formats.disable(disabled_formats)
+
     try:
         include_regex = black.re_compile_maybe_verbose(args.include)
     except black.re.error:
@@ -141,7 +164,7 @@ def process(args):
 
     sources = set(collect_files(args.src, include_regex, exclude_regex))
     if len(sources) == 0:
-        print("No Python files are present to be formatted. Nothing to do 😴")
+        print("No files are present to be formatted. Nothing to do 😴")
         return 0
 
     target_versions = set(
@@ -185,6 +208,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="run black on documentation code snippets (e.g. doctest)",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        prog=program,
     )
     parser.add_argument(
         "-t",
@@ -221,7 +245,7 @@ def main():
         "--include",
         metavar="TEXT",
         type=str,
-        default=black.DEFAULT_INCLUDES,
+        default=formats.format_include_patterns(),
         help=(
             "A regular expression that matches files and directories that should be "
             "included on recursive searches.  An empty value means all files are "
@@ -241,6 +265,23 @@ def main():
             "Use forward slashes for directories on all platforms (Windows, too).  "
             "Exclusions are calculated first, inclusions later."
         ),
+    )
+    parser.add_argument(
+        "--formats",
+        metavar="FMT[,FMT[,FMT...]]",
+        type=check_format_names,
+        help="Use only the specified formats.",
+        default=argparse.SUPPRESS,
+    )
+    parser.add_argument(
+        "--disable-formats",
+        metavar="FMT[,FMT[,FMT...]]",
+        type=check_format_names,
+        help=(
+            "Disable the given formats. "
+            "This option also affects formats explicitly set."
+        ),
+        default=argparse.SUPPRESS,
     )
     parser.add_argument(
         "--version",
