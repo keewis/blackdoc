@@ -1,8 +1,8 @@
 Changelog
 =========
 
-v0.1 (unreleased)
------------------
+v0.1 (30 May 2020)
+------------------
 
 - Add a CLI (:pull:`1`)
 - Add support for ipython prompts (:pull:`4`)
