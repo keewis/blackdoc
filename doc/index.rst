@@ -19,13 +19,11 @@ Its dependencies are:
 - `importlib-metadata`_ (on **python** < 3.8)
 
 
-It has not been released, yet, so use:
+To install it, use
 
 .. code:: bash
 
-   python -m pip install git+https://github.com/keewis/blackdoc
-
-for installing.
+   python -m pip install blackdoc
 
 
 .. _more-itertools: https://more-itertools.readthedocs.io/
