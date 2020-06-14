@@ -39,7 +39,20 @@ Release process
 
       twine check dist/*
 
-9. try installing the wheel in a new environment and run the tests / binary again
+9. try installing the wheel in a new environment and run the tests /
+   binary again:
+
+   .. code:: bash
+
+      python -m venv test
+      source test/bin/activate
+      python -m pip install -r requirements.txt
+      python -m pip install pytest
+      python -m pip install dist/*.whl
+      python -m pytest
+      python -m blackdoc --check .; echo $?
+      python -m blackdoc .; echo $?
+      git reset --hard HEAD
 
 10. Push to master and upload to PyPI:
 
