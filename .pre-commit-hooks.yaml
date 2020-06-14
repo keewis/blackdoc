@@ -1,0 +1,7 @@
+- id: blackdoc
+  name: blackdoc
+  entry: blackdoc
+  language: python
+  language_version: python3
+  require_serial: true
+  types: [python, rst]
