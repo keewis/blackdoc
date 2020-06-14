@@ -192,7 +192,9 @@ def process(args):
 
     report = report_formatters.get(args.action)(n_reformatted, n_unchanged, n_error)
 
-    if args.action == "check" and n_reformatted > 0:
+    if n_error > 0:
+        return_code = 123
+    elif args.action == "check" and n_reformatted > 0:
         return_code = 1
     else:
         return_code = 0
