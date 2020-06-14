@@ -1,0 +1,6 @@
+black
+more-itertools
+flake8
+isort
+pytest
+coverage

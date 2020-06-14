@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v0.1.1 (14 May 2020)
+--------------------
+- Add pre-commit hook configuration (:pull:`26`, :pull:`27`)
+- Document the release process (:pull:`29`)
+- Make sure the tool returns a non-zero error code when encountering
+  syntax errors (:pull:`28`)
+
+
 v0.1 (30 May 2020)
 ------------------
 
