@@ -89,7 +89,8 @@ def detection_func(lines):
     try:
         detected_lines = list(
             itertools.chain(
-                [more_itertools.first(lines)], continuation_lines(lines, indent),
+                [more_itertools.first(lines)],
+                continuation_lines(lines, indent),
             )
         )
     except RuntimeError as e:
