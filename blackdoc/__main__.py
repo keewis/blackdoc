@@ -5,6 +5,7 @@ import sys
 import black
 
 from . import __version__, format_lines, formats
+from .blackcompat import gen_python_files
 
 
 def check_format_names(string):
@@ -22,12 +23,21 @@ def check_format_names(string):
 
 def collect_files(src, include, exclude):
     root = black.find_project_root(tuple(src))
+    gitignore = black.get_gitignore(root)
     report = black.Report()
+
+    force_exclude = ""
 
     for path in src:
         if path.is_dir():
-            yield from black.gen_python_files_in_dir(
-                path, root, include, exclude, report, black.get_gitignore(root),
+            yield from gen_python_files(
+                path.iterdir(),
+                root,
+                include,
+                exclude,
+                force_exclude,
+                report,
+                gitignore,
             )
         elif path.is_file() or str(path) == "-":
             yield path
@@ -172,7 +182,8 @@ def process(args):
         for version in getattr(args, "target_versions", ())
     )
     mode = black.FileMode(
-        line_length=args.line_length, target_versions=target_versions,
+        line_length=args.line_length,
+        target_versions=target_versions,
     )
 
     actions = {
