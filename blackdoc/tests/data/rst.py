@@ -12,7 +12,7 @@ As an example:
 
    file = open(
        "very_long_filepath",
-       mode="a",
+       mode="a"
    )
 
 
@@ -20,7 +20,7 @@ As an example:
 
     with open(
         "very_long_filepath",
-        mode="a",
+        mode="a"
     ) as f:
         content = f.read()
 
@@ -31,7 +31,7 @@ A new example, this time with ipython:
     %%time
     file = open(
         "very_long_filepath",
-        mode="a",
+        mode="a"
     )
     file
 
@@ -42,7 +42,7 @@ with ipython prompts:
 
     In [1]: file = open(
        ...:     "very_long_filepath",
-       ...:     mode="a",
+       ...:     mode="a"
        ...: )
 
     In [2]: file
@@ -57,7 +57,7 @@ with cell decorator:
     @verbatim
     In [1]: file = open(
        ...:     "very_long_filepath",
-       ...:     mode="a",
+       ...:     mode="a"
        ...: )
 
     In [2]: file
