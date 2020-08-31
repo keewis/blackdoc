@@ -1,9 +1,9 @@
 Changelog
 =========
 
-v0.2 (unreleased)
------------------
-- keep compatibility with `black` 20.8b1 (:issue:`33`, :pull:`34`)
+v0.1.2 (31 August 2020)
+-----------------------
+- keep compatibility with ``black`` 20.8b1 (:pull:`34`)
 
 v0.1.1 (14 June 2020)
 ---------------------

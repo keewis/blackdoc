@@ -73,3 +73,5 @@ Release process
        git push origin stable
 
 12. Make sure readthedocs builds both `stable` and the new tag
+
+13. Add a new section to the changelog and push directly to master
