@@ -78,7 +78,14 @@ def detection_func(lines):
 
     directive = match.groupdict()
 
-    if directive["name"] not in ("code", "code-block", "ipython"):
+    if directive["name"] not in (
+        "code",
+        "code-block",
+        "ipython",
+        "testcode",
+        "testsetup",
+        "testcleanup",
+    ):
         return None
 
     if directive["language"] not in ("python", None):

@@ -69,6 +69,16 @@ a code block with a different language:
 .. code:: sh
 
     find . -name "*.py"
+
+a code block with testcode:
+
+.. testcode::
+
+    file = open(
+        "very_long_filepath",
+        mode="a"
+    )
+    file
 """
 lines = content.splitlines()
 line_ranges = (
@@ -122,6 +132,16 @@ line_ranges = (
     (66, 67),
     (67, 70),
     (70, 71),
+    (71, 72),
+    (72, 73),
+    (73, 74),
+    (74, 75),
+    (75, 76),
+    (76, 77),
+    (77, 78),
+    (78, 79),
+    (79, 80),
+    (80, 81),
 )
 line_labels = (
     "none",
@@ -140,6 +160,16 @@ line_labels = (
     "none",
     "none",
     "rst",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
     "none",
     "none",
     "none",
