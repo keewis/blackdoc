@@ -72,13 +72,20 @@ a code block with a different language:
 
 a code block with testcode:
 
-.. testcode::
+.. testsetup::
 
     file = open(
         "very_long_filepath",
         mode="a"
     )
+
+.. testcode::
+
     file
+
+.. testcleanup::
+
+    file.close()
 """
 lines = content.splitlines()
 line_ranges = (
@@ -142,6 +149,12 @@ line_ranges = (
     (78, 79),
     (79, 80),
     (80, 81),
+    (81, 82),
+    (82, 83),
+    (83, 84),
+    (84, 85),
+    (85, 86),
+    (86, 87),
 )
 line_labels = (
     "none",
@@ -160,6 +173,12 @@ line_labels = (
     "none",
     "none",
     "rst",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
     "none",
     "none",
     "none",

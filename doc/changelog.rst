@@ -3,6 +3,7 @@ Changelog
 
 v0.2 (*unreleased*)
 -------------------
+- Support testcode, testsetup and testcleanup.
 
 
 v0.1.2 (31 August 2020)
