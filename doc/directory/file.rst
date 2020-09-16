@@ -45,7 +45,7 @@ with testcode:
 
 .. testcode::
 
-   assert x ==  x
+   assert x==x
    assert x !=  y
 
 .. testcleanup::

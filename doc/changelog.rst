@@ -3,7 +3,7 @@ Changelog
 
 v0.2 (*unreleased*)
 -------------------
-- Support testcode, testsetup and testcleanup.
+- Support the :rst:directive:`testcode`, :rst:directive:`testsetup` and :rst:directive:`testcleanup` directives.
 
 
 v0.1.2 (31 August 2020)
