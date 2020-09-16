@@ -37,3 +37,19 @@ with explicit grouping:
 
     In [2]: mapping = {key: value for key, value in zip(keys, values)}
        ...: mapping
+
+with testcode:
+
+.. testsetup::
+
+   x = "X"
+   y = "Y"
+
+.. testcode::
+
+   assert x == x
+   assert x != y
+
+.. testcleanup::
+
+   print("test completed")

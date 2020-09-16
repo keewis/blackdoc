@@ -3,6 +3,7 @@ Changelog
 
 v0.2 (*unreleased*)
 -------------------
+- Support the :rst:dir:`testcode`, :rst:dir:`testsetup` and :rst:dir:`testcleanup` directives.
 
 
 v0.1.2 (31 August 2020)

@@ -31,6 +31,21 @@ from .data import rst as data
         ),
         pytest.param(data.lines[38:47], None, id="ipython-prompt"),
         pytest.param(data.lines[52:64], None, id="ipython-prompt-cell-decorator"),
+        pytest.param(
+            data.lines[73:79],
+            ((1, 7), rst.name, "\n".join(data.lines[73:79])),
+            id="testsetup",
+        ),
+        pytest.param(
+            data.lines[80:83],
+            ((1, 4), rst.name, "\n".join(data.lines[80:83])),
+            id="testcode",
+        ),
+        pytest.param(
+            data.lines[84:87],
+            ((1, 4), rst.name, "\n".join(data.lines[84:87])),
+            id="testcleanup",
+        ),
     ),
 )
 def test_detection_func(lines, expected):
@@ -144,4 +159,4 @@ def test_blacken():
     )
     actual = tuple(blacken(labeled))
 
-    assert len("\n".join(actual).split("\n")) == 62
+    assert len("\n".join(actual).split("\n")) == 78
