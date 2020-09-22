@@ -24,7 +24,7 @@ docstring = """ a function to open files
     >>>
 """
 lines = docstring.split("\n")
-code_units = (1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1)
+code_units = (1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1)
 line_labels = (
     "none",
     "none",
@@ -50,4 +50,5 @@ line_labels = (
     "doctest",
     "doctest",
     "doctest",
+    "none",
 )
