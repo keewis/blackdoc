@@ -50,8 +50,9 @@ def test_detection_func(lines, expected):
     ),
 )
 def test_extraction_func(line):
+    docstring_quotes = '"""' if '"""' in line else "'''"
     expected = (
-        {"prompt_length": doctest.prompt_length},
+        {"prompt_length": doctest.prompt_length, "docstring_quotes": docstring_quotes},
         "\n".join(line.lstrip()[4:] for line in line.split("\n")),
     )
     actual = doctest.extraction_func(line)
@@ -69,11 +70,18 @@ def test_extraction_func(line):
             textwrap.dedent("\n".join(lines[17:23])),
             id="multiple lines with empty continuation line",
         ),
+        pytest.param(
+            textwrap.dedent("\n".join(lines[17:23]).replace("'''", '"""')),
+            id="multiple lines with inverted docstring quotes",
+        ),
     ),
 )
 def test_reformatting_func(expected):
+    docstring_quotes = "'''" if "'''" in expected else '"""'
     line = "\n".join(line.lstrip()[4:] for line in expected.split("\n"))
 
-    actual = doctest.reformatting_func(line)
+    actual = doctest.reformatting_func(line, docstring_quotes)
     assert expected == actual
-    assert '"""' not in actual
+
+    # make sure the docstring quotes were not changed
+    assert docstring_quotes not in expected or docstring_quotes in actual

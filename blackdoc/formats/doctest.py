@@ -80,7 +80,7 @@ def extraction_func(line):
     return {"prompt_length": len(prompt) + 1}, extracted_line
 
 
-def reformatting_func(line):
+def reformatting_func(line, docstring_quotes):
     def add_prompt(prompt, line):
         if not line:
             return prompt
@@ -97,4 +97,8 @@ def reformatting_func(line):
             (add_prompt(continuation_prompt, line) for line in lines),
         )
     )
+    # make sure nested docstrings still work
+    if docstring_quotes == "'''":
+        reformatted = reformatted.replace('"""', "'''")
+
     return reformatted
