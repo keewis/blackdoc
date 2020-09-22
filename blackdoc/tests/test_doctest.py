@@ -18,6 +18,14 @@ from .data.doctest import lines
             ((1, 5), doctest.name, "\n".join(lines[4:8])),
             id="multiple_lines",
         ),
+        pytest.param(
+            lines[23], ((1, 2), doctest.name, lines[23]), id="single empty line"
+        ),
+        pytest.param(
+            lines[17:23],
+            ((1, 7), doctest.name, "\n".join(lines[17:23])),
+            id="multiple lines with empty continuation line",
+        ),
     ),
 )
 def test_detection_func(lines, expected):
@@ -32,14 +40,18 @@ def test_detection_func(lines, expected):
 @pytest.mark.parametrize(
     "line",
     (
-        pytest.param(textwrap.dedent(lines[8]), id="single_line"),
-        pytest.param(textwrap.dedent("\n".join(lines[4:8])), id="multiple_lines"),
+        pytest.param(textwrap.dedent(lines[8]), id="single line"),
+        pytest.param(textwrap.dedent(lines[23]), id="single empty line"),
+        pytest.param(textwrap.dedent("\n".join(lines[4:8])), id="multiple lines"),
+        pytest.param(
+            textwrap.dedent("\n".join(lines[17:23])),
+            id="multiple lines with empty continuation line",
+        ),
     ),
 )
 def test_extraction_func(line):
-    prompt_length = len(doctest.prompt)
     expected = (
-        {"prompt_length": prompt_length},
+        {"prompt_length": doctest.prompt_length},
         "\n".join(line.lstrip()[4:] for line in line.split("\n")),
     )
     actual = doctest.extraction_func(line)
@@ -50,8 +62,13 @@ def test_extraction_func(line):
 @pytest.mark.parametrize(
     "expected",
     (
-        pytest.param(textwrap.dedent(lines[8]), id="single_line"),
-        pytest.param(textwrap.dedent("\n".join(lines[4:8])), id="multiple_lines"),
+        pytest.param(textwrap.dedent(lines[8]), id="single line"),
+        pytest.param(textwrap.dedent(lines[23]), id="single empty line"),
+        pytest.param(textwrap.dedent("\n".join(lines[4:8])), id="multiple lines"),
+        pytest.param(
+            textwrap.dedent("\n".join(lines[17:23])),
+            id="multiple lines with empty continuation line",
+        ),
     ),
 )
 def test_reformatting_func(expected):
@@ -59,3 +76,4 @@ def test_reformatting_func(expected):
 
     actual = doctest.reformatting_func(line)
     assert expected == actual
+    assert '"""' not in actual

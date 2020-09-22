@@ -4,8 +4,9 @@ import re
 import more_itertools
 
 name = "doctest"
+prompt_length = 4
 prompt = ">>>"
-prompt_re = re.compile(r"(>>> )")
+prompt_re = re.compile(r"(>>> ?)")
 continuation_prompt = "..."
 continuation_prompt_re = re.compile(r"(\.\.\. ?)")
 include_pattern = r"\.pyi?$"
