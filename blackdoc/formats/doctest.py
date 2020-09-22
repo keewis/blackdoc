@@ -1,10 +1,13 @@
 import itertools
+import re
 
 import more_itertools
 
 name = "doctest"
-prompt = ">>> "
-continuation_prompt = "... "
+prompt = ">>>"
+prompt_re = re.compile(r"(>>> )")
+continuation_prompt = "..."
+continuation_prompt_re = re.compile(r"(\.\.\. ?)")
 include_pattern = r"\.pyi?$"
 
 
@@ -16,7 +19,7 @@ def continuation_lines(lines):
             line_number = -1
             line = ""
 
-        if not line.lstrip().startswith(continuation_prompt):
+        if not continuation_prompt_re.match(line.lstrip()):
             break
 
         # actually consume the item
@@ -31,7 +34,7 @@ def detection_func(lines):
     except StopIteration:
         line = ""
 
-    if not line.lstrip().startswith(prompt):
+    if not prompt_re.match(line.lstrip()):
         return None
 
     detected_lines = list(
@@ -47,22 +50,50 @@ def detection_func(lines):
 
 
 def extraction_func(line):
+    def extract_prompt(line):
+        match = prompt_re.match(line)
+        if match is not None:
+            (prompt,) = match.groups()
+            return prompt
+
+        match = continuation_prompt_re.match(line)
+        if match is not None:
+            (prompt,) = match.groups()
+            return prompt
+
+        return ""
+
+    def remove_prompt(line):
+        prompt = extract_prompt(line)
+        return line[len(prompt) :]
+
     lines = line.split("\n")
-    if any(line[:4] not in (prompt, continuation_prompt) for line in lines):
+    if any(
+        extract_prompt(line).rstrip() not in (prompt, continuation_prompt)
+        for line in lines
+    ):
         raise RuntimeError(f"misformatted code unit: {line}")
 
-    extracted_line = "\n".join(line[4:] for line in lines)
+    extracted_line = "\n".join(remove_prompt(line) for line in lines)
 
-    return {"prompt_length": len(prompt)}, extracted_line
+    return {"prompt_length": len(prompt) + 1}, extracted_line
 
 
 def reformatting_func(line):
+    def add_prompt(prompt, line):
+        if not line:
+            return prompt
+
+        return " ".join([prompt, line])
+
     lines = iter(line.split("\n"))
 
     reformatted = "\n".join(
         itertools.chain(
-            more_itertools.always_iterable(prompt + more_itertools.first(lines)),
-            (continuation_prompt + line for line in lines),
+            more_itertools.always_iterable(
+                add_prompt(prompt, more_itertools.first(lines))
+            ),
+            (add_prompt(continuation_prompt, line) for line in lines),
         )
     )
     return reformatted
