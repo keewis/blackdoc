@@ -50,6 +50,17 @@ def detection_func(lines):
     return line_range, name, "\n".join(lines)
 
 
+def detect_docstring_quotes(line):
+    if "'''" in line:
+        docstring_quotes = "'''"
+    elif '"""' in line:
+        docstring_quotes = '"""'
+    else:
+        docstring_quotes = None
+
+    return docstring_quotes
+
+
 def extraction_func(line):
     def extract_prompt(line):
         match = prompt_re.match(line)
@@ -76,8 +87,12 @@ def extraction_func(line):
         raise RuntimeError(f"misformatted code unit: {line}")
 
     extracted_line = "\n".join(remove_prompt(line) for line in lines)
+    docstring_quotes = detect_docstring_quotes(extracted_line)
 
-    return {"prompt_length": len(prompt) + 1}, extracted_line
+    return {
+        "prompt_length": len(prompt) + 1,
+        "docstring_quotes": docstring_quotes,
+    }, extracted_line
 
 
 def reformatting_func(line, docstring_quotes):
@@ -98,7 +113,8 @@ def reformatting_func(line, docstring_quotes):
         )
     )
     # make sure nested docstrings still work
-    if docstring_quotes == "'''":
-        reformatted = reformatted.replace('"""', "'''")
+    current_quotes = detect_docstring_quotes(reformatted)
+    if docstring_quotes != current_quotes:
+        reformatted = reformatted.replace(current_quotes, docstring_quotes)
 
     return reformatted

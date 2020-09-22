@@ -9,6 +9,19 @@ from .data.doctest import lines
 
 
 @pytest.mark.parametrize(
+    ("string", "expected"),
+    (
+        pytest.param("a", None, id="no quotes"),
+        pytest.param("'''a'''", "'''", id="single quotes"),
+        pytest.param('"""a"""', '"""', id="double quotes"),
+    ),
+)
+def test_detect_docstring_quotes(string, expected):
+    actual = doctest.detect_docstring_quotes(string)
+    assert expected == actual
+
+
+@pytest.mark.parametrize(
     "lines,expected",
     (
         pytest.param(lines[0], None, id="no_line"),
@@ -50,7 +63,8 @@ def test_detection_func(lines, expected):
     ),
 )
 def test_extraction_func(line):
-    docstring_quotes = '"""' if '"""' in line else "'''"
+    docstring_quotes = doctest.detect_docstring_quotes(line)
+
     expected = (
         {"prompt_length": doctest.prompt_length, "docstring_quotes": docstring_quotes},
         "\n".join(line.lstrip()[4:] for line in line.split("\n")),
@@ -77,11 +91,11 @@ def test_extraction_func(line):
     ),
 )
 def test_reformatting_func(expected):
-    docstring_quotes = "'''" if "'''" in expected else '"""'
+    docstring_quotes = doctest.detect_docstring_quotes(expected)
     line = "\n".join(line.lstrip()[4:] for line in expected.split("\n"))
 
     actual = doctest.reformatting_func(line, docstring_quotes)
     assert expected == actual
 
     # make sure the docstring quotes were not changed
-    assert docstring_quotes not in expected or docstring_quotes in actual
+    assert docstring_quotes is None or docstring_quotes in actual
