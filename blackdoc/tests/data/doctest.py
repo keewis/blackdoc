@@ -14,9 +14,17 @@ docstring = """ a function to open files
 
     >>> file.closed
     False
+
+    >>> def myfunc2(arg1, arg2):
+    ...     '''Docstring for function myfunc2 in docstring
+    ...
+    ...     More description of the function.
+    ...     '''
+    ...     pass
+    >>>
 """
 lines = docstring.split("\n")
-code_units = (1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+code_units = (1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1)
 line_labels = (
     "none",
     "none",
@@ -34,5 +42,13 @@ line_labels = (
     "none",
     "doctest",
     "none",
+    "none",
+    "doctest",
+    "doctest",
+    "doctest",
+    "doctest",
+    "doctest",
+    "doctest",
+    "doctest",
     "none",
 )
