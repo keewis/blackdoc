@@ -5,7 +5,7 @@ import sys
 import black
 
 from . import __version__, format_lines, formats
-from .blackcompat import gen_python_files, read_pyproject_toml
+from .blackcompat import find_project_root, gen_python_files, read_pyproject_toml
 
 
 def check_format_names(string):
@@ -22,7 +22,7 @@ def check_format_names(string):
 
 
 def collect_files(src, include, exclude):
-    root = black.find_project_root(tuple(src))
+    root = find_project_root(tuple(src))
     gitignore = black.get_gitignore(root)
     report = black.Report()
 
