@@ -61,7 +61,10 @@ def parse_pyproject_toml(path_config):
     If parsing fails, will raise a toml.TomlDecodeError
     """
     pyproject_toml = toml.load(path_config)
-    config = pyproject_toml.get("tool", {}).get("black", {})
+    black_config = pyproject_toml.get("tool", {}).get("black", {})
+    blackdoc_config = pyproject_toml.get("tool", {}).get("blackdoc", {})
+    config = {**black_config, **blackdoc_config}
+
     return {k.replace("--", "").replace("-", "_"): v for k, v in config.items()}
 
 
