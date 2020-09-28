@@ -7,7 +7,8 @@ v0.2 (*unreleased*)
   :rst:dir:`testcleanup` directives (:pull:`39`).
 - fix working with lines containing only the prompt and avoid changing the
   quotes of nested docstrings (:issue:`41`, :pull:`43`)
-- allow configuring the use of ``black`` using ``pyproject.toml`` (:issue:`40`, :pull:`45`)
+- allow configuring ``blackdoc`` using ``pyproject.toml``
+  (:issue:`40`, :pull:`45`, :pull:`47`)
 
 
 v0.1.2 (31 August 2020)
