@@ -5,7 +5,7 @@ import sys
 import black
 
 from . import __version__, format_lines, formats
-from .blackcompat import gen_python_files
+from .blackcompat import find_project_root, gen_python_files, read_pyproject_toml
 
 
 def check_format_names(string):
@@ -22,7 +22,7 @@ def check_format_names(string):
 
 
 def collect_files(src, include, exclude):
-    root = black.find_project_root(tuple(src))
+    root = find_project_root(tuple(src))
     gitignore = black.get_gitignore(root)
     report = black.Report()
 
@@ -303,6 +303,14 @@ def main():
         version=f"{program} {__version__}",
     )
     parser.add_argument(
+        "--config",
+        action="store",
+        nargs=1,
+        type=pathlib.Path,
+        default=None,
+        help="Read configuration from FILE path.",
+    )
+    parser.add_argument(
         "src",
         action="store",
         type=pathlib.Path,
@@ -310,6 +318,10 @@ def main():
         default=None,
         help="one or more paths to work on",
     )
+    args = parser.parse_args()
+    if args.config or args.src:
+        file_defaults = read_pyproject_toml(tuple(args.src), args.config)
+        parser.set_defaults(**file_defaults)
 
     args = parser.parse_args()
     sys.exit(process(args))

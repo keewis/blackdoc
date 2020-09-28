@@ -3,7 +3,83 @@
 For the license, see /licenses/black
 """
 
+from functools import lru_cache
 from pathlib import Path
+
+import toml
+
+
+@lru_cache()
+def find_project_root(srcs):
+    """Return a directory containing .git, .hg, or pyproject.toml.
+
+    That directory will be a common parent of all files and directories
+    passed in `srcs`.
+
+    If no directory in the tree contains a marker that would specify it's the
+    project root, the root of the file system is returned.
+    """
+    if not srcs:
+        return Path("/").resolve()
+
+    path_srcs = [Path(Path.cwd(), src).resolve() for src in srcs]
+
+    # A list of lists of parents for each 'src'. 'src' is included as a
+    # "parent" of itself if it is a directory
+    src_parents = [
+        list(path.parents) + ([path] if path.is_dir() else []) for path in path_srcs
+    ]
+
+    common_base = max(
+        set.intersection(*(set(parents) for parents in src_parents)),
+        key=lambda path: path.parts,
+    )
+
+    for directory in (common_base, *common_base.parents):
+        if (directory / ".git").exists():
+            return directory
+
+        if (directory / ".hg").is_dir():
+            return directory
+
+        if (directory / "pyproject.toml").is_file():
+            return directory
+
+    return directory
+
+
+def find_pyproject_toml(path_search_start):
+    """Find the absolute filepath to a pyproject.toml if it exists"""
+    path_project_root = find_project_root(path_search_start)
+    path_pyproject_toml = path_project_root / "pyproject.toml"
+    return str(path_pyproject_toml) if path_pyproject_toml.is_file() else None
+
+
+def parse_pyproject_toml(path_config):
+    """Parse a pyproject toml file, pulling out relevant parts for Black
+
+    If parsing fails, will raise a toml.TomlDecodeError
+    """
+    pyproject_toml = toml.load(path_config)
+    config = pyproject_toml.get("tool", {}).get("black", {})
+    return {k.replace("--", "").replace("-", "_"): v for k, v in config.items()}
+
+
+def read_pyproject_toml(source, config_path):
+    if not config_path:
+        config_path = find_pyproject_toml(source)
+        if config_path is None:
+            return {}
+
+    try:
+        config = parse_pyproject_toml(config_path)
+    except (toml.TomlDecodeError, OSError) as e:
+        raise IOError(f"Error reading configuration file ({config_path}): {e}")
+
+    if not config:
+        return {}
+
+    return config
 
 
 def normalize_path_maybe_ignore(path, root, report):
