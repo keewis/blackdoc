@@ -280,6 +280,17 @@ def main():
         ),
     )
     parser.add_argument(
+        "--force-exclude",
+        metavar="TEXT",
+        type=str,
+        default=argparse.SUPPRESS,
+        help=(
+            "Like --exclude, but files and directories"
+            " matching this regex will be excluded even"
+            " when they are passed explicitly as arguments"
+        ),
+    )
+    parser.add_argument(
         "--formats",
         metavar="FMT[,FMT[,FMT...]]",
         type=check_format_names,
