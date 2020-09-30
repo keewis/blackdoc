@@ -21,12 +21,10 @@ def check_format_names(string):
     return names
 
 
-def collect_files(src, include, exclude):
+def collect_files(src, include, exclude, force_exclude):
     root = find_project_root(tuple(src))
     gitignore = black.get_gitignore(root)
     report = black.Report()
-
-    force_exclude = ""
 
     for path in src:
         if path.is_dir():
@@ -172,7 +170,22 @@ def process(args):
         )
         return 2
 
-    sources = set(collect_files(args.src, include_regex, exclude_regex))
+    try:
+        force_exclude_regex = (
+            black.re_compile_maybe_verbose(args.force_exclude)
+            if args.force_exclude
+            else None
+        )
+    except black.re.error:
+        print(
+            f"Invalid regular expression for force_exclude given: {args.force_exclude!r}",
+            file=sys.stderr,
+        )
+        return 2
+
+    sources = set(
+        collect_files(args.src, include_regex, exclude_regex, force_exclude_regex)
+    )
     if len(sources) == 0:
         print("No files are present to be formatted. Nothing to do 😴")
         return 0
