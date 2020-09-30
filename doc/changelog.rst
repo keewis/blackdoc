@@ -9,6 +9,7 @@ v0.2 (*unreleased*)
   quotes of nested docstrings (:issue:`41`, :pull:`43`)
 - Allow configuring ``blackdoc`` using ``pyproject.toml``
   (:issue:`40`, :pull:`45`, :pull:`47`)
+- Add a ``force-exclude`` option (:pull:`49`)
 
 
 v0.1.2 (31 August 2020)
