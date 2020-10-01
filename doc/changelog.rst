@@ -5,15 +5,16 @@ v0.2 (*unreleased*)
 -------------------
 - Support the :rst:dir:`testcode`, :rst:dir:`testsetup` and
   :rst:dir:`testcleanup` directives (:pull:`39`).
-- fix working with lines containing only the prompt and avoid changing the
+- Fix working with lines containing only the prompt and avoid changing the
   quotes of nested docstrings (:issue:`41`, :pull:`43`)
-- allow configuring ``blackdoc`` using ``pyproject.toml``
+- Allow configuring ``blackdoc`` using ``pyproject.toml``
   (:issue:`40`, :pull:`45`, :pull:`47`)
+- Add a ``force-exclude`` option (:pull:`49`)
 
 
 v0.1.2 (31 August 2020)
 -----------------------
-- keep compatibility with ``black`` 20.8b1 (:pull:`34`)
+- Keep compatibility with ``black`` 20.8b1 (:pull:`34`)
 
 v0.1.1 (14 June 2020)
 ---------------------

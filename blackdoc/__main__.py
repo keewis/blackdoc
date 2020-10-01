@@ -21,12 +21,10 @@ def check_format_names(string):
     return names
 
 
-def collect_files(src, include, exclude):
+def collect_files(src, include, exclude, force_exclude):
     root = find_project_root(tuple(src))
     gitignore = black.get_gitignore(root)
     report = black.Report()
-
-    force_exclude = ""
 
     for path in src:
         if path.is_dir():
@@ -39,7 +37,25 @@ def collect_files(src, include, exclude):
                 report,
                 gitignore,
             )
-        elif path.is_file() or str(path) == "-":
+        elif str(path) == "-":
+            yield path
+        elif path.is_file():
+            normalized_path = black.normalize_path_maybe_ignore(path, root, report)
+            if normalized_path is None:
+                continue
+
+            normalized_path = "/" + normalized_path
+            # Hard-exclude any files that matches the `--force-exclude` regex.
+            if force_exclude:
+                force_exclude_match = force_exclude.search(normalized_path)
+            else:
+                force_exclude_match = None
+            if force_exclude_match and force_exclude_match.group(0):
+                report.path_ignored(
+                    path, "matches the --force-exclude regular expression"
+                )
+                continue
+
             yield path
         else:
             print(f"invalid path: {path}", file=sys.stderr)
@@ -172,7 +188,21 @@ def process(args):
         )
         return 2
 
-    sources = set(collect_files(args.src, include_regex, exclude_regex))
+    try:
+        force_exclude = getattr(args, "force_exclude", "")
+        force_exclude_regex = (
+            black.re_compile_maybe_verbose(force_exclude) if force_exclude else None
+        )
+    except black.re.error:
+        print(
+            f"Invalid regular expression for force_exclude given: {force_exclude!r}",
+            file=sys.stderr,
+        )
+        return 2
+
+    sources = set(
+        collect_files(args.src, include_regex, exclude_regex, force_exclude_regex)
+    )
     if len(sources) == 0:
         print("No files are present to be formatted. Nothing to do 😴")
         return 0
@@ -277,6 +307,17 @@ def main():
             "excluded on recursive searches.  An empty value means no paths are excluded. "
             "Use forward slashes for directories on all platforms (Windows, too).  "
             "Exclusions are calculated first, inclusions later."
+        ),
+    )
+    parser.add_argument(
+        "--force-exclude",
+        metavar="TEXT",
+        type=str,
+        default=argparse.SUPPRESS,
+        help=(
+            "Like --exclude, but files and directories"
+            " matching this regex will be excluded even"
+            " when they are passed explicitly as arguments"
         ),
     )
     parser.add_argument(
