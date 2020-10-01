@@ -1,8 +1,8 @@
 Changelog
 =========
 
-v0.2 (*unreleased*)
--------------------
+v0.2 (01 October 2020)
+----------------------
 - Support the :rst:dir:`testcode`, :rst:dir:`testsetup` and
   :rst:dir:`testcleanup` directives (:pull:`39`).
 - Fix working with lines containing only the prompt and avoid changing the
