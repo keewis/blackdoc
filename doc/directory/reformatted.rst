@@ -42,14 +42,14 @@ with testcode:
 
 .. testsetup::
 
-   x = "X"
-   y = "Y"
+    x = "X"
+    y = "Y"
 
 .. testcode::
 
-   assert x == x
-   assert x != y
+    assert x == x
+    assert x != y
 
 .. testcleanup::
 
-   print("test completed")
+    print("test completed")
