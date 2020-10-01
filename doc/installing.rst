@@ -13,6 +13,12 @@ To install it, use
 
    python -m pip install blackdoc
 
+or with ``conda``:
+
+.. code:: bash
+
+   conda install -c conda-forge blackdoc
+
 
 .. _more-itertools: https://more-itertools.readthedocs.io/
 .. _black: https://black.readthedocs.io/en/stable/
