@@ -1,6 +1,10 @@
 Changelog
 =========
 
+v0.3 (*unreleased*)
+-------------------
+
+
 v0.2 (01 October 2020)
 ----------------------
 - Support the :rst:dir:`testcode`, :rst:dir:`testsetup` and
