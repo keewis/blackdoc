@@ -17,4 +17,5 @@ The currently supported formats are:
 
    installing
    usage
+   options
    changelog

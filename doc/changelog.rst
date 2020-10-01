@@ -10,6 +10,7 @@ v0.2 (*unreleased*)
 - Allow configuring ``blackdoc`` using ``pyproject.toml``
   (:issue:`40`, :pull:`45`, :pull:`47`)
 - Add a ``force-exclude`` option (:pull:`49`)
+- Document the options (:pull:`50`)
 
 
 v0.1.2 (31 August 2020)
