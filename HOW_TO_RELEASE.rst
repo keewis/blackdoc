@@ -14,7 +14,7 @@ Release process
 
 4. check that the documentation is building
 
-5. Commit the release:
+5. Update the release date and commit the release:
 
    .. code:: sh
 
@@ -53,18 +53,21 @@ Release process
       python -m blackdoc --check .; echo $?
       python -m blackdoc .; echo $?
       git reset --hard HEAD
+      rm -rf dist/
 
-10. Push to master and upload to PyPI:
+10. Push to master:
 
    .. code:: sh
 
       git push origin master
       git push origin --tags
-      twine upload dist/*
 
-   Be careful, this can't be undone.
+11. Draft a release on Github.  Be careful, this can't be undone.
+
+    A workflow will then publish to PyPI, which in turn will be picked up by conda-forge
+    and a PR will be opened automatically on the feedstock.
               
-11. Update stable:
+12. Update stable:
 
     .. code:: sh
 
@@ -72,6 +75,6 @@ Release process
        git merge v0.X.Y
        git push origin stable
 
-12. Make sure readthedocs builds both `stable` and the new tag
+13. Make sure readthedocs builds both `stable` and the new tag
 
-13. Add a new section to the changelog and push directly to master
+14. Add a new section to the changelog and push directly to master
