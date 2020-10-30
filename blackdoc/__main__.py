@@ -245,6 +245,15 @@ def process(args):
     return return_code
 
 
+class boolean_flag(argparse.Action):
+    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        super().__init__(option_strings, dest, nargs=0, **kwargs)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        value = False if option_string.startswith("--no-") else True
+        setattr(namespace, self.dest, value)
+
+
 def main():
     program = pathlib.Path(__file__).parent.name
 
@@ -283,6 +292,21 @@ def main():
             "means nothing would change.  Return code 1 means some files would be "
             "reformatted.  Return code 123 means there was an internal error."
         ),
+    )
+    parser.add_argument(
+        "--diff",
+        dest="diff",
+        action="store_const",
+        const="diff",
+        help="Don't write the files back, just output a diff for each file on stdout.",
+    )
+    parser.add_argument(
+        "--color",
+        "--no-color",
+        dest="color",
+        action=boolean_flag,
+        default=False,
+        help="Show colored diff. Only applies when `--diff` is given.",
     )
     parser.add_argument(
         "--include",
@@ -363,6 +387,9 @@ def main():
     if args.config or args.src:
         file_defaults = read_pyproject_toml(tuple(args.src), args.config)
         parser.set_defaults(**file_defaults)
+
+    if args.diff:
+        parser.set_defaults(action="check")
 
     args = parser.parse_args()
     sys.exit(process(args))
