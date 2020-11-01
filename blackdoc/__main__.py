@@ -1,6 +1,9 @@
 import argparse
+import datetime
+import difflib
 import pathlib
 import sys
+from contextlib import contextmanager
 
 import black
 
@@ -61,6 +64,57 @@ def collect_files(src, include, exclude, force_exclude):
             print(f"invalid path: {path}", file=sys.stderr)
 
 
+def color_diff(contents):
+    """Inject the ANSI color codes to the diff."""
+    lines = contents.split("\n")
+    for i, line in enumerate(lines):
+        if line.startswith("+++") or line.startswith("---"):
+            line = "\033[1;37m" + line + "\033[0m"  # bold white, reset
+        elif line.startswith("@@"):
+            line = "\033[36m" + line + "\033[0m"  # cyan, reset
+        elif line.startswith("+"):
+            line = "\033[32m" + line + "\033[0m"  # green, reset
+        elif line.startswith("-"):
+            line = "\033[31m" + line + "\033[0m"  # red, reset
+        lines[i] = line
+    return "\n".join(lines)
+
+
+def unified_diff(a, b, path, color):
+    then = datetime.datetime.utcfromtimestamp(path.stat().st_mtime)
+    now = datetime.datetime.utcnow()
+    src_name = f"{path}\t{then} +0000"
+    dst_name = f"{path}\t{now} +0000"
+
+    diff = "\n".join(
+        difflib.unified_diff(
+            a.splitlines(),
+            b.splitlines(),
+            fromfile=src_name,
+            tofile=dst_name,
+            lineterm="",
+        )
+    )
+    if color:
+        diff = color_diff(diff)
+
+    return diff
+
+
+@contextmanager
+def maybe_guard_stdout():
+    try:
+        import colorama
+
+        colorama.init()
+
+        yield
+
+        colorama.deinit()
+    finally:
+        pass
+
+
 def format_and_overwrite(path, mode):
     try:
         with open(path, mode="rb") as f:
@@ -85,7 +139,7 @@ def format_and_overwrite(path, mode):
     return result
 
 
-def format_and_check(path, mode):
+def format_and_check(path, mode, diff=False, color=False):
     try:
         with open(path, mode="rb") as f:
             content, _, _ = black.decode_bytes(f.read())
@@ -98,6 +152,10 @@ def format_and_check(path, mode):
             result = "unchanged"
         else:
             print(f"would reformat {path}")
+
+            if diff:
+                print(unified_diff(content, new_content, path, color))
+
             result = "reformatted"
     except black.InvalidInput as e:
         print(f"error: cannot format {path.absolute()}: {e}")
@@ -220,10 +278,13 @@ def process(args):
         "inplace": format_and_overwrite,
         "check": format_and_check,
     }
+    action_kwargs = {"diff": args.diff, "color": args.color} if args.diff else {}
 
     action = actions.get(args.action)
 
-    changed_sources = {source: action(source, mode) for source in sources}
+    changed_sources = {
+        source: action(source, mode, **action_kwargs) for source in sources
+    }
     n_reformatted, n_unchanged, n_error = statistics(changed_sources)
 
     report_formatters = {
@@ -243,6 +304,15 @@ def process(args):
     print("Oh no! 💥 💔 💥" if return_code else "All done! ✨ 🍰 ✨")
     print(report)
     return return_code
+
+
+class boolean_flag(argparse.Action):
+    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        super().__init__(option_strings, dest, nargs=0, **kwargs)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        value = False if option_string.startswith("--no-") else True
+        setattr(namespace, self.dest, value)
 
 
 def main():
@@ -283,6 +353,21 @@ def main():
             "means nothing would change.  Return code 1 means some files would be "
             "reformatted.  Return code 123 means there was an internal error."
         ),
+    )
+    parser.add_argument(
+        "--diff",
+        dest="diff",
+        action="store_const",
+        const="diff",
+        help="Don't write the files back, just output a diff for each file on stdout.",
+    )
+    parser.add_argument(
+        "--color",
+        "--no-color",
+        dest="color",
+        action=boolean_flag,
+        default=False,
+        help="Show colored diff. Only applies when `--diff` is given.",
     )
     parser.add_argument(
         "--include",
@@ -363,6 +448,9 @@ def main():
     if args.config or args.src:
         file_defaults = read_pyproject_toml(tuple(args.src), args.config)
         parser.set_defaults(**file_defaults)
+
+    if args.diff:
+        parser.set_defaults(action="check")
 
     args = parser.parse_args()
     sys.exit(process(args))
