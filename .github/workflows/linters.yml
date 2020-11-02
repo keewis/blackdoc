@@ -57,7 +57,7 @@ jobs:
       run: python -m pip list
 
     - name: run isort
-      run: python -m isort --check .
+      run: python -m isort --diff --color .
 
   black:
     name: black
@@ -82,4 +82,4 @@ jobs:
       run: python -m pip list
 
     - name: run black
-      run: python -m black --check .
+      run: python -m black --diff --color .
