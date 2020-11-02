@@ -19,6 +19,13 @@ check
     return ``0`` if no file would be changed, ``1`` if a file would be
     reformatted and ``123`` if an internal error occurred.
 
+diff
+    In addition to the behavior of ``--check``, ``--diff`` will output a unified diff of
+    the changes that would have been made.
+
+color / no-color
+    Has no effect without ``--diff``. If enabled, the unified diffs will be colored.
+
 version
     Print the version and exit.
 
