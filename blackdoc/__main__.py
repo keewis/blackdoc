@@ -3,12 +3,18 @@ import datetime
 import difflib
 import pathlib
 import sys
-from contextlib import contextmanager
 
 import black
 
 from . import __version__, format_lines, formats
 from .blackcompat import find_project_root, gen_python_files, read_pyproject_toml
+
+try:
+    import colorama
+
+    colorama.init()
+except ImportError:
+    pass
 
 
 def check_format_names(string):
@@ -99,20 +105,6 @@ def unified_diff(a, b, path, color):
         diff = color_diff(diff)
 
     return diff
-
-
-@contextmanager
-def maybe_guard_stdout():
-    try:
-        import colorama
-
-        colorama.init()
-
-        yield
-
-        colorama.deinit()
-    finally:
-        pass
 
 
 def format_and_overwrite(path, mode):
