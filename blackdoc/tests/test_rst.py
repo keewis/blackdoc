@@ -159,4 +159,4 @@ def test_blacken():
     )
     actual = tuple(blacken(labeled))
 
-    assert len("\n".join(actual).split("\n")) == 78
+    assert len("\n".join(actual).split("\n")) == 75

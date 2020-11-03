@@ -1,3 +1,5 @@
+from . import from_dict
+
 docstring = """ a function to open files
 
     with a very long description
@@ -24,31 +26,23 @@ docstring = """ a function to open files
     >>>
 """
 lines = docstring.split("\n")
-code_units = (1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 1, 1)
-line_labels = (
-    "none",
-    "none",
-    "none",
-    "none",
-    "doctest",
-    "doctest",
-    "doctest",
-    "doctest",
-    "doctest",
-    "none",
-    "none",
-    "none",
-    "none",
-    "none",
-    "doctest",
-    "none",
-    "none",
-    "doctest",
-    "doctest",
-    "doctest",
-    "doctest",
-    "doctest",
-    "doctest",
-    "doctest",
-    "none",
-)
+labels = {
+    1: "none",
+    2: "none",
+    3: "none",
+    4: "none",
+    (5, 9): "doctest",
+    9: "doctest",
+    10: "none",
+    11: "none",
+    12: "none",
+    13: "none",
+    14: "none",
+    15: "doctest",
+    16: "none",
+    17: "none",
+    (18, 24): "doctest",
+    24: "doctest",
+    25: "none",
+}
+line_ranges, line_labels = from_dict(labels)
