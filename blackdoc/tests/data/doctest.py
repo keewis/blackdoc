@@ -1,3 +1,5 @@
+from . import from_dict
+
 docstring = """ a function to open files
 
     with a very long description
@@ -43,10 +45,4 @@ labels = {
     24: "doctest",
     25: "none",
 }
-line_ranges = tuple(
-    (lineno - 1, lineno)
-    if not isinstance(lineno, tuple)
-    else tuple(n - 1 for n in lineno)
-    for lineno in labels.keys()
-)
-line_labels = labels.values()
+line_ranges, line_labels = from_dict(labels)

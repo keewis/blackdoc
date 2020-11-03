@@ -1,3 +1,14 @@
+def from_dict(labels):
+    line_ranges = tuple(
+        (lineno - 1, lineno)
+        if not isinstance(lineno, tuple)
+        else tuple(n - 1 for n in lineno)
+        for lineno in labels.keys()
+    )
+    line_labels = tuple(labels.values())
+    return line_ranges, line_labels
+
+
 def print_line_with_range(name, range_, unit):
     min_, max_ = range_
     line_numbers = range(min_ + 1, max_ + 1)
