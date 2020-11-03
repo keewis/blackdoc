@@ -70,6 +70,54 @@ def collect_files(src, include, exclude, force_exclude):
             print(f"invalid path: {path}", file=sys.stderr)
 
 
+def white(string, bold=False):
+    color_code = "37"
+    bold_code = "1"
+    reset_code = "0"
+
+    codes = [color_code]
+    if bold:
+        codes.insert(0, bold_code)
+
+    return f"\033[{';'.join(codes)}m{string}\033[{reset_code}m"
+
+
+def cyan(string, bold=False):
+    color_code = "36"
+    bold_code = "1"
+    reset_code = "0"
+
+    codes = [color_code]
+    if bold:
+        codes.insert(0, bold_code)
+
+    return f"\033[{';'.join(codes)}m{string}\033[{reset_code}m"
+
+
+def green(string, bold=False):
+    color_code = "32"
+    bold_code = "1"
+    reset_code = "0"
+
+    codes = [color_code]
+    if bold:
+        codes.insert(0, bold_code)
+
+    return f"\033[{';'.join(codes)}m{string}\033[{reset_code}m"
+
+
+def red(string, bold=False):
+    color_code = "31"
+    bold_code = "1"
+    reset_code = "0"
+
+    codes = [color_code]
+    if bold:
+        codes.insert(0, bold_code)
+
+    return f"\033[{';'.join(codes)}m{string}\033[{reset_code}m"
+
+
 def color_diff(contents):
     """Inject the ANSI color codes to the diff."""
     lines = contents.split("\n")
