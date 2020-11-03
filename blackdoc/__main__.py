@@ -167,13 +167,13 @@ def format_and_overwrite(path, mode):
         if new_content == content:
             result = "unchanged"
         else:
-            print(f"reformatted {path}")
+            print(white(f"reformatted {path}"), bold=True)
             result = "reformatted"
 
         with open(path, "w", encoding=encoding, newline=newline) as f:
             f.write(new_content)
     except black.InvalidInput as e:
-        print(f"error: cannot format {path.absolute()}: {e}")
+        print(red(f"error: cannot format {path.absolute()}: {e}"))
         result = "error"
 
     return result
@@ -191,14 +191,14 @@ def format_and_check(path, mode, diff=False, color=False):
         if new_content == content:
             result = "unchanged"
         else:
-            print(f"would reformat {path}")
+            print(white(f"would reformat {path}", bold=True))
 
             if diff:
                 print(unified_diff(content, new_content, path, color))
 
             result = "reformatted"
     except black.InvalidInput as e:
-        print(f"error: cannot format {path.absolute()}: {e}")
+        print(red(f"error: cannot format {path.absolute()}: {e}"))
         result = "error"
 
     return result
@@ -210,13 +210,15 @@ def report_changes(n_reformatted, n_unchanged, n_error):
 
     reports = []
     if n_reformatted > 0:
-        reports.append(f"{n_reformatted} {noun(n_reformatted)} reformatted")
+        reports.append(
+            white(f"{n_reformatted} {noun(n_reformatted)} reformatted", bold=True)
+        )
 
     if n_unchanged > 0:
-        reports.append(f"{n_unchanged} {noun(n_unchanged)} left unchanged")
+        reports.append(white(f"{n_unchanged} {noun(n_unchanged)} left unchanged"))
 
     if n_error > 0:
-        reports.append(f"{n_error} {noun(n_error)} fails to reformat")
+        reports.append(red(f"{n_error} {noun(n_error)} fails to reformat"))
 
     return ", ".join(reports) + "."
 
@@ -227,13 +229,19 @@ def report_possible_changes(n_reformatted, n_unchanged, n_error):
 
     reports = []
     if n_reformatted > 0:
-        reports.append(f"{n_reformatted} {noun(n_reformatted)} would be reformatted")
+        reports.append(
+            white(
+                f"{n_reformatted} {noun(n_reformatted)} would be reformatted", bold=True
+            )
+        )
 
     if n_unchanged > 0:
-        reports.append(f"{n_unchanged} {noun(n_unchanged)} would be left unchanged")
+        reports.append(
+            white(f"{n_unchanged} {noun(n_unchanged)} would be left unchanged")
+        )
 
     if n_error > 0:
-        reports.append(f"{n_error} {noun(n_error)} would fail to reformat")
+        reports.append(red(f"{n_error} {noun(n_error)} would fail to reformat"))
 
     return ", ".join(reports) + "."
 
@@ -255,7 +263,7 @@ def statistics(sources):
 
 def process(args):
     if not args.src:
-        print("No Path provided. Nothing to do 😴")
+        print(white("No Path provided. Nothing to do 😴", bold=True))
         return 0
 
     selected_formats = getattr(args, "formats", None)
@@ -272,7 +280,7 @@ def process(args):
         include_regex = black.re_compile_maybe_verbose(args.include)
     except black.re.error:
         print(
-            f"Invalid regular expression for include given: {args.include!r}",
+            red(f"Invalid regular expression for include given: {args.include!r}"),
             file=sys.stderr,
         )
         return 2
@@ -281,7 +289,7 @@ def process(args):
         exclude_regex = black.re_compile_maybe_verbose(args.exclude)
     except black.re.error:
         print(
-            f"Invalid regular expression for exclude given: {args.exclude!r}",
+            red(f"Invalid regular expression for exclude given: {args.exclude!r}"),
             file=sys.stderr,
         )
         return 2
@@ -293,7 +301,9 @@ def process(args):
         )
     except black.re.error:
         print(
-            f"Invalid regular expression for force_exclude given: {force_exclude!r}",
+            red(
+                f"Invalid regular expression for force_exclude given: {force_exclude!r}"
+            ),
             file=sys.stderr,
         )
         return 2
@@ -302,7 +312,7 @@ def process(args):
         collect_files(args.src, include_regex, exclude_regex, force_exclude_regex)
     )
     if len(sources) == 0:
-        print("No files are present to be formatted. Nothing to do 😴")
+        print(white("No files are present to be formatted. Nothing to do 😴", bold=True))
         return 0
 
     target_versions = set(
@@ -342,7 +352,9 @@ def process(args):
     else:
         return_code = 0
 
-    print("Oh no! 💥 💔 💥" if return_code else "All done! ✨ 🍰 ✨")
+    reformatted_message = white("Oh no! 💥 💔 💥", bold=True)
+    no_reformatting_message = white("All done! ✨ 🍰 ✨", bold=True)
+    print(reformatted_message if return_code else no_reformatting_message)
     print(report)
     return return_code
 
