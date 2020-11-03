@@ -40,6 +40,9 @@ line_length
     ``-l`` or ``--line-length``, ``int``. How many characters per line to allow. By
     default, set to 88.
 
+string normalization
+    ``-S`` or ``--skip-string-normalization``. If enabled, skips the string normalization.
+
 include
     ``--include``, ``str``. A regular expression that matches files and
     directories that should be included on recursive searches. An empty value
