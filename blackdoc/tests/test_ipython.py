@@ -126,11 +126,11 @@ def test_reformatting_func(line, count, expected):
 def test_blacken():
     labeled = list(
         (
-            (min_ + 1, max_ + 1),
-            data.line_labels[min_],
-            "\n".join(data.lines[slice(min_, max_)]),
+            (min_, max_),
+            label,
+            "\n".join(data.lines[min_:max_]),
         )
-        for min_, max_ in data.line_ranges
+        for (min_, max_), label in zip(data.line_ranges, data.line_labels)
     )
     actual = tuple(blacken(labeled))
 

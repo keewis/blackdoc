@@ -1,3 +1,5 @@
+from . import from_dict
+
 docstring = """ a function to open files
 
     with a very long description
@@ -25,53 +27,25 @@ docstring = """ a function to open files
        ...:     pass
 """
 lines = docstring.split("\n")
-code_units = (1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 4, 1)
-line_ranges = (
-    (0, 1),
-    (1, 2),
-    (2, 3),
-    (3, 4),
-    (4, 8),
-    (8, 9),
-    (9, 10),
-    (10, 11),
-    (11, 12),
-    (12, 13),
-    (13, 14),
-    (14, 15),
-    (15, 16),
-    (16, 17),
-    (17, 18),
-    (18, 20),
-    (20, 21),
-    (21, 25),
-    (25, 26),
-)
-line_labels = (
-    "none",
-    "none",
-    "none",
-    "none",
-    "ipython",
-    "ipython",
-    "ipython",
-    "ipython",
-    "none",
-    "ipython",
-    "none",
-    "none",
-    "none",
-    "none",
-    "none",
-    "ipython",
-    "none",
-    "none",
-    "ipython",
-    "ipython",
-    "none",
-    "ipython",
-    "ipython",
-    "ipython",
-    "ipython",
-    "none",
-)
+labels = {
+    1: "none",
+    2: "none",
+    3: "none",
+    4: "none",
+    (5, 9): "ipython",
+    9: "none",
+    10: "ipython",
+    11: "none",
+    12: "none",
+    13: "none",
+    14: "none",
+    15: "none",
+    16: "ipython",
+    17: "none",
+    18: "none",
+    (19, 21): "ipython",
+    21: "none",
+    (22, 26): "ipython",
+    26: "none",
+}
+line_ranges, line_labels = from_dict(labels)
