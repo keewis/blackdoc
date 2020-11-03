@@ -272,7 +272,7 @@ def process(args):
     mode = black.FileMode(
         line_length=args.line_length,
         target_versions=target_versions,
-        skip_string_normalization=args.strip_string_normalization,
+        string_normalization=not args.skip_string_normalization,
     )
 
     actions = {
