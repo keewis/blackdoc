@@ -272,6 +272,7 @@ def process(args):
     mode = black.FileMode(
         line_length=args.line_length,
         target_versions=target_versions,
+        string_normalization=not args.skip_string_normalization,
     )
 
     actions = {
@@ -421,6 +422,13 @@ def main():
             "This option also affects formats explicitly set."
         ),
         default=argparse.SUPPRESS,
+    )
+    parser.add_argument(
+        "-S",
+        "--skip-string-normalization",
+        dest="skip_string_normalization",
+        action="store_true",
+        help="Don't normalize string quotes or prefixes.",
     )
     parser.add_argument(
         "--version",
