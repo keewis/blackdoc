@@ -40,7 +40,7 @@ line_length
     ``-l`` or ``--line-length``, ``int``. How many characters per line to allow. By
     default, set to 88.
 
-string normalization
+skip_string_normalization
     ``-S`` or ``--skip-string-normalization``. If enabled, skips the string normalization.
 
 include
