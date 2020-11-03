@@ -123,13 +123,13 @@ def color_diff(contents):
     lines = contents.split("\n")
     for i, line in enumerate(lines):
         if line.startswith("+++") or line.startswith("---"):
-            line = "\033[1;37m" + line + "\033[0m"  # bold white, reset
+            line = white(line, bold=True)  # bold white, reset
         elif line.startswith("@@"):
-            line = "\033[36m" + line + "\033[0m"  # cyan, reset
+            line = cyan(line)  # cyan, reset
         elif line.startswith("+"):
-            line = "\033[32m" + line + "\033[0m"  # green, reset
+            line = green(line)  # green, reset
         elif line.startswith("-"):
-            line = "\033[31m" + line + "\033[0m"  # red, reset
+            line = red(line)  # red, reset
         lines[i] = line
     return "\n".join(lines)
 
