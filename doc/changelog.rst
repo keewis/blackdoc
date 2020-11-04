@@ -3,11 +3,11 @@ Changelog
 
 v0.3 (*unreleased*)
 -------------------
-- add diff and color diff modes (:pull:`56`)
-- support `black`'s string normalization option (:pull:`59`)
-- add colors to the output (:pull:`60`)
+- add diff and color diff modes (:issue:`33`, :issue:`53`, :pull:`56`)
+- support `black`'s string normalization option (:issue:`33`, :pull:`59`)
+- add colors to the output (:issue:`33`, :pull:`60`)
 - make the order of the printed files predictable (:pull:`61`)
-- make sure blocks end with a empty continuation line (:pull:`62`)
+- make sure blocks end with a empty continuation line (:issue:`52`, :pull:`62`)
 - add a initial version of a contributing guide (:pull:`63`)
 
 
@@ -25,7 +25,7 @@ v0.2 (01 October 2020)
 
 v0.1.2 (31 August 2020)
 -----------------------
-- Keep compatibility with ``black`` 20.8b1 (:pull:`34`)
+- Keep compatibility with ``black`` 20.8b1 (:issue:`33`, :pull:`34`)
 
 v0.1.1 (14 June 2020)
 ---------------------
