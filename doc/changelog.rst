@@ -3,6 +3,8 @@ Changelog
 
 v0.3 (*unreleased*)
 -------------------
+- support running on python 3.9 (the target version is not yet supported by black)
+  (:pull:`55`, :pull:`57`)
 - add diff and color diff modes (:issue:`33`, :issue:`53`, :pull:`56`)
 - support `black`'s string normalization option (:issue:`33`, :pull:`59`)
 - add colors to the output (:issue:`33`, :pull:`60`)
