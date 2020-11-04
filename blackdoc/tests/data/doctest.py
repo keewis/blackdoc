@@ -17,11 +17,11 @@ docstring = """ a function to open files
     >>> file.closed
     False
 
-    >>> def myfunc2(arg1, arg2):
-    ...     '''Docstring for function myfunc2 in docstring
+    >>> ''' arbitrary triple-quoted string
     ...
-    ...     More description of the function.
-    ...     '''
+    ... with a empty continuation line
+    ... '''
+    >>> def myfunc2(arg1, arg2):
     ...     pass
     >>>
 
@@ -46,7 +46,8 @@ labels = {
     15: "doctest",
     16: "none",
     17: "none",
-    (18, 24): "doctest",
+    (18, 22): "doctest",
+    (22, 24): "doctest",
     24: "doctest",
     25: "none",
     (26, 28): "doctest",
@@ -72,11 +73,11 @@ expected = """ a function to open files
     >>> file.closed
     False
 
-    >>> def myfunc2(arg1, arg2):
-    ...     '''Docstring for function myfunc2 in docstring
+    >>> ''' arbitrary triple-quoted string
     ...
-    ...     More description of the function.
-    ...     '''
+    ... with a empty continuation line
+    ... '''
+    >>> def myfunc2(arg1, arg2):
     ...     pass
     ...
     >>>
@@ -102,7 +103,8 @@ expected_labels = {
     15: "doctest",
     16: "none",
     17: "none",
-    (18, 25): "doctest",
+    (18, 22): "doctest",
+    (22, 25): "doctest",
     25: "doctest",
     26: "none",
     (27, 30): "doctest",
