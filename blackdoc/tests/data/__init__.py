@@ -9,7 +9,7 @@ def from_dict(labels):
     return line_ranges, line_labels
 
 
-def print_line_with_range(name, range_, unit):
+def format_line_with_range(name, range_, unit):
     min_, max_ = range_
     line_numbers = range(min_ + 1, max_ + 1)
 
@@ -19,7 +19,8 @@ def print_line_with_range(name, range_, unit):
     end_group = "┘"
 
     lines = unit.split("\n")
-    for index, (lineno, line) in enumerate(zip(line_numbers, lines)):
+
+    def determine_classifier(index):
         if max_ - min_ == 1:
             classifier = no_group
         elif index == 0:
@@ -29,9 +30,19 @@ def print_line_with_range(name, range_, unit):
         else:
             classifier = mid_group
 
-        print(f"{name:>8s} {classifier} → {lineno:02d}: {line}")
+        return classifier
+
+    return "\n".join(
+        f"{name:>8s} {determine_classifier(index)} → {lineno:02d}: {line}"
+        for index, (lineno, line) in enumerate(zip(line_numbers, lines))
+    )
+
+
+def format_classification(labeled):
+    return "\n".join(
+        format_line_with_range(range, name, unit) for name, range, unit in labeled
+    )
 
 
 def print_classification(labeled):
-    for name, range, unit in labeled:
-        print_line_with_range(range, name, unit)
+    print(format_classification(labeled))
