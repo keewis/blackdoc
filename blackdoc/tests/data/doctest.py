@@ -24,6 +24,11 @@ docstring = """ a function to open files
     ...     '''
     ...     pass
     >>>
+
+    >>> if myfunc2(2, 1) is not None:
+    ...     print("caught")
+    >>> a = 2
+    ...
 """
 lines = docstring.split("\n")
 labels = {
@@ -44,5 +49,8 @@ labels = {
     (18, 24): "doctest",
     24: "doctest",
     25: "none",
+    (26, 28): "doctest",
+    (28, 30): "doctest",
+    30: "none",
 }
 line_ranges, line_labels = from_dict(labels)
