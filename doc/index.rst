@@ -10,12 +10,34 @@ The currently supported formats are:
 - ipython
 - rst
 
+Documentation
+-------------
+**User Guide**
+
+* :doc:`installing`
+* :doc:`usage`
+* :doc:`options`
+
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents
+   :caption: User Guide
+   :hidden:
 
    installing
    usage
    options
+
+**Help & Reference**
+
+* :doc:`changelog`
+* :doc:`contributing`
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Help & Reference
+   :hidden:
+
    changelog
+   contributing
