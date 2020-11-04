@@ -63,12 +63,7 @@ Release process
       git push origin master
       git push origin --tags
 
-11. Draft a release on Github.  Be careful, this can't be undone.
-
-    A workflow will then publish to PyPI, which in turn will be picked up by conda-forge
-    and a PR will be opened automatically on the feedstock.
-              
-12. Update stable:
+11. Update stable:
 
     .. code:: sh
 
@@ -76,6 +71,11 @@ Release process
        git merge v0.X.Y
        git push origin stable
 
-13. Make sure readthedocs builds both `stable` and the new tag
+12. Make sure readthedocs builds both `stable` and the new tag
+
+13. Draft a release on Github.  Be careful, this can't be undone.
+
+    A workflow will then publish to PyPI, which in turn will be picked up by conda-forge
+    and a PR will be opened automatically on the feedstock.
 
 14. Add a new section to the changelog and push directly to master
