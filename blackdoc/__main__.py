@@ -70,7 +70,7 @@ def collect_files(src, include, exclude, force_exclude):
             print(f"invalid path: {path}", file=sys.stderr)
 
 
-def color(string, fg=None, bold=False):
+def colorize(string, fg=None, bold=False):
     foreground_colors = {
         "white": 37,
         "cyan": 36,
@@ -95,13 +95,13 @@ def color_diff(contents):
     lines = contents.split("\n")
     for i, line in enumerate(lines):
         if line.startswith("+++") or line.startswith("---"):
-            line = color(line, fg="white", bold=True)  # bold white, reset
+            line = colorize(line, fg="white", bold=True)  # bold white, reset
         elif line.startswith("@@"):
-            line = color(line, fg="cyan")  # cyan, reset
+            line = colorize(line, fg="cyan")  # cyan, reset
         elif line.startswith("+"):
-            line = color(line, fg="green")  # green, reset
+            line = colorize(line, fg="green")  # green, reset
         elif line.startswith("-"):
-            line = color(line, fg="red")  # red, reset
+            line = colorize(line, fg="red")  # red, reset
         lines[i] = line
     return "\n".join(lines)
 
@@ -139,13 +139,13 @@ def format_and_overwrite(path, mode):
         if new_content == content:
             result = "unchanged"
         else:
-            print(color(f"reformatted {path}", fg="white", bold=True))
+            print(colorize(f"reformatted {path}", fg="white", bold=True))
             result = "reformatted"
 
         with open(path, "w", encoding=encoding, newline=newline) as f:
             f.write(new_content)
     except black.InvalidInput as e:
-        print(color(f"error: cannot format {path.absolute()}: {e}", fg="red"))
+        print(colorize(f"error: cannot format {path.absolute()}: {e}", fg="red"))
         result = "error"
 
     return result
@@ -163,14 +163,14 @@ def format_and_check(path, mode, diff=False, color=False):
         if new_content == content:
             result = "unchanged"
         else:
-            print(color(f"would reformat {path}", fg="white", bold=True))
+            print(colorize(f"would reformat {path}", fg="white", bold=True))
 
             if diff:
                 print(unified_diff(content, new_content, path, color))
 
             result = "reformatted"
     except black.InvalidInput as e:
-        print(color(f"error: cannot format {path.absolute()}: {e}", fg="red"))
+        print(colorize(f"error: cannot format {path.absolute()}: {e}", fg="red"))
         result = "error"
 
     return result
@@ -183,7 +183,7 @@ def report_changes(n_reformatted, n_unchanged, n_error):
     reports = []
     if n_reformatted > 0:
         reports.append(
-            color(
+            colorize(
                 f"{n_reformatted} {noun(n_reformatted)} reformatted",
                 fg="white",
                 bold=True,
@@ -192,11 +192,13 @@ def report_changes(n_reformatted, n_unchanged, n_error):
 
     if n_unchanged > 0:
         reports.append(
-            color(f"{n_unchanged} {noun(n_unchanged)} left unchanged", fg="white")
+            colorize(f"{n_unchanged} {noun(n_unchanged)} left unchanged", fg="white")
         )
 
     if n_error > 0:
-        reports.append(color(f"{n_error} {noun(n_error)} fails to reformat", fg="red"))
+        reports.append(
+            colorize(f"{n_error} {noun(n_error)} fails to reformat", fg="red")
+        )
 
     return ", ".join(reports) + "."
 
@@ -208,7 +210,7 @@ def report_possible_changes(n_reformatted, n_unchanged, n_error):
     reports = []
     if n_reformatted > 0:
         reports.append(
-            color(
+            colorize(
                 f"{n_reformatted} {noun(n_reformatted)} would be reformatted",
                 fg="white",
                 bold=True,
@@ -217,14 +219,14 @@ def report_possible_changes(n_reformatted, n_unchanged, n_error):
 
     if n_unchanged > 0:
         reports.append(
-            color(
+            colorize(
                 f"{n_unchanged} {noun(n_unchanged)} would be left unchanged", fg="white"
             )
         )
 
     if n_error > 0:
         reports.append(
-            color(f"{n_error} {noun(n_error)} would fail to reformat", fg="red")
+            colorize(f"{n_error} {noun(n_error)} would fail to reformat", fg="red")
         )
 
     return ", ".join(reports) + "."
@@ -247,7 +249,7 @@ def statistics(sources):
 
 def process(args):
     if not args.src:
-        print(color("No Path provided. Nothing to do 😴", fg="white", bold=True))
+        print(colorize("No Path provided. Nothing to do 😴", fg="white", bold=True))
         return 0
 
     selected_formats = getattr(args, "formats", None)
@@ -264,7 +266,7 @@ def process(args):
         include_regex = black.re_compile_maybe_verbose(args.include)
     except black.re.error:
         print(
-            color(
+            colorize(
                 f"Invalid regular expression for include given: {args.include!r}",
                 fg="red",
             ),
@@ -276,7 +278,7 @@ def process(args):
         exclude_regex = black.re_compile_maybe_verbose(args.exclude)
     except black.re.error:
         print(
-            color(
+            colorize(
                 f"Invalid regular expression for exclude given: {args.exclude!r}",
                 fg="red",
             ),
@@ -291,7 +293,7 @@ def process(args):
         )
     except black.re.error:
         print(
-            color(
+            colorize(
                 f"Invalid regular expression for force_exclude given: {force_exclude!r}",
                 fg="red",
             ),
@@ -304,7 +306,7 @@ def process(args):
     )
     if len(sources) == 0:
         print(
-            color(
+            colorize(
                 "No files are present to be formatted. Nothing to do 😴",
                 fg="white",
                 bold=True,
@@ -349,8 +351,8 @@ def process(args):
     else:
         return_code = 0
 
-    reformatted_message = color("Oh no! 💥 💔 💥", fg="white", bold=True)
-    no_reformatting_message = color("All done! ✨ 🍰 ✨", fg="white", bold=True)
+    reformatted_message = colorize("Oh no! 💥 💔 💥", fg="white", bold=True)
+    no_reformatting_message = colorize("All done! ✨ 🍰 ✨", fg="white", bold=True)
     print(reformatted_message if return_code else no_reformatting_message)
     print(report)
     return return_code
