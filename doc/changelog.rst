@@ -1,8 +1,8 @@
 Changelog
 =========
 
-v0.3 (*unreleased*)
--------------------
+v0.3 (04 November 2020)
+-----------------------
 - support running on python 3.9 (the target version is not yet supported by black)
   (:pull:`55`, :pull:`57`)
 - add diff and color diff modes (:issue:`33`, :issue:`53`, :pull:`56`)
