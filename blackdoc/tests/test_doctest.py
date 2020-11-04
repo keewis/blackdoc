@@ -5,7 +5,7 @@ import pytest
 
 from blackdoc.formats import doctest
 
-from .data.doctest import lines
+from .data.doctest import expected_lines, lines
 
 
 @pytest.mark.parametrize(
@@ -35,8 +35,8 @@ def test_detect_docstring_quotes(string, expected):
             lines[23], ((1, 2), doctest.name, lines[23]), id="single empty line"
         ),
         pytest.param(
-            lines[17:23],
-            ((1, 7), doctest.name, "\n".join(lines[17:23])),
+            lines[17:21],
+            ((1, 5), doctest.name, "\n".join(lines[17:21])),
             id="multiple lines with empty continuation line",
         ),
     ),
@@ -74,27 +74,56 @@ def test_extraction_func(line):
     assert expected == actual
 
 
+def prepare_lines(lines, remove_prompt=False):
+    dedented = (line.lstrip() for line in more_itertools.always_iterable(lines))
+    prepared = dedented if not remove_prompt else (line[4:] for line in dedented)
+    return "\n".join(prepared)
+
+
 @pytest.mark.parametrize(
-    "expected",
+    ["code_unit", "expected"],
     (
-        pytest.param(textwrap.dedent(lines[8]), id="single line"),
-        pytest.param(textwrap.dedent(lines[23]), id="single empty line"),
-        pytest.param(textwrap.dedent("\n".join(lines[4:8])), id="multiple lines"),
         pytest.param(
-            textwrap.dedent("\n".join(lines[17:23])),
+            prepare_lines(lines[8], remove_prompt=True),
+            prepare_lines(expected_lines[8]),
+            id="single line",
+        ),
+        pytest.param(
+            prepare_lines(lines[23], remove_prompt=True),
+            prepare_lines(expected_lines[24]),
+            id="single empty line",
+        ),
+        pytest.param(
+            prepare_lines(lines[4:8], remove_prompt=True),
+            prepare_lines(expected_lines[4:8]),
+            id="multiple lines",
+        ),
+        pytest.param(
+            prepare_lines(lines[17:21], remove_prompt=True),
+            prepare_lines(expected_lines[17:21]),
             id="multiple lines with empty continuation line",
         ),
         pytest.param(
-            textwrap.dedent("\n".join(lines[17:23]).replace("'''", '"""')),
+            prepare_lines(lines[17:21], remove_prompt=True).replace("'''", '"""'),
+            prepare_lines(expected_lines[17:21]).replace("'''", '"""'),
             id="multiple lines with inverted docstring quotes",
+        ),
+        pytest.param(
+            prepare_lines(lines[21:23], remove_prompt=True),
+            prepare_lines(expected_lines[21:24]),
+            id="trailing newline at the end of a block",
+        ),
+        pytest.param(
+            prepare_lines(lines[27:29], remove_prompt=True),
+            prepare_lines(expected_lines[29]),
+            id="trailing newline at the end of a normal line",
         ),
     ),
 )
-def test_reformatting_func(expected):
-    docstring_quotes = doctest.detect_docstring_quotes(expected)
-    line = "\n".join(line.lstrip()[4:] for line in expected.split("\n"))
+def test_reformatting_func(code_unit, expected):
+    docstring_quotes = doctest.detect_docstring_quotes(code_unit)
 
-    actual = doctest.reformatting_func(line, docstring_quotes)
+    actual = doctest.reformatting_func(code_unit, docstring_quotes)
     assert expected == actual
 
     # make sure the docstring quotes were not changed

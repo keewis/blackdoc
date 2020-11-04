@@ -10,6 +10,7 @@ prompt_re = re.compile(r"(>>> ?)")
 continuation_prompt = "..."
 continuation_prompt_re = re.compile(r"(\.\.\. ?)")
 include_pattern = r"\.pyi?$"
+block_start_re = re.compile(r"^[^:]+:(\s*#.*)?$")
 
 
 def continuation_lines(lines):
@@ -102,7 +103,11 @@ def reformatting_func(line, docstring_quotes):
 
         return " ".join([prompt, line])
 
-    lines = iter(line.split("\n"))
+    lines = line.rstrip().split("\n")
+    if block_start_re.match(lines[0]):
+        lines.append("")
+
+    lines = iter(lines)
 
     reformatted = "\n".join(
         itertools.chain(
