@@ -5,6 +5,7 @@ v0.3 (*unreleased*)
 -------------------
 - add diff and color diff modes (:pull:`56`)
 - support `black`'s string normalization option (:pull:`59`)
+- add colors to the output (:pull:`60`)
 
 
 v0.2 (01 October 2020)
