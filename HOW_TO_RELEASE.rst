@@ -46,14 +46,15 @@ Release process
 
       python -m venv test
       source test/bin/activate
-      python -m pip install -r requirements.txt
+      python -m pip install -r dev-requirements.txt
       python -m pip install pytest
       python -m pip install dist/*.whl
       python -m pytest
       python -m blackdoc --check .; echo $?
       python -m blackdoc .; echo $?
       git reset --hard HEAD
-      rm -rf dist/
+      deactivate
+      git clean -xdf
 
 10. Push to master:
 
