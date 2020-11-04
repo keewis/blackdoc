@@ -26,3 +26,9 @@ correct using
    python -m blackdoc.tests.data format
 
 where ``format`` is a placeholder for the name of one of the supported formats.
+
+
+.. _black: https://black.readthedocs.io/en/stable/
+.. _flake8: https://flake8.pycqa.org/en/stable/
+.. _isort: https://pycqa.github.io/isort/
+.. _pre-commit: https://pre-commit.com/
