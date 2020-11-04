@@ -333,7 +333,7 @@ def process(args):
     action = actions.get(args.action)
 
     changed_sources = {
-        source: action(source, mode, **action_kwargs) for source in sources
+        source: action(source, mode, **action_kwargs) for source in sorted(sources)
     }
     n_reformatted, n_unchanged, n_error = statistics(changed_sources)
 
