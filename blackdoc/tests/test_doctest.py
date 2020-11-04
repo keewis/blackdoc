@@ -35,8 +35,8 @@ def test_detect_docstring_quotes(string, expected):
             lines[23], ((1, 2), doctest.name, lines[23]), id="single empty line"
         ),
         pytest.param(
-            lines[17:23],
-            ((1, 7), doctest.name, "\n".join(lines[17:23])),
+            lines[17:21],
+            ((1, 5), doctest.name, "\n".join(lines[17:21])),
             id="multiple lines with empty continuation line",
         ),
     ),
