@@ -1,6 +1,10 @@
 Changelog
 =========
 
+v0.4 (*unreleased*)
+-------------------
+
+
 v0.3 (04 November 2020)
 -----------------------
 - support running on python 3.9 (the target version is not yet supported by black)
