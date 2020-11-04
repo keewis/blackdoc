@@ -70,52 +70,24 @@ def collect_files(src, include, exclude, force_exclude):
             print(f"invalid path: {path}", file=sys.stderr)
 
 
-def white(string, bold=False):
-    color_code = "37"
-    bold_code = "1"
-    reset_code = "0"
+def color(string, fg=None, bold=False):
+    foreground_colors = {
+        "white": 37,
+        "cyan": 36,
+        "green": 32,
+        "red": 31,
+    }
+    bold_code = 1
+    reset_code = 0
 
-    codes = [color_code]
+    codes = []
     if bold:
-        codes.insert(0, bold_code)
+        codes.append(bold_code)
 
-    return f"\033[{';'.join(codes)}m{string}\033[{reset_code}m"
+    if fg:
+        codes.append(foreground_colors.get(fg, fg))
 
-
-def cyan(string, bold=False):
-    color_code = "36"
-    bold_code = "1"
-    reset_code = "0"
-
-    codes = [color_code]
-    if bold:
-        codes.insert(0, bold_code)
-
-    return f"\033[{';'.join(codes)}m{string}\033[{reset_code}m"
-
-
-def green(string, bold=False):
-    color_code = "32"
-    bold_code = "1"
-    reset_code = "0"
-
-    codes = [color_code]
-    if bold:
-        codes.insert(0, bold_code)
-
-    return f"\033[{';'.join(codes)}m{string}\033[{reset_code}m"
-
-
-def red(string, bold=False):
-    color_code = "31"
-    bold_code = "1"
-    reset_code = "0"
-
-    codes = [color_code]
-    if bold:
-        codes.insert(0, bold_code)
-
-    return f"\033[{';'.join(codes)}m{string}\033[{reset_code}m"
+    return f"\033[{';'.join(map(str, codes))}m{string}\033[{reset_code}m"
 
 
 def color_diff(contents):
@@ -123,13 +95,13 @@ def color_diff(contents):
     lines = contents.split("\n")
     for i, line in enumerate(lines):
         if line.startswith("+++") or line.startswith("---"):
-            line = white(line, bold=True)  # bold white, reset
+            line = color(line, fg="white", bold=True)  # bold white, reset
         elif line.startswith("@@"):
-            line = cyan(line)  # cyan, reset
+            line = color(line, fg="cyan")  # cyan, reset
         elif line.startswith("+"):
-            line = green(line)  # green, reset
+            line = color(line, fg="green")  # green, reset
         elif line.startswith("-"):
-            line = red(line)  # red, reset
+            line = color(line, fg="red")  # red, reset
         lines[i] = line
     return "\n".join(lines)
 
@@ -167,13 +139,13 @@ def format_and_overwrite(path, mode):
         if new_content == content:
             result = "unchanged"
         else:
-            print(white(f"reformatted {path}"), bold=True)
+            print(color(f"reformatted {path}", fg="white", bold=True))
             result = "reformatted"
 
         with open(path, "w", encoding=encoding, newline=newline) as f:
             f.write(new_content)
     except black.InvalidInput as e:
-        print(red(f"error: cannot format {path.absolute()}: {e}"))
+        print(color(f"error: cannot format {path.absolute()}: {e}", fg="red"))
         result = "error"
 
     return result
@@ -191,14 +163,14 @@ def format_and_check(path, mode, diff=False, color=False):
         if new_content == content:
             result = "unchanged"
         else:
-            print(white(f"would reformat {path}", bold=True))
+            print(color(f"would reformat {path}", fg="white", bold=True))
 
             if diff:
                 print(unified_diff(content, new_content, path, color))
 
             result = "reformatted"
     except black.InvalidInput as e:
-        print(red(f"error: cannot format {path.absolute()}: {e}"))
+        print(color(f"error: cannot format {path.absolute()}: {e}", fg="red"))
         result = "error"
 
     return result
@@ -211,14 +183,20 @@ def report_changes(n_reformatted, n_unchanged, n_error):
     reports = []
     if n_reformatted > 0:
         reports.append(
-            white(f"{n_reformatted} {noun(n_reformatted)} reformatted", bold=True)
+            color(
+                f"{n_reformatted} {noun(n_reformatted)} reformatted",
+                fg="white",
+                bold=True,
+            )
         )
 
     if n_unchanged > 0:
-        reports.append(white(f"{n_unchanged} {noun(n_unchanged)} left unchanged"))
+        reports.append(
+            color(f"{n_unchanged} {noun(n_unchanged)} left unchanged", fg="white")
+        )
 
     if n_error > 0:
-        reports.append(red(f"{n_error} {noun(n_error)} fails to reformat"))
+        reports.append(color(f"{n_error} {noun(n_error)} fails to reformat", fg="red"))
 
     return ", ".join(reports) + "."
 
@@ -230,18 +208,24 @@ def report_possible_changes(n_reformatted, n_unchanged, n_error):
     reports = []
     if n_reformatted > 0:
         reports.append(
-            white(
-                f"{n_reformatted} {noun(n_reformatted)} would be reformatted", bold=True
+            color(
+                f"{n_reformatted} {noun(n_reformatted)} would be reformatted",
+                fg="white",
+                bold=True,
             )
         )
 
     if n_unchanged > 0:
         reports.append(
-            white(f"{n_unchanged} {noun(n_unchanged)} would be left unchanged")
+            color(
+                f"{n_unchanged} {noun(n_unchanged)} would be left unchanged", fg="white"
+            )
         )
 
     if n_error > 0:
-        reports.append(red(f"{n_error} {noun(n_error)} would fail to reformat"))
+        reports.append(
+            color(f"{n_error} {noun(n_error)} would fail to reformat", fg="red")
+        )
 
     return ", ".join(reports) + "."
 
@@ -263,7 +247,7 @@ def statistics(sources):
 
 def process(args):
     if not args.src:
-        print(white("No Path provided. Nothing to do 😴", bold=True))
+        print(color("No Path provided. Nothing to do 😴", fg="white", bold=True))
         return 0
 
     selected_formats = getattr(args, "formats", None)
@@ -280,7 +264,10 @@ def process(args):
         include_regex = black.re_compile_maybe_verbose(args.include)
     except black.re.error:
         print(
-            red(f"Invalid regular expression for include given: {args.include!r}"),
+            color(
+                f"Invalid regular expression for include given: {args.include!r}",
+                fg="red",
+            ),
             file=sys.stderr,
         )
         return 2
@@ -289,7 +276,10 @@ def process(args):
         exclude_regex = black.re_compile_maybe_verbose(args.exclude)
     except black.re.error:
         print(
-            red(f"Invalid regular expression for exclude given: {args.exclude!r}"),
+            color(
+                f"Invalid regular expression for exclude given: {args.exclude!r}",
+                fg="red",
+            ),
             file=sys.stderr,
         )
         return 2
@@ -301,8 +291,9 @@ def process(args):
         )
     except black.re.error:
         print(
-            red(
-                f"Invalid regular expression for force_exclude given: {force_exclude!r}"
+            color(
+                f"Invalid regular expression for force_exclude given: {force_exclude!r}",
+                fg="red",
             ),
             file=sys.stderr,
         )
@@ -312,7 +303,13 @@ def process(args):
         collect_files(args.src, include_regex, exclude_regex, force_exclude_regex)
     )
     if len(sources) == 0:
-        print(white("No files are present to be formatted. Nothing to do 😴", bold=True))
+        print(
+            color(
+                "No files are present to be formatted. Nothing to do 😴",
+                fg="white",
+                bold=True,
+            )
+        )
         return 0
 
     target_versions = set(
@@ -352,8 +349,8 @@ def process(args):
     else:
         return_code = 0
 
-    reformatted_message = white("Oh no! 💥 💔 💥", bold=True)
-    no_reformatting_message = white("All done! ✨ 🍰 ✨", bold=True)
+    reformatted_message = color("Oh no! 💥 💔 💥", fg="white", bold=True)
+    no_reformatting_message = color("All done! ✨ 🍰 ✨", fg="white", bold=True)
     print(reformatted_message if return_code else no_reformatting_message)
     print(report)
     return return_code
