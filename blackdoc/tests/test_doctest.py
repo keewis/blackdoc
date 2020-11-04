@@ -5,7 +5,7 @@ import pytest
 
 from blackdoc.formats import doctest
 
-from .data.doctest import lines
+from .data.doctest import expected_lines, lines
 
 
 @pytest.mark.parametrize(
@@ -75,26 +75,41 @@ def test_extraction_func(line):
 
 
 @pytest.mark.parametrize(
-    "expected",
+    ["code_unit", "expected"],
     (
-        pytest.param(textwrap.dedent(lines[8]), id="single line"),
-        pytest.param(textwrap.dedent(lines[23]), id="single empty line"),
-        pytest.param(textwrap.dedent("\n".join(lines[4:8])), id="multiple lines"),
         pytest.param(
-            textwrap.dedent("\n".join(lines[17:23])),
+            textwrap.dedent(lines[8])[4:],
+            textwrap.dedent(expected_lines[8]),
+            id="single line",
+        ),
+        pytest.param(
+            textwrap.dedent(lines[23])[4:],
+            textwrap.dedent(expected_lines[24]),
+            id="single empty line",
+        ),
+        pytest.param(
+            "\n".join(line.lstrip()[4:] for line in lines[4:8]),
+            "\n".join(line.lstrip() for line in expected_lines[4:8]),
+            id="multiple lines",
+        ),
+        pytest.param(
+            "\n".join(line.lstrip()[4:] for line in lines[17:23]),
+            "\n".join(line.lstrip() for line in expected_lines[17:24]),
             id="multiple lines with empty continuation line",
         ),
         pytest.param(
-            textwrap.dedent("\n".join(lines[17:23]).replace("'''", '"""')),
+            "\n".join(line.lstrip()[4:] for line in lines[17:23]).replace("'''", '"""'),
+            "\n".join(line.lstrip() for line in expected_lines[17:24]).replace(
+                "'''", '"""'
+            ),
             id="multiple lines with inverted docstring quotes",
         ),
     ),
 )
-def test_reformatting_func(expected):
-    docstring_quotes = doctest.detect_docstring_quotes(expected)
-    line = "\n".join(line.lstrip()[4:] for line in expected.split("\n"))
+def test_reformatting_func(code_unit, expected):
+    docstring_quotes = doctest.detect_docstring_quotes(code_unit)
 
-    actual = doctest.reformatting_func(line, docstring_quotes)
+    actual = doctest.reformatting_func(code_unit, docstring_quotes)
     assert expected == actual
 
     # make sure the docstring quotes were not changed
