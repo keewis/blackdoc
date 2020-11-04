@@ -8,6 +8,7 @@ v0.3 (*unreleased*)
 - add colors to the output (:pull:`60`)
 - make the order of the printed files predictable (:pull:`61`)
 - make sure blocks end with a empty continuation line (:pull:`62`)
+- add a initial version of a contributing guide (:pull:`63`)
 
 
 v0.2 (01 October 2020)
