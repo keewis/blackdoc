@@ -1,20 +1,23 @@
 import argparse
 import datetime
 import difflib
+import functools
+import os
 import pathlib
+import re
 import sys
 
 import black
 
 from . import __version__, format_lines, formats
-from .blackcompat import find_project_root, gen_python_files, read_pyproject_toml
+from .blackcompat import (
+    find_project_root,
+    gen_python_files,
+    read_pyproject_toml,
+    wrap_stream_for_windows,
+)
 
-try:
-    import colorama
-
-    colorama.init()
-except ImportError:
-    pass
+colors_re = re.compile("\033" + r"\[[0-9]+(?:;[0-9]+)*m")
 
 
 def check_format_names(string):
@@ -88,6 +91,24 @@ def colorize(string, fg=None, bold=False):
         codes.append(foreground_colors.get(fg, fg))
 
     return f"\033[{';'.join(map(str, codes))}m{string}\033[{reset_code}m"
+
+
+def remove_colors(message):
+    return "".join(colors_re.split(message))
+
+
+def custom_print(message, end="\n", file=sys.stdout, **styles):
+    # signature inspired by click.secho
+    if os.isatty(file.fileno()):
+        message = colorize(message, **styles)
+    else:
+        message = remove_colors(message)
+
+    print(message, end=end, file=wrap_stream_for_windows(file))
+
+
+out = functools.partial(custom_print, file=sys.stdout)
+err = functools.partial(custom_print, file=sys.stderr)
 
 
 def color_diff(contents):
