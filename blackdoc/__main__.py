@@ -96,8 +96,8 @@ def remove_colors(message):
     return "".join(colors_re.split(message))
 
 
+# signature inspired by click.secho
 def custom_print(message, end="\n", file=sys.stdout, **styles):
-    # signature inspired by click.secho
     if file.isatty():
         message = colorize(message, **styles)
     else:
