@@ -29,6 +29,7 @@ docstring = """ a function to open files
     ...     print("caught")
     >>> a = 2
     ...
+    >>> # this is not a block:
 """
 lines = docstring.split("\n")
 labels = {
@@ -52,7 +53,8 @@ labels = {
     25: "none",
     (26, 28): "doctest",
     (28, 30): "doctest",
-    30: "none",
+    30: "doctest",
+    31: "none",
 }
 line_ranges, line_labels = from_dict(labels)
 
@@ -86,6 +88,7 @@ expected = """ a function to open files
     ...     print("caught")
     ...
     >>> a = 2
+    >>> # this is not a block:
 """
 expected_lines = expected.split("\n")
 expected_labels = {
@@ -109,6 +112,7 @@ expected_labels = {
     26: "none",
     (27, 30): "doctest",
     30: "doctest",
-    31: "none",
+    31: "doctest",
+    32: "none",
 }
 expected_line_ranges, expected_line_labels = from_dict(expected_labels)

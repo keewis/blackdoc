@@ -118,6 +118,11 @@ def prepare_lines(lines, remove_prompt=False):
             prepare_lines(expected_lines[29]),
             id="trailing newline at the end of a normal line",
         ),
+        pytest.param(
+            prepare_lines(lines[29], remove_prompt=True),
+            prepare_lines(expected_lines[30]),
+            id="trailing colon at the end of a comment",
+        ),
     ),
 )
 def test_reformatting_func(code_unit, expected):
