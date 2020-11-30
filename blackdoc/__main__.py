@@ -2,7 +2,6 @@ import argparse
 import datetime
 import difflib
 import functools
-import os
 import pathlib
 import re
 import sys
@@ -99,7 +98,7 @@ def remove_colors(message):
 
 def custom_print(message, end="\n", file=sys.stdout, **styles):
     # signature inspired by click.secho
-    if os.isatty(file.fileno()):
+    if file.isatty():
         message = colorize(message, **styles)
     else:
         message = remove_colors(message)
