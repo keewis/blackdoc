@@ -1,20 +1,22 @@
 import argparse
 import datetime
 import difflib
+import functools
 import pathlib
+import re
 import sys
 
 import black
 
 from . import __version__, format_lines, formats
-from .blackcompat import find_project_root, gen_python_files, read_pyproject_toml
+from .blackcompat import (
+    find_project_root,
+    gen_python_files,
+    read_pyproject_toml,
+    wrap_stream_for_windows,
+)
 
-try:
-    import colorama
-
-    colorama.init()
-except ImportError:
-    pass
+colors_re = re.compile("\033" + r"\[[0-9]+(?:;[0-9]+)*m")
 
 
 def check_format_names(string):
@@ -90,6 +92,24 @@ def colorize(string, fg=None, bold=False):
     return f"\033[{';'.join(map(str, codes))}m{string}\033[{reset_code}m"
 
 
+def remove_colors(message):
+    return "".join(colors_re.split(message))
+
+
+# signature inspired by click.secho
+def custom_print(message, end="\n", file=sys.stdout, **styles):
+    if file.isatty():
+        message = colorize(message, **styles)
+    else:
+        message = remove_colors(message)
+
+    print(message, end=end, file=wrap_stream_for_windows(file))
+
+
+out = functools.partial(custom_print, file=sys.stdout)
+err = functools.partial(custom_print, file=sys.stderr)
+
+
 def color_diff(contents):
     """Inject the ANSI color codes to the diff."""
     lines = contents.split("\n")
@@ -139,13 +159,13 @@ def format_and_overwrite(path, mode):
         if new_content == content:
             result = "unchanged"
         else:
-            print(colorize(f"reformatted {path}", fg="white", bold=True))
+            err(f"reformatted {path}", fg="white", bold=True)
             result = "reformatted"
 
         with open(path, "w", encoding=encoding, newline=newline) as f:
             f.write(new_content)
     except black.InvalidInput as e:
-        print(colorize(f"error: cannot format {path.absolute()}: {e}", fg="red"))
+        err(f"error: cannot format {path.absolute()}: {e}", fg="red")
         result = "error"
 
     return result
@@ -163,14 +183,14 @@ def format_and_check(path, mode, diff=False, color=False):
         if new_content == content:
             result = "unchanged"
         else:
-            print(colorize(f"would reformat {path}", fg="white", bold=True))
+            err(f"would reformat {path}", fg="white", bold=True)
 
             if diff:
-                print(unified_diff(content, new_content, path, color))
+                out(unified_diff(content, new_content, path, color))
 
             result = "reformatted"
     except black.InvalidInput as e:
-        print(colorize(f"error: cannot format {path.absolute()}: {e}", fg="red"))
+        err(f"error: cannot format {path.absolute()}: {e}", fg="red")
         result = "error"
 
     return result
@@ -249,7 +269,7 @@ def statistics(sources):
 
 def process(args):
     if not args.src:
-        print(colorize("No Path provided. Nothing to do 😴", fg="white", bold=True))
+        err("No Path provided. Nothing to do 😴", fg="white", bold=True)
         return 0
 
     selected_formats = getattr(args, "formats", None)
@@ -265,25 +285,13 @@ def process(args):
     try:
         include_regex = black.re_compile_maybe_verbose(args.include)
     except black.re.error:
-        print(
-            colorize(
-                f"Invalid regular expression for include given: {args.include!r}",
-                fg="red",
-            ),
-            file=sys.stderr,
-        )
+        err(f"Invalid regular expression for include given: {args.include!r}", fg="red")
         return 2
 
     try:
         exclude_regex = black.re_compile_maybe_verbose(args.exclude)
     except black.re.error:
-        print(
-            colorize(
-                f"Invalid regular expression for exclude given: {args.exclude!r}",
-                fg="red",
-            ),
-            file=sys.stderr,
-        )
+        err(f"Invalid regular expression for exclude given: {args.exclude!r}", fg="red")
         return 2
 
     try:
@@ -292,12 +300,9 @@ def process(args):
             black.re_compile_maybe_verbose(force_exclude) if force_exclude else None
         )
     except black.re.error:
-        print(
-            colorize(
-                f"Invalid regular expression for force_exclude given: {force_exclude!r}",
-                fg="red",
-            ),
-            file=sys.stderr,
+        err(
+            f"Invalid regular expression for force_exclude given: {force_exclude!r}",
+            fg="red",
         )
         return 2
 
@@ -305,12 +310,10 @@ def process(args):
         collect_files(args.src, include_regex, exclude_regex, force_exclude_regex)
     )
     if len(sources) == 0:
-        print(
-            colorize(
-                "No files are present to be formatted. Nothing to do 😴",
-                fg="white",
-                bold=True,
-            )
+        err(
+            "No files are present to be formatted. Nothing to do 😴",
+            fg="white",
+            bold=True,
         )
         return 0
 
@@ -351,10 +354,14 @@ def process(args):
     else:
         return_code = 0
 
-    reformatted_message = colorize("Oh no! 💥 💔 💥", fg="white", bold=True)
-    no_reformatting_message = colorize("All done! ✨ 🍰 ✨", fg="white", bold=True)
-    print(reformatted_message if return_code else no_reformatting_message)
-    print(report)
+    reformatted_message = "Oh no! 💥 💔 💥"
+    no_reformatting_message = "All done! ✨ 🍰 ✨"
+    err(
+        reformatted_message if return_code else no_reformatting_message,
+        fg="white",
+        bold=True,
+    )
+    err(report)
     return return_code
 
 
