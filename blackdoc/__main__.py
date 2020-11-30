@@ -160,13 +160,13 @@ def format_and_overwrite(path, mode):
         if new_content == content:
             result = "unchanged"
         else:
-            print(colorize(f"reformatted {path}", fg="white", bold=True))
+            err(f"reformatted {path}", fg="white", bold=True)
             result = "reformatted"
 
         with open(path, "w", encoding=encoding, newline=newline) as f:
             f.write(new_content)
     except black.InvalidInput as e:
-        print(colorize(f"error: cannot format {path.absolute()}: {e}", fg="red"))
+        err(f"error: cannot format {path.absolute()}: {e}", fg="red")
         result = "error"
 
     return result
@@ -184,14 +184,14 @@ def format_and_check(path, mode, diff=False, color=False):
         if new_content == content:
             result = "unchanged"
         else:
-            print(colorize(f"would reformat {path}", fg="white", bold=True))
+            err(f"would reformat {path}", fg="white", bold=True)
 
             if diff:
-                print(unified_diff(content, new_content, path, color))
+                out(unified_diff(content, new_content, path, color))
 
             result = "reformatted"
     except black.InvalidInput as e:
-        print(colorize(f"error: cannot format {path.absolute()}: {e}", fg="red"))
+        err(f"error: cannot format {path.absolute()}: {e}", fg="red")
         result = "error"
 
     return result
@@ -270,7 +270,7 @@ def statistics(sources):
 
 def process(args):
     if not args.src:
-        print(colorize("No Path provided. Nothing to do 😴", fg="white", bold=True))
+        err("No Path provided. Nothing to do 😴", fg="white", bold=True)
         return 0
 
     selected_formats = getattr(args, "formats", None)
@@ -286,25 +286,13 @@ def process(args):
     try:
         include_regex = black.re_compile_maybe_verbose(args.include)
     except black.re.error:
-        print(
-            colorize(
-                f"Invalid regular expression for include given: {args.include!r}",
-                fg="red",
-            ),
-            file=sys.stderr,
-        )
+        err(f"Invalid regular expression for include given: {args.include!r}", fg="red")
         return 2
 
     try:
         exclude_regex = black.re_compile_maybe_verbose(args.exclude)
     except black.re.error:
-        print(
-            colorize(
-                f"Invalid regular expression for exclude given: {args.exclude!r}",
-                fg="red",
-            ),
-            file=sys.stderr,
-        )
+        err(f"Invalid regular expression for exclude given: {args.exclude!r}", fg="red")
         return 2
 
     try:
@@ -313,12 +301,9 @@ def process(args):
             black.re_compile_maybe_verbose(force_exclude) if force_exclude else None
         )
     except black.re.error:
-        print(
-            colorize(
-                f"Invalid regular expression for force_exclude given: {force_exclude!r}",
-                fg="red",
-            ),
-            file=sys.stderr,
+        err(
+            f"Invalid regular expression for force_exclude given: {force_exclude!r}",
+            fg="red",
         )
         return 2
 
@@ -326,12 +311,10 @@ def process(args):
         collect_files(args.src, include_regex, exclude_regex, force_exclude_regex)
     )
     if len(sources) == 0:
-        print(
-            colorize(
-                "No files are present to be formatted. Nothing to do 😴",
-                fg="white",
-                bold=True,
-            )
+        err(
+            "No files are present to be formatted. Nothing to do 😴",
+            fg="white",
+            bold=True,
         )
         return 0
 
@@ -372,10 +355,14 @@ def process(args):
     else:
         return_code = 0
 
-    reformatted_message = colorize("Oh no! 💥 💔 💥", fg="white", bold=True)
-    no_reformatting_message = colorize("All done! ✨ 🍰 ✨", fg="white", bold=True)
-    print(reformatted_message if return_code else no_reformatting_message)
-    print(report)
+    reformatted_message = "Oh no! 💥 💔 💥"
+    no_reformatting_message = "All done! ✨ 🍰 ✨"
+    err(
+        reformatted_message if return_code else no_reformatting_message,
+        fg="white",
+        bold=True,
+    )
+    err(report)
     return return_code
 
 
