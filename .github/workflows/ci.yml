@@ -15,12 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.9]
-        include:
-          - python-version: 3.8
-            dependencies: ""
-          - python-version: 3.8
-            dependencies: "upstream-dev"
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
     - name: checkout the repository
@@ -36,12 +31,7 @@ jobs:
 
     - name: install dependencies
       run: |
-        if [ -n "${{ matrix.dependencies }}" ]; then
-            dependencies="${{ matrix.dependencies }}"
-        else
-            dependencies="normal"
-        fi
-        python -m pip install -r ci/requirements/$dependencies.txt
+        python -m pip install -r ci/requirements/normal.txt
 
     - name: install blackdoc
       run: python -m pip install .
