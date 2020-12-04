@@ -51,7 +51,13 @@ jobs:
     - name: show versions
       run: python -m pip list
 
+    - name: import and run blackdoc
+      run: |
+        python -c 'import blackdoc'
+        python -m blackdoc
+
     - name: run tests
+      if: success()
       id: status
       run: |
         set -euo pipefail
