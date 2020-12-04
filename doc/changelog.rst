@@ -5,6 +5,7 @@ v0.4 (*unreleased*)
 -------------------
 - don't detect comments ending with a colon as a block (:issue:`67`, :pull:`68`)
 - don't add color to redirected output and print reports to ``stderr`` (:issue:`66`, :pull:`69`)
+- add a nightly CI which also runs every day at 00:00 UTC (:pull:`71`)
 
 v0.3 (04 November 2020)
 -----------------------
