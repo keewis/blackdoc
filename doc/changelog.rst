@@ -1,6 +1,10 @@
 Changelog
 =========
 
+v0.4 (*unreleased*)
+-------------------
+
+
 v0.3.1 (04 December 2020)
 -------------------------
 - don't detect comments ending with a colon as a block (:issue:`67`, :pull:`68`)
