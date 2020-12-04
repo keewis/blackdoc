@@ -1,0 +1,53 @@
+name: Nightly CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: "0 0 * * *"  # Daily "At 00:00" UTC
+
+jobs:
+  upstream-dev:
+    name: upstream-dev
+    runs-on: ubuntu-latest
+    if: |
+      always()
+      && (github.repository == 'keewis/blackdoc' || github.event_name != 'schedule')
+
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+    - name: cancel previous runs
+      uses: styfle/cancel-workflow-action@0.6.0
+      with:
+        access_token: ${{ github.token }}
+
+    - name: checkout the repository
+      uses: actions/checkout@v2
+
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: upgrade pip
+      run: python -m pip install --upgrade pip
+
+    - name: install dependencies
+      run: |
+        python -m pip install -r ci/requirements/upstream-dev.txt
+
+    - name: install blackdoc
+      run: python -m pip install .
+
+    - name: show versions
+      run: python -m pip list
+
+    - name: run tests
+      id: status
+      run: |
+        python -m pytest
