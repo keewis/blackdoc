@@ -82,7 +82,7 @@ jobs:
     if: |
       always()
       && github.event_name == 'schedule'
-      && github.repository == keewis/blackdoc'
+      && github.repository == 'keewis/blackdoc'
       && needs.upstream-dev.outputs.artifacts_availability == 'true'
     steps:
     - name: checkout the repository
