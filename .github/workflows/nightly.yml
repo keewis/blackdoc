@@ -13,8 +13,7 @@ jobs:
     name: upstream-dev
     runs-on: ubuntu-latest
     if: |
-      always()
-      && (github.repository == 'keewis/blackdoc' || github.event_name != 'schedule')
+      github.repository == 'keewis/blackdoc'
 
     strategy:
       fail-fast: false
