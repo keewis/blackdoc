@@ -67,7 +67,7 @@ jobs:
     - name: Upload artifacts
       if: |
         failure()
-        && ${{ steps.status.outcome }} == 'failure'
+        && steps.status.outcome == 'failure'
       uses: actions/upload-artifact@v2
       with:
         name: output-${{ matrix.python-version }}-log
