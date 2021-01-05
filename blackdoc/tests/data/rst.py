@@ -150,5 +150,6 @@ labels = {
     (81, 84): "rst",
     84: "none",
     (85, 88): "rst",
+    88: "none",
 }
 line_ranges, line_labels = from_dict(labels)
