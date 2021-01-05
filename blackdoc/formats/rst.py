@@ -50,6 +50,7 @@ def continuation_lines(lines, indent):
         try:
             line_number, line = lines.peek()
         except StopIteration:
+            lines.prepend(*newlines)
             break
 
         current_indent = len(line) - len(line.lstrip())
