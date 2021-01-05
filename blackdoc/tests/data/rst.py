@@ -89,7 +89,7 @@ a code block with testcode:
 
     file.close()
 """
-lines = content.splitlines()
+lines = content.split("\n")
 labels = {
     1: "none",
     2: "none",
