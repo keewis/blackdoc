@@ -3,7 +3,7 @@ import importlib
 import itertools
 import sys
 
-from . import format_classification
+from .utils import format_classification
 
 
 def format_conflicting_ranges(index_a, index_b, ranges):
