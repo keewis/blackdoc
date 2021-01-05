@@ -1,20 +1,25 @@
-from blackdoc import classification
+import pytest
 
-from .data import doctest as data
-from .data import print_classification
+from blackdoc import classification, formats
+
+from . import data
+from .data import print_classification, to_classification_format
 
 
-def test_detect_format():
-    lines = enumerate(data.lines)
+@pytest.mark.parametrize("format", ("rst", "doctest", "ipython"))
+def test_detect_format(format, monkeypatch):
+    module = getattr(formats, format)
+    detection_funcs = {
+        format: module.detection_func,
+        "none": formats.none.detection_func,
+    }
+    monkeypatch.setattr(classification, "detection_funcs", detection_funcs)
 
-    labeled = tuple(classification.detect_format(lines))
+    data_module = getattr(data, format)
+    expected = to_classification_format(data_module.labels, data_module.lines)
+    lines = enumerate(data_module.lines, start=1)
+    actual = tuple(classification.detect_format(lines))
 
-    print_classification(labeled)
+    print_classification(actual)
 
-    actual = tuple(range_ for range_, _, _ in labeled)
-    expected = data.line_ranges
-    assert expected == actual
-
-    actual = tuple(name for _, name, _ in labeled)
-    expected = data.line_labels
     assert expected == actual
