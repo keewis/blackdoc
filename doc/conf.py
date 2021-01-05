@@ -15,7 +15,7 @@ import datetime as dt
 project = "blackdoc"
 author = f"{project} developers"
 year = dt.datetime.now().year
-copyright = f"{year}, {author}"
+copyright = f"2020-{year}, {author}"
 
 # The master toctree document.
 master_doc = "index"
