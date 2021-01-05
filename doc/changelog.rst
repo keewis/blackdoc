@@ -1,6 +1,10 @@
 Changelog
 =========
 
+v0.4 (*unreleased*)
+-------------------
+
+
 v0.3.2 (05 January 2021)
 ------------------------
 - don't strip newlines immediately before eol (:pull:`73`)
