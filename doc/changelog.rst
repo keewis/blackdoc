@@ -3,7 +3,7 @@ Changelog
 
 v0.4 (*unreleased*)
 -------------------
-
+- don't strip newlines immediately before eol (:pull:`73`)
 
 v0.3.1 (04 December 2020)
 -------------------------
