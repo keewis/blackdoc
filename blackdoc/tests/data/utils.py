@@ -9,7 +9,7 @@ def from_dict(labels):
     return line_ranges, line_labels
 
 
-def to_detection_format(labels, lines):
+def to_classification_format(labels, lines):
     prepared_labels = dict(zip(*from_dict(labels)))
     return tuple(
         ((min_ + 1, max_ + 1), label, "\n".join(lines[min_:max_]))
