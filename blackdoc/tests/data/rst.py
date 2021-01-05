@@ -1,4 +1,4 @@
-from . import from_dict
+from .utils import from_dict
 
 content = """\
 Long description of the function's assumptions and on how to call it.
@@ -89,7 +89,7 @@ a code block with testcode:
 
     file.close()
 """
-lines = content.splitlines()
+lines = content.split("\n")
 labels = {
     1: "none",
     2: "none",
@@ -150,5 +150,6 @@ labels = {
     (81, 84): "rst",
     84: "none",
     (85, 88): "rst",
+    88: "none",
 }
 line_ranges, line_labels = from_dict(labels)

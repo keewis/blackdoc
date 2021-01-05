@@ -1,4 +1,4 @@
-from . import from_dict
+from .utils import from_dict
 
 docstring = """ a function to open files
 
