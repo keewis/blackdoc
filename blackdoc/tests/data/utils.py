@@ -19,7 +19,7 @@ def to_classification_format(labels, lines):
 
 def format_line_with_range(name, range_, unit):
     min_, max_ = range_
-    line_numbers = range(min_ + 1, max_ + 1)
+    line_numbers = range(min_, max_)
 
     no_group = " "
     start_group = "┐"
