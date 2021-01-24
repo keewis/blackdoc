@@ -10,7 +10,7 @@ on:
 
 jobs:
   detect-skip-ci-trigger:
-    name: Detect CI Trigger
+    name: "Detect CI Trigger: [skip-ci]"
     runs-on: ubuntu-latest
     outputs:
       triggered: ${{ steps.detect-trigger.outputs.trigger-found }}
