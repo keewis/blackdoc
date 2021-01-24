@@ -25,11 +25,27 @@ def extract_short_test_summary_info(lines):
     return content
 
 
+def extract_warnings(lines):
+    up_to_start_of_section = itertools.dropwhile(
+        lambda l: "=== warnings summary ===" not in l,
+        lines,
+    )
+    up_to_section_content = itertools.islice(up_to_start_of_section, 1, None)
+    section_content = itertools.takewhile(
+        lambda l: not l.startswith("==="),
+        up_to_section_content,
+    )
+    content = "\n".join(section_content)
+    return content
+
+
 def format_log_message(path):
     py_version = path.name.split("-")[1]
     summary = f"Python {py_version} Test Summary Info"
     with open(path) as f:
-        data = extract_short_test_summary_info(line.rstrip() for line in f)
+        lines = [line.rstrip() for line in f]
+        data = extract_short_test_summary_info(lines)
+        warnings = extract_warnings(lines)
 
     message = (
         textwrap.dedent(
@@ -46,6 +62,24 @@ def format_log_message(path):
         .rstrip()
         .format(summary=summary, data=data)
     )
+
+    if warnings:
+        message += (
+            textwrap.dedent(
+                """
+
+                <details><summary>Warnings</summary>
+
+                ```
+                {warnings}
+                ```
+
+                </details>
+                """
+            )
+            .rstrip()
+            .format(warnings=warnings)
+        )
 
     return message
 
