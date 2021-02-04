@@ -119,6 +119,44 @@ def test_detection_func(lines, expected):
             ),
             id="ipython",
         ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                .. ipython:: python
+                    print("abc")
+                """
+            ).rstrip(),
+            (
+                {
+                    "name": "ipython",
+                    "language": "python",
+                    "options": (),
+                    "prompt_length": 4,
+                    "n_header_lines": 2,
+                },
+                'print("abc")',
+            ),
+            id="missing sep and eof line",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                .. ipython:: python
+                    print("abc")
+                """
+            ),
+            (
+                {
+                    "name": "ipython",
+                    "language": "python",
+                    "options": (),
+                    "prompt_length": 4,
+                    "n_header_lines": 2,
+                },
+                'print("abc")',
+            ),
+            id="missing sep line",
+        ),
     ),
 )
 def test_extraction_func(code, expected):
