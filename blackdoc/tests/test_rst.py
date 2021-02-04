@@ -46,6 +46,20 @@ from .data import rst as data
             ((1, 4), rst.name, "\n".join(data.lines[84:87])),
             id="testcleanup",
         ),
+        pytest.param(
+            [".. ipython:: python", '    print("abc")'],
+            (
+                (1, 3),
+                rst.name,
+                textwrap.dedent(
+                    """\
+                    .. ipython:: python
+                        print("abc")
+                    """
+                ).rstrip(),
+            ),
+            id="missing option separator",
+        ),
     ),
 )
 def test_detection_func(lines, expected):
