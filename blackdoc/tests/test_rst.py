@@ -153,7 +153,7 @@ def test_detection_func(lines, expected):
                     "prompt_length": 4,
                     "n_header_lines": 2,
                 },
-                'print("abc")',
+                "\n".join(['print("abc")', ""]),
             ),
             id="missing sep line",
         ),
