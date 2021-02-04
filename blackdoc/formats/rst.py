@@ -11,6 +11,7 @@ name = "rst"
 directive_re = re.compile(
     "(?P<indent>[ ]*).. (?P<name>[a-z][-a-z]*)::(?: (?P<language>[a-z]+))?"
 )
+option_re = re.compile(r"^\s*:[^:]+:")
 
 include_pattern = r"\.rst$"
 
@@ -30,7 +31,7 @@ def take_while(iterable, predicate):
 
 
 def continuation_lines(lines, indent):
-    options = tuple(take_while(lines, lambda x: x[1].strip()))
+    options = tuple(take_while(lines, lambda x: option_re.match(x[1])))
     newlines = tuple(take_while(lines, lambda x: not x[1].strip()))
     decorator_lines = tuple(take_while(lines, lambda x: x[1].lstrip().startswith("@")))
     _, next_line = lines.peek((0, None))
