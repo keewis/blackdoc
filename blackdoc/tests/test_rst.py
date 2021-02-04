@@ -46,6 +46,20 @@ from .data import rst as data
             ((1, 4), rst.name, "\n".join(data.lines[84:87])),
             id="testcleanup",
         ),
+        pytest.param(
+            [".. ipython:: python", '    print("abc")'],
+            (
+                (1, 3),
+                rst.name,
+                textwrap.dedent(
+                    """\
+                    .. ipython:: python
+                        print("abc")
+                    """
+                ).rstrip(),
+            ),
+            id="missing option separator",
+        ),
     ),
 )
 def test_detection_func(lines, expected):
@@ -104,6 +118,44 @@ def test_detection_func(lines, expected):
                 rst.hide_magic(textwrap.dedent("\n".join(data.lines[29:34]))),
             ),
             id="ipython",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                .. ipython:: python
+                    print("abc")
+                """
+            ).rstrip(),
+            (
+                {
+                    "name": "ipython",
+                    "language": "python",
+                    "options": (),
+                    "prompt_length": 4,
+                    "n_header_lines": 2,
+                },
+                'print("abc")',
+            ),
+            id="missing sep and eof line",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                .. ipython:: python
+                    print("abc")
+                """
+            ),
+            (
+                {
+                    "name": "ipython",
+                    "language": "python",
+                    "options": (),
+                    "prompt_length": 4,
+                    "n_header_lines": 2,
+                },
+                "\n".join(['print("abc")', ""]),
+            ),
+            id="missing sep line",
         ),
     ),
 )

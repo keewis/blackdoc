@@ -164,7 +164,7 @@ def format_and_overwrite(path, mode):
 
         with open(path, "w", encoding=encoding, newline=newline) as f:
             f.write(new_content)
-    except black.InvalidInput as e:
+    except (black.InvalidInput, formats.InvalidFormatError) as e:
         err(f"error: cannot format {path.absolute()}: {e}", fg="red")
         result = "error"
 
@@ -189,7 +189,7 @@ def format_and_check(path, mode, diff=False, color=False):
                 out(unified_diff(content, new_content, path, color))
 
             result = "reformatted"
-    except black.InvalidInput as e:
+    except (black.InvalidInput, formats.InvalidFormatError) as e:
         err(f"error: cannot format {path.absolute()}: {e}", fg="red")
         result = "error"
 

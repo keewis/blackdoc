@@ -3,6 +3,8 @@ import re
 
 import more_itertools
 
+from .errors import InvalidFormatError
+
 name = "ipython"
 
 prompt_re = re.compile(r"^(?P<indent>[ ]*)(?P<prompt>In \[(?P<count>\d+)\]: )")
@@ -59,7 +61,7 @@ def detection_func(lines):
 
     line_range = min(line_numbers), max(line_numbers) + 1
     if line_numbers != tuple(range(line_range[0], line_range[1])):
-        raise RuntimeError("line numbers are not contiguous")
+        raise InvalidFormatError("line numbers are not contiguous")
 
     return line_range, name, "\n".join(lines)
 
@@ -117,10 +119,13 @@ def extraction_func(code):
         return line[n:]
 
     lines = code.split("\n")
+    if len(lines) == 0:
+        raise InvalidFormatError("no lines found")
+
     parameters = metadata(lines[0])
 
     if not all(is_ipython(line) for line in lines):
-        raise RuntimeError(f"misformatted code unit: {code}")
+        raise InvalidFormatError(f"misformatted code unit: {code}")
 
     extracted = "\n".join(remove_prompt(line, **parameters) for line in lines)
 

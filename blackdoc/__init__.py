@@ -5,7 +5,7 @@ except ImportError:
 
 from .blacken import blacken
 from .classification import detect_format
-from .formats import register_format  # noqa
+from .formats import InvalidFormatError, register_format  # noqa
 
 try:
     __version__ = version("blackdoc")
