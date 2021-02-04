@@ -3,7 +3,7 @@ Changelog
 
 v0.4 (*unreleased*)
 -------------------
-- don't crash on invalid rst directives (:issue:`78`, :pull:`79`)
+- don't crash on malformed rst directives (:issue:`78`, :pull:`79`)
 
 v0.3.2 (05 January 2021)
 ------------------------
