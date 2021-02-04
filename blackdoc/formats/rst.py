@@ -128,16 +128,24 @@ def extraction_func(code):
     directive.pop("indent")
 
     directive["options"] = tuple(
-        line.strip() for line in take_while(lines, lambda line: line.strip())
+        line.strip() for line in take_while(lines, lambda line: option_re.match(line))
     )
 
-    line = more_itertools.first(lines)
-    if line.strip():
+    # correct a missing newline
+    newline = lines.peek(None)
+    if newline is None:
         raise RuntimeError(
-            f"misformatted code block: newline after options required but found: {line}"
+            "misformatted code block:"
+            " newline after directive options required"
+            " but found <end-of-file>"
         )
+    elif not newline.strip():
+        more_itertools.first(lines)
 
     lines_ = tuple(lines)
+    if len(lines_) == 0:
+        raise RuntimeError("misformatted code block: could not find any code")
+
     indent = len(lines_[0]) - len(lines_[0].lstrip())
     directive["prompt_length"] = indent
     directive["n_header_lines"] = len(directive["options"]) + 2
