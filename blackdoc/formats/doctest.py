@@ -3,6 +3,8 @@ import re
 
 import more_itertools
 
+from .errors import InvalidFormatError
+
 name = "doctest"
 prompt_length = 4
 prompt = ">>>"
@@ -46,7 +48,7 @@ def detection_func(lines):
 
     line_range = min(line_numbers), max(line_numbers) + 1
     if line_numbers != tuple(range(line_range[0], line_range[1])):
-        raise RuntimeError("line numbers are not contiguous")
+        raise InvalidFormatError("line numbers are not contiguous")
 
     return line_range, name, "\n".join(lines)
 
@@ -85,7 +87,7 @@ def extraction_func(line):
         extract_prompt(line).rstrip() not in (prompt, continuation_prompt)
         for line in lines
     ):
-        raise RuntimeError(f"misformatted code unit: {line}")
+        raise InvalidFormatError(f"misformatted code unit: {line}")
 
     extracted_line = "\n".join(remove_prompt(line) for line in lines)
     docstring_quotes = detect_docstring_quotes(extracted_line)

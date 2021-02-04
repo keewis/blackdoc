@@ -3,6 +3,7 @@ import textwrap
 import more_itertools
 
 from . import doctest, ipython, none, rst
+from .errors import InvalidFormatError  # noqa
 from .register import detection_funcs  # noqa
 from .register import disable  # noqa
 from .register import format_include_patterns  # noqa

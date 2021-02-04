@@ -4,6 +4,7 @@ import textwrap
 
 import more_itertools
 
+from .errors import InvalidFormatError
 from .ipython import hide_magic, prompt_re, reveal_magic
 
 name = "rst"
@@ -122,7 +123,7 @@ def extraction_func(code):
 
     match = directive_re.fullmatch(more_itertools.first(lines))
     if not match:
-        raise RuntimeError(f"misformatted code block:\n{code}")
+        raise InvalidFormatError(f"misformatted code block:\n{code}")
 
     directive = match.groupdict()
     directive.pop("indent")
@@ -134,7 +135,7 @@ def extraction_func(code):
     # correct a missing newline
     newline = lines.peek(None)
     if newline is None:
-        raise RuntimeError(
+        raise InvalidFormatError(
             "misformatted code block:"
             " newline after directive options required"
             " but found <end-of-file>"
@@ -144,7 +145,7 @@ def extraction_func(code):
 
     lines_ = tuple(lines)
     if len(lines_) == 0:
-        raise RuntimeError("misformatted code block: could not find any code")
+        raise InvalidFormatError("misformatted code block: could not find any code")
 
     indent = len(lines_[0]) - len(lines_[0].lstrip())
     directive["prompt_length"] = indent
