@@ -1,8 +1,8 @@
 Changelog
 =========
 
-v0.4 (*unreleased*)
--------------------
+v0.3.3 (06 February 2021)
+-------------------------
 - don't crash on malformed rst directives (:issue:`78`, :pull:`79`)
 
 v0.3.2 (05 January 2021)
