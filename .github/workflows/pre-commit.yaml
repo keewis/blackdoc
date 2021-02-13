@@ -8,7 +8,7 @@ on:
 
 jobs:
   autoupdate:
-    name: "pre-commit autoupdate"
+    name: 'pre-commit autoupdate'
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -34,6 +34,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EXECUTE_COMMANDS: |
             python -m pre_commit autoupdate
-          COMMIT_MESSAGE: "pre-commit: autoupdate hook versions"
-          PR_TITLE: "pre-commit: autoupdate hook versions"
-          PR_BRANCH_NAME: "pre-commit/autoupdate-${PR_ID}"
+          COMMIT_MESSAGE: 'pre-commit: autoupdate hook versions'
+          PR_TITLE: 'pre-commit: autoupdate hook versions'
+          PR_BRANCH_NAME: 'pre-commit/autoupdate-${PR_ID}'
