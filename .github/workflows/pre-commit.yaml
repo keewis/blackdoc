@@ -1,4 +1,4 @@
-name: pre-commit autoupdate
+name: "pre-commit autoupdate CI"
 
 on:
   schedule:
