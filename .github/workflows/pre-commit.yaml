@@ -30,7 +30,7 @@ jobs:
       - name: version info
         run: python -m pip list
       - name: autoupdate
-        uses: technote-space/create-pr-action@110a5e12fc45a3dae3c9d0246af2227b5073d2ca
+        uses: technote-space/create-pr-action@837dbe469b39f08d416889369a52e2a993625c84
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EXECUTE_COMMANDS: |
