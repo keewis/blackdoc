@@ -10,6 +10,7 @@ jobs:
   autoupdate:
     name: 'pre-commit autoupdate'
     runs-on: ubuntu-latest
+    if: github.repository == 'keewis/blackdoc'
     steps:
       - name: checkout
         uses: actions/checkout@v2
