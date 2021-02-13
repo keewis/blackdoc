@@ -13,6 +13,13 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
+      - name: Cache pip and pre-commit
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pre-commit
+            ~/.cache/pip
+          key: ${{ runner.os }}-pre-commit-autoupdate
       - name: setup python
         uses: actions/setup-python@v2
       - name: upgrade pip
