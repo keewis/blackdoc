@@ -8,8 +8,9 @@ on:
 
 jobs:
   autoupdate:
-    name: "pre-commit autoupdate"
+    name: 'pre-commit autoupdate'
     runs-on: ubuntu-latest
+    if: github.repository == 'keewis/blackdoc'
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -29,11 +30,11 @@ jobs:
       - name: version info
         run: python -m pip list
       - name: autoupdate
-        uses: technote-space/create-pr-action@110a5e12fc45a3dae3c9d0246af2227b5073d2ca
+        uses: technote-space/create-pr-action@837dbe469b39f08d416889369a52e2a993625c84
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EXECUTE_COMMANDS: |
             python -m pre_commit autoupdate
-          COMMIT_MESSAGE: "pre-commit: autoupdate hook versions"
-          PR_TITLE: "pre-commit: autoupdate hook versions"
-          PR_BRANCH_NAME: "pre-commit/autoupdate-${PR_ID}"
+          COMMIT_MESSAGE: 'pre-commit: autoupdate hook versions'
+          PR_TITLE: 'pre-commit: autoupdate hook versions'
+          PR_BRANCH_NAME: 'pre-commit/autoupdate-${PR_ID}'
