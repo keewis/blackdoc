@@ -29,7 +29,7 @@ def disable(format_names):
 
 
 def register_format(name, obj):
-    """ register a new format """
+    """register a new format"""
     if name in detection_funcs:
         warnings.warn(f"{name} already registered", RuntimeWarning)
 
