@@ -1,10 +1,10 @@
 Release process
 ===============
-1. the release happens from `master` so make sure it is up-to-date:
+1. the release happens from `main` so make sure it is up-to-date:
 
    .. code:: sh
 
-      git pull origin master
+      git pull origin main
 
 2. look at `changelog.rst` and make sure it is complete and with
    references to issues and pull requests
