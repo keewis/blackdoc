@@ -1,9 +1,9 @@
 Changelog
 =========
 
-v0.4.0 (*unreleased*)
+v0.3.4 (*unreleased*)
 ---------------------
-
+- declare the ``toml`` library as a runtime dependency (:pull:`101`)
 
 v0.3.3 (06 February 2021)
 -------------------------
