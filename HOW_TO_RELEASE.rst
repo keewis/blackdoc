@@ -56,11 +56,11 @@ Release process
       deactivate
       git clean -xdf
 
-10. Push to master:
+10. Push to main:
 
    .. code:: sh
 
-      git push origin master
+      git push origin main
       git push origin --tags
 
 11. Update stable:
@@ -78,4 +78,4 @@ Release process
     A workflow will then publish to PyPI, which in turn will be picked up by conda-forge
     and a PR will be opened automatically on the feedstock.
 
-14. Add a new section to the changelog and push directly to master
+14. Add a new section to the changelog and push directly to main
