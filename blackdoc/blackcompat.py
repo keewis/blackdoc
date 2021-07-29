@@ -8,7 +8,7 @@ import sys
 from functools import lru_cache
 from pathlib import Path
 
-import toml
+import tomli
 
 
 @lru_cache()
@@ -105,9 +105,11 @@ def find_user_pyproject_toml() -> Path:
 def parse_pyproject_toml(path_config):
     """Parse a pyproject toml file, pulling out relevant parts for Black
 
-    If parsing fails, will raise a toml.TomlDecodeError
+    If parsing fails, will raise a tomli.TomlDecodeError
     """
-    pyproject_toml = toml.load(path_config)
+    with open(path_config, encoding="utf8") as f:
+        pyproject_toml = tomli.load(f)
+
     black_config = pyproject_toml.get("tool", {}).get("black", {})
     blackdoc_config = pyproject_toml.get("tool", {}).get("blackdoc", {})
     config = {**black_config, **blackdoc_config}
@@ -123,7 +125,7 @@ def read_pyproject_toml(source, config_path):
 
     try:
         config = parse_pyproject_toml(config_path)
-    except (toml.TomlDecodeError, OSError) as e:
+    except (tomli.TomlDecodeError, OSError) as e:
         raise IOError(f"Error reading configuration file ({config_path}): {e}")
 
     if not config:
