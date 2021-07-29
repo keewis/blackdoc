@@ -9,6 +9,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import tomli
+from pathspec import PathSpec
 
 
 @lru_cache()
@@ -157,6 +158,22 @@ def normalize_path_maybe_ignore(path, root, report):
     return normalized_path
 
 
+def path_is_excluded(normalized_path, pattern):
+    match = pattern.search(normalized_path) if pattern else None
+    return bool(match and match.group(0))
+
+
+@lru_cache()
+def get_gitignore(root):
+    """Return a PathSpec matching gitignore content if present."""
+    gitignore = root / ".gitignore"
+    lines = []
+    if gitignore.is_file():
+        with gitignore.open(encoding="utf-8") as gf:
+            lines = gf.readlines()
+    return PathSpec.from_lines("gitwildmatch", lines)
+
+
 def gen_python_files(paths, root, include, exclude, force_exclude, report, gitignore):
     """Generate all files under `path` whose paths are not excluded by the
     `exclude_regex` or `force_exclude` regexes, but are included by the `include` regex.
@@ -172,7 +189,7 @@ def gen_python_files(paths, root, include, exclude, force_exclude, report, gitig
             continue
 
         # First ignore files matching .gitignore
-        if gitignore.match_file(normalized_path):
+        if gitignore is not None and gitignore.match_file(normalized_path):
             report.path_ignored(child, "matches the .gitignore file content")
             continue
 
@@ -181,15 +198,11 @@ def gen_python_files(paths, root, include, exclude, force_exclude, report, gitig
         if child.is_dir():
             normalized_path += "/"
 
-        exclude_match = exclude.search(normalized_path) if exclude else None
-        if exclude_match and exclude_match.group(0):
+        if path_is_excluded(normalized_path, exclude):
             report.path_ignored(child, "matches the --exclude regular expression")
             continue
 
-        force_exclude_match = (
-            force_exclude.search(normalized_path) if force_exclude else None
-        )
-        if force_exclude_match and force_exclude_match.group(0):
+        if path_is_excluded(normalized_path, force_exclude):
             report.path_ignored(child, "matches the --force-exclude regular expression")
             continue
 
@@ -201,7 +214,7 @@ def gen_python_files(paths, root, include, exclude, force_exclude, report, gitig
                 exclude,
                 force_exclude,
                 report,
-                gitignore,
+                gitignore + get_gitignore(child) if gitignore is not None else None,
             )
 
         elif child.is_file():
