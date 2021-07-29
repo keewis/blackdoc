@@ -53,6 +53,7 @@ def find_project_root(srcs):
 def wrap_stream_for_windows(f):
     """
     Wrap stream with colorama's wrap_stream so colors are shown on Windows.
+
     If `colorama` is unavailable, the original stream is returned unmodified.
     Otherwise, the `wrap_stream()` function determines whether the stream needs
     to be wrapped for a Windows environment and will accordingly either return
@@ -88,7 +89,7 @@ def find_pyproject_toml(path_search_start):
 
 
 @lru_cache()
-def find_user_pyproject_toml() -> Path:
+def find_user_pyproject_toml():
     r"""Return the path to the top-level user configuration for black.
     This looks for ~\.black on Windows and ~/.config/black on Linux and other
     Unix systems.
@@ -136,6 +137,7 @@ def read_pyproject_toml(source, config_path):
 
 def normalize_path_maybe_ignore(path, root, report):
     """Normalize `path`. May return `None` if `path` was ignored.
+
     `report` is where "path ignored" output goes.
     """
     try:
