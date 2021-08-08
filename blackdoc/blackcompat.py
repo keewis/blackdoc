@@ -3,10 +3,13 @@
 For the license, see /licenses/black
 """
 
+import os
+import sys
 from functools import lru_cache
 from pathlib import Path
 
-import toml
+import tomli
+from pathspec import PathSpec
 
 
 @lru_cache()
@@ -20,7 +23,7 @@ def find_project_root(srcs):
     project root, the root of the file system is returned.
     """
     if not srcs:
-        return Path("/").resolve()
+        return [str(Path.cwd().resolve())]
 
     path_srcs = [Path(Path.cwd(), src).resolve() for src in srcs]
 
@@ -51,6 +54,7 @@ def find_project_root(srcs):
 def wrap_stream_for_windows(f):
     """
     Wrap stream with colorama's wrap_stream so colors are shown on Windows.
+
     If `colorama` is unavailable, the original stream is returned unmodified.
     Otherwise, the `wrap_stream()` function determines whether the stream needs
     to be wrapped for a Windows environment and will accordingly either return
@@ -69,15 +73,45 @@ def find_pyproject_toml(path_search_start):
     """Find the absolute filepath to a pyproject.toml if it exists"""
     path_project_root = find_project_root(path_search_start)
     path_pyproject_toml = path_project_root / "pyproject.toml"
-    return str(path_pyproject_toml) if path_pyproject_toml.is_file() else None
+    if path_pyproject_toml.is_file():
+        return str(path_pyproject_toml)
+
+    try:
+        path_user_pyproject_toml = find_user_pyproject_toml()
+        return (
+            str(path_user_pyproject_toml)
+            if path_user_pyproject_toml.is_file()
+            else None
+        )
+    except PermissionError as e:
+        # We do not have access to the user-level config directory, so ignore it.
+        print(f"Ignoring user configuration directory due to {e!r}")
+        return None
+
+
+@lru_cache()
+def find_user_pyproject_toml():
+    r"""Return the path to the top-level user configuration for black.
+    This looks for ~\.black on Windows and ~/.config/black on Linux and other
+    Unix systems.
+    """
+    if sys.platform == "win32":
+        # Windows
+        user_config_path = Path.home() / ".black"
+    else:
+        config_root = os.environ.get("XDG_CONFIG_HOME", "~/.config")
+        user_config_path = Path(config_root).expanduser() / "black"
+    return user_config_path.resolve()
 
 
 def parse_pyproject_toml(path_config):
     """Parse a pyproject toml file, pulling out relevant parts for Black
 
-    If parsing fails, will raise a toml.TomlDecodeError
+    If parsing fails, will raise a tomli.TomlDecodeError
     """
-    pyproject_toml = toml.load(path_config)
+    with open(path_config, encoding="utf8") as f:
+        pyproject_toml = tomli.load(f)
+
     black_config = pyproject_toml.get("tool", {}).get("black", {})
     blackdoc_config = pyproject_toml.get("tool", {}).get("blackdoc", {})
     config = {**black_config, **blackdoc_config}
@@ -93,7 +127,7 @@ def read_pyproject_toml(source, config_path):
 
     try:
         config = parse_pyproject_toml(config_path)
-    except (toml.TomlDecodeError, OSError) as e:
+    except (tomli.TomlDecodeError, OSError) as e:
         raise IOError(f"Error reading configuration file ({config_path}): {e}")
 
     if not config:
@@ -104,6 +138,7 @@ def read_pyproject_toml(source, config_path):
 
 def normalize_path_maybe_ignore(path, root, report):
     """Normalize `path`. May return `None` if `path` was ignored.
+
     `report` is where "path ignored" output goes.
     """
     try:
@@ -123,6 +158,22 @@ def normalize_path_maybe_ignore(path, root, report):
     return normalized_path
 
 
+def path_is_excluded(normalized_path, pattern):
+    match = pattern.search(normalized_path) if pattern else None
+    return bool(match and match.group(0))
+
+
+@lru_cache()
+def get_gitignore(root):
+    """Return a PathSpec matching gitignore content if present."""
+    gitignore = root / ".gitignore"
+    lines = []
+    if gitignore.is_file():
+        with gitignore.open(encoding="utf-8") as gf:
+            lines = gf.readlines()
+    return PathSpec.from_lines("gitwildmatch", lines)
+
+
 def gen_python_files(paths, root, include, exclude, force_exclude, report, gitignore):
     """Generate all files under `path` whose paths are not excluded by the
     `exclude_regex` or `force_exclude` regexes, but are included by the `include` regex.
@@ -138,7 +189,7 @@ def gen_python_files(paths, root, include, exclude, force_exclude, report, gitig
             continue
 
         # First ignore files matching .gitignore
-        if gitignore.match_file(normalized_path):
+        if gitignore is not None and gitignore.match_file(normalized_path):
             report.path_ignored(child, "matches the .gitignore file content")
             continue
 
@@ -147,15 +198,11 @@ def gen_python_files(paths, root, include, exclude, force_exclude, report, gitig
         if child.is_dir():
             normalized_path += "/"
 
-        exclude_match = exclude.search(normalized_path) if exclude else None
-        if exclude_match and exclude_match.group(0):
+        if path_is_excluded(normalized_path, exclude):
             report.path_ignored(child, "matches the --exclude regular expression")
             continue
 
-        force_exclude_match = (
-            force_exclude.search(normalized_path) if force_exclude else None
-        )
-        if force_exclude_match and force_exclude_match.group(0):
+        if path_is_excluded(normalized_path, force_exclude):
             report.path_ignored(child, "matches the --force-exclude regular expression")
             continue
 
@@ -167,7 +214,7 @@ def gen_python_files(paths, root, include, exclude, force_exclude, report, gitig
                 exclude,
                 force_exclude,
                 report,
-                gitignore,
+                gitignore + get_gitignore(child) if gitignore is not None else None,
             )
 
         elif child.is_file():
