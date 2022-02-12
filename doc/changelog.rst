@@ -3,11 +3,11 @@ Changelog
 
 v0.4.0 (*unreleased*)
 ---------------------
-
+- officially support python 3.10 (:pull:`115`)
 
 v0.3.4 (17 July 2021)
 ---------------------
-- declare the ``toml`` library as a runtime dependency (:pull:`101`)
+- declare the ``tomli`` library as a runtime dependency (:pull:`101`)
 
 v0.3.3 (06 February 2021)
 -------------------------
