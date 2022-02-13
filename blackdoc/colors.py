@@ -9,10 +9,14 @@ colors_re = re.compile("\033" + r"\[[0-9]+(?:;[0-9]+)*m")
 
 def colorize(string, fg=None, bold=False):
     foreground_colors = {
-        "white": 37,
-        "cyan": 36,
-        "green": 32,
+        "black": 30,
         "red": 31,
+        "green": 32,
+        "yellow": 33,
+        "blue": 34,
+        "purple": 35,
+        "cyan": 36,
+        "white": 37,
     }
     bold_code = 1
     reset_code = 0
