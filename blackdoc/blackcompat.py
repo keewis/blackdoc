@@ -21,9 +21,13 @@ def find_project_root(srcs):
 
     If no directory in the tree contains a marker that would specify it's the
     project root, the root of the file system is returned.
+
+    Returns a two-tuple with the first element as the project root path and
+    the second element as a string describing the method by which the
+    project root was discovered.
     """
     if not srcs:
-        return [str(Path.cwd().resolve())]
+        srcs = [str(Path.cwd().resolve())]
 
     path_srcs = [Path(Path.cwd(), src).resolve() for src in srcs]
 
@@ -40,15 +44,15 @@ def find_project_root(srcs):
 
     for directory in (common_base, *common_base.parents):
         if (directory / ".git").exists():
-            return directory
+            return directory, ".git directory"
 
         if (directory / ".hg").is_dir():
-            return directory
+            return directory, ".hgdirectory"
 
         if (directory / "pyproject.toml").is_file():
-            return directory
+            return directory, "pyproject.toml"
 
-    return directory
+    return directory, "file system root"
 
 
 def wrap_stream_for_windows(f):
@@ -71,7 +75,7 @@ def wrap_stream_for_windows(f):
 
 def find_pyproject_toml(path_search_start):
     """Find the absolute filepath to a pyproject.toml if it exists"""
-    path_project_root = find_project_root(path_search_start)
+    path_project_root, _ = find_project_root(path_search_start)
     path_pyproject_toml = path_project_root / "pyproject.toml"
     if path_pyproject_toml.is_file():
         return str(path_pyproject_toml)
@@ -83,7 +87,7 @@ def find_pyproject_toml(path_search_start):
             if path_user_pyproject_toml.is_file()
             else None
         )
-    except PermissionError as e:
+    except (PermissionError, RuntimeError) as e:
         # We do not have access to the user-level config directory, so ignore it.
         print(f"Ignoring user configuration directory due to {e!r}")
         return None
@@ -92,8 +96,13 @@ def find_pyproject_toml(path_search_start):
 @lru_cache()
 def find_user_pyproject_toml():
     r"""Return the path to the top-level user configuration for black.
+
     This looks for ~\.black on Windows and ~/.config/black on Linux and other
     Unix systems.
+
+    May raise:
+    - RuntimeError: if the current user has no homedir
+    - PermissionError: if the current process cannot access the user's homedir
     """
     if sys.platform == "win32":
         # Windows
@@ -105,11 +114,11 @@ def find_user_pyproject_toml():
 
 
 def parse_pyproject_toml(path_config):
-    """Parse a pyproject toml file, pulling out relevant parts for Black
+    """Parse a pyproject toml file, pulling out relevant parts for Black and Blackdoc
 
-    If parsing fails, will raise a tomli.TomlDecodeError
+    If parsing fails, will raise a tomli.TOMLDecodeError
     """
-    with open(path_config, encoding="utf8") as f:
+    with open(path_config, "rb") as f:
         pyproject_toml = tomli.load(f)
 
     black_config = pyproject_toml.get("tool", {}).get("black", {})
@@ -127,8 +136,10 @@ def read_pyproject_toml(source, config_path):
 
     try:
         config = parse_pyproject_toml(config_path)
-    except (tomli.TomlDecodeError, OSError) as e:
-        raise IOError(f"Error reading configuration file ({config_path}): {e}")
+    except (ValueError, OSError) as e:
+        raise IOError(
+            f"Error reading configuration file ({config_path}): {e}"
+        ) from None
 
     if not config:
         return {}
@@ -174,7 +185,36 @@ def get_gitignore(root):
     return PathSpec.from_lines("gitwildmatch", lines)
 
 
-def gen_python_files(paths, root, include, exclude, force_exclude, report, gitignore):
+@lru_cache()
+def jupyter_dependencies_are_installed(*, verbose, quiet):
+    try:
+        import IPython  # noqa:F401
+        import tokenize_rt  # noqa:F401
+    except ModuleNotFoundError:
+        if verbose or not quiet:
+            msg = (
+                "Skipping .ipynb files as Jupyter dependencies are not installed.\n"
+                "You can fix this by running ``pip install black[jupyter]``"
+            )
+            print(msg)
+        return False
+    else:
+        return True
+
+
+def gen_python_files(
+    paths,
+    root,
+    include,
+    exclude,
+    extend_exclude,
+    force_exclude,
+    report,
+    gitignore,
+    *,
+    verbose,
+    quiet,
+):
     """Generate all files under `path` whose paths are not excluded by the
     `exclude_regex` or `force_exclude` regexes, but are included by the `include` regex.
 
@@ -188,12 +228,12 @@ def gen_python_files(paths, root, include, exclude, force_exclude, report, gitig
         if normalized_path is None:
             continue
 
-        # First ignore files matching .gitignore
+        # First ignore files matching .gitignore, if passed
         if gitignore is not None and gitignore.match_file(normalized_path):
             report.path_ignored(child, "matches the .gitignore file content")
             continue
 
-        # Then ignore with `--exclude` and `--force-exclude` options.
+        # Then ignore with `--exclude` `--exent-exclude` and `--force-exclude` options.
         normalized_path = "/" + normalized_path
         if child.is_dir():
             normalized_path += "/"
@@ -202,22 +242,37 @@ def gen_python_files(paths, root, include, exclude, force_exclude, report, gitig
             report.path_ignored(child, "matches the --exclude regular expression")
             continue
 
+        if path_is_excluded(normalized_path, extend_exclude):
+            report.path_ignored(
+                child, "matches the --extend-exclude regular expression"
+            )
+            continue
+
         if path_is_excluded(normalized_path, force_exclude):
             report.path_ignored(child, "matches the --force-exclude regular expression")
             continue
 
         if child.is_dir():
+            # If gitignore is None, gitignore usage is disabled, while a Falsey
+            # gitignore is when the directory doesn't have a .gitignore file.
             yield from gen_python_files(
                 child.iterdir(),
                 root,
                 include,
                 exclude,
+                extend_exclude,
                 force_exclude,
                 report,
                 gitignore + get_gitignore(child) if gitignore is not None else None,
+                verbose=verbose,
+                quiet=quiet,
             )
 
         elif child.is_file():
+            if child.suffix == ".ipynb" and not jupyter_dependencies_are_installed(
+                verbose=verbose, quiet=quiet
+            ):
+                continue
             include_match = include.search(normalized_path) if include else True
             if include_match:
                 yield child
