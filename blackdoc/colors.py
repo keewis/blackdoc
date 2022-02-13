@@ -4,15 +4,32 @@ import sys
 
 from .blackcompat import wrap_stream_for_windows
 
+# TODO: use rich instead
+
 colors_re = re.compile("\033" + r"\[[0-9]+(?:;[0-9]+)*m")
+trailing_whitespace_re = re.compile(r"\s+$")
 
 
-def colorize(string, fg=None, bold=False):
+def colorize(string, fg=None, bg=None, bold=False):
     foreground_colors = {
-        "white": 37,
-        "cyan": 36,
-        "green": 32,
+        "black": 30,
         "red": 31,
+        "green": 32,
+        "yellow": 33,
+        "blue": 34,
+        "purple": 35,
+        "cyan": 36,
+        "white": 37,
+    }
+    background_colors = {
+        "black": 40,
+        "red": 41,
+        "green": 42,
+        "yellow": 43,
+        "blue": 44,
+        "purple": 45,
+        "cyan": 46,
+        "white": 47,
     }
     bold_code = 1
     reset_code = 0
@@ -23,6 +40,8 @@ def colorize(string, fg=None, bold=False):
 
     if fg:
         codes.append(foreground_colors.get(fg, fg))
+    if bg:
+        codes.append(background_colors.get(bg, bg))
 
     return f"\033[{';'.join(map(str, codes))}m{string}\033[{reset_code}m"
 
@@ -47,15 +66,22 @@ err = functools.partial(custom_print, file=sys.stderr)
 
 def color_diff(contents):
     """Inject the ANSI color codes to the diff."""
-    lines = contents.split("\n")
-    for i, line in enumerate(lines):
+
+    def colorize_line(line):
         if line.startswith("+++") or line.startswith("---"):
-            line = colorize(line, fg="white", bold=True)  # bold white, reset
+            line = colorize(line, fg="white", bold=True)
         elif line.startswith("@@"):
-            line = colorize(line, fg="cyan")  # cyan, reset
+            line = colorize(line, fg="cyan")
         elif line.startswith("+"):
-            line = colorize(line, fg="green")  # green, reset
+            line = colorize(line, fg="green")
         elif line.startswith("-"):
-            line = colorize(line, fg="red")  # red, reset
-        lines[i] = line
-    return "\n".join(lines)
+            match = trailing_whitespace_re.search(line)
+            line = colorize(line.rstrip(), fg="red")
+            if match:
+                whitespace = match.group(0)
+                line += colorize(whitespace, bg="red")
+
+        return line
+
+    lines = contents.split("\n")
+    return "\n".join(colorize_line(line) for line in lines)
