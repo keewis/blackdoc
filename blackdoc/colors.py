@@ -66,13 +66,13 @@ def color_diff(contents):
 
     def colorize_line(line):
         if line.startswith("+++") or line.startswith("---"):
-            line = colorize(line, fg="white", bold=True)  # bold white, reset
+            line = colorize(line, fg="white", bold=True)
         elif line.startswith("@@"):
-            line = colorize(line, fg="cyan")  # cyan, reset
+            line = colorize(line, fg="cyan")
         elif line.startswith("+"):
-            line = colorize(line, fg="green")  # green, reset
+            line = colorize(line, fg="green")
         elif line.startswith("-"):
-            line = colorize(line, fg="red")  # red, reset
+            line = colorize(line, fg="red")
 
         return line
 
