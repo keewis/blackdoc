@@ -63,8 +63,8 @@ err = functools.partial(custom_print, file=sys.stderr)
 
 def color_diff(contents):
     """Inject the ANSI color codes to the diff."""
-    lines = contents.split("\n")
-    for i, line in enumerate(lines):
+
+    def colorize_line(line):
         if line.startswith("+++") or line.startswith("---"):
             line = colorize(line, fg="white", bold=True)  # bold white, reset
         elif line.startswith("@@"):
@@ -73,5 +73,8 @@ def color_diff(contents):
             line = colorize(line, fg="green")  # green, reset
         elif line.startswith("-"):
             line = colorize(line, fg="red")  # red, reset
-        lines[i] = line
-    return "\n".join(lines)
+
+        return line
+
+    lines = contents.split("\n")
+    return "\n".join(colorize_line(line) for line in lines)
