@@ -4,6 +4,8 @@ import sys
 
 from .blackcompat import wrap_stream_for_windows
 
+# TODO: use rich instead
+
 colors_re = re.compile("\033" + r"\[[0-9]+(?:;[0-9]+)*m")
 trailing_whitespace_re = re.compile(r"\s+$")
 
