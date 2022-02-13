@@ -12,6 +12,8 @@ from . import __version__, format_lines, formats
 from .blackcompat import (
     find_project_root,
     gen_python_files,
+    get_gitignore,
+    normalize_path_maybe_ignore,
     read_pyproject_toml,
     wrap_stream_for_windows,
 )
@@ -34,7 +36,7 @@ def check_format_names(string):
 
 def collect_files(src, include, exclude, extend_exclude, force_exclude, quiet, verbose):
     root, _ = find_project_root(tuple(src))
-    gitignore = black.get_gitignore(root)
+    gitignore = get_gitignore(root)
     report = black.Report()
 
     for path in src:
@@ -54,7 +56,7 @@ def collect_files(src, include, exclude, extend_exclude, force_exclude, quiet, v
         elif str(path) == "-":
             yield path
         elif path.is_file():
-            normalized_path = black.normalize_path_maybe_ignore(path, root, report)
+            normalized_path = normalize_path_maybe_ignore(path, root, report)
             if normalized_path is None:
                 continue
 
