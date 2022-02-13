@@ -5,6 +5,7 @@ import sys
 from .blackcompat import wrap_stream_for_windows
 
 colors_re = re.compile("\033" + r"\[[0-9]+(?:;[0-9]+)*m")
+trailing_whitespace_re = re.compile(r"^.*(\s+)$")
 
 
 def colorize(string, fg=None, bg=None, bold=False):
@@ -72,7 +73,11 @@ def color_diff(contents):
         elif line.startswith("+"):
             line = colorize(line, fg="green")
         elif line.startswith("-"):
-            line = colorize(line, fg="red")
+            line = colorize(line.rstrip(), fg="red")
+            match = trailing_whitespace_re.match(line)
+            if match:
+                whitespace = match.group(1)
+                line += colorize(whitespace, bg="red")
 
         return line
 
