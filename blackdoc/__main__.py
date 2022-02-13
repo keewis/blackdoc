@@ -1,6 +1,4 @@
 import argparse
-import datetime
-import difflib
 import pathlib
 import sys
 
@@ -14,7 +12,8 @@ from .blackcompat import (
     normalize_path_maybe_ignore,
     read_pyproject_toml,
 )
-from .colors import color_diff, colorize, err, out
+from .colors import colorize, err, out
+from .diff import unified_diff
 
 
 def check_format_names(string):
@@ -71,27 +70,6 @@ def collect_files(src, include, exclude, extend_exclude, force_exclude, quiet, v
             yield path
         else:
             print(f"invalid path: {path}", file=sys.stderr)
-
-
-def unified_diff(a, b, path, color):
-    then = datetime.datetime.utcfromtimestamp(path.stat().st_mtime)
-    now = datetime.datetime.utcnow()
-    src_name = f"{path}\t{then} +0000"
-    dst_name = f"{path}\t{now} +0000"
-
-    diff = "\n".join(
-        difflib.unified_diff(
-            a.splitlines(),
-            b.splitlines(),
-            fromfile=src_name,
-            tofile=dst_name,
-            lineterm="",
-        )
-    )
-    if color:
-        diff = color_diff(diff)
-
-    return diff
 
 
 def format_and_overwrite(path, mode):
