@@ -7,7 +7,7 @@ from .blackcompat import wrap_stream_for_windows
 colors_re = re.compile("\033" + r"\[[0-9]+(?:;[0-9]+)*m")
 
 
-def colorize(string, fg=None, bold=False):
+def colorize(string, fg=None, bg=None, bold=False):
     foreground_colors = {
         "black": 30,
         "red": 31,
@@ -18,6 +18,16 @@ def colorize(string, fg=None, bold=False):
         "cyan": 36,
         "white": 37,
     }
+    background_colors = {
+        "black": 40,
+        "red": 41,
+        "green": 42,
+        "yellow": 43,
+        "blue": 44,
+        "purple": 45,
+        "cyan": 46,
+        "white": 47,
+    }
     bold_code = 1
     reset_code = 0
 
@@ -27,6 +37,8 @@ def colorize(string, fg=None, bold=False):
 
     if fg:
         codes.append(foreground_colors.get(fg, fg))
+    if bg:
+        codes.append(background_colors.get(bg, bg))
 
     return f"\033[{';'.join(map(str, codes))}m{string}\033[{reset_code}m"
 
