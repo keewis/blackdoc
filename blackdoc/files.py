@@ -1,5 +1,3 @@
-import sys
-
 from black import Report
 
 from .blackcompat import (
@@ -8,6 +6,7 @@ from .blackcompat import (
     get_gitignore,
     normalize_path_maybe_ignore,
 )
+from .colors import err
 
 
 def collect_files(src, include, exclude, extend_exclude, force_exclude, quiet, verbose):
@@ -50,4 +49,4 @@ def collect_files(src, include, exclude, extend_exclude, force_exclude, quiet, v
 
             yield path
         else:
-            print(f"invalid path: {path}", file=sys.stderr)
+            err(f"invalid path: {path}")
