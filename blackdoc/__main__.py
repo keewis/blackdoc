@@ -32,8 +32,8 @@ def check_format_names(string):
     return names
 
 
-def collect_files(src, include, exclude, force_exclude):
-    root = find_project_root(tuple(src))
+def collect_files(src, include, exclude, extend_exclude, force_exclude, quiet, verbose):
+    root, _ = find_project_root(tuple(src))
     gitignore = black.get_gitignore(root)
     report = black.Report()
 
@@ -44,9 +44,12 @@ def collect_files(src, include, exclude, force_exclude):
                 root,
                 include,
                 exclude,
+                extend_exclude,
                 force_exclude,
                 report,
                 gitignore,
+                quiet=quiet,
+                verbose=verbose,
             )
         elif str(path) == "-":
             yield path
@@ -295,6 +298,15 @@ def process(args):
         return 2
 
     try:
+        extend_exclude_regex = black.re_compile_maybe_verbose(args.extend_exclude)
+    except black.re.error:
+        err(
+            f"Invalid regular expression for extend exclude given: {args.extend_exclude!r}",
+            fg="red",
+        )
+        return 2
+
+    try:
         force_exclude = getattr(args, "force_exclude", "")
         force_exclude_regex = (
             black.re_compile_maybe_verbose(force_exclude) if force_exclude else None
@@ -307,7 +319,15 @@ def process(args):
         return 2
 
     sources = set(
-        collect_files(args.src, include_regex, exclude_regex, force_exclude_regex)
+        collect_files(
+            args.src,
+            include_regex,
+            exclude_regex,
+            extend_exclude_regex,
+            force_exclude_regex,
+            quiet=args.quiet,
+            verbose=args.verbose,
+        )
     )
     if len(sources) == 0:
         err(
@@ -454,6 +474,17 @@ def main():
         ),
     )
     parser.add_argument(
+        "--extend-exclude",
+        metavar="TEXT",
+        type=str,
+        default="",
+        help=(
+            "Like --exclude, but adds additional files and directories"
+            "on top of the excluded ones. (Useful if you simply want to"
+            "add to the default)"
+        ),
+    )
+    parser.add_argument(
         "--force-exclude",
         metavar="TEXT",
         type=str,
@@ -487,6 +518,24 @@ def main():
         dest="skip_string_normalization",
         action="store_true",
         help="Don't normalize string quotes or prefixes.",
+    )
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help=(
+            "Don't emit non-error messages to stderr. Errors are still"
+            "emitted; silence those with 2>/dev/null."
+        ),
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help=(
+            "Also emit messages to stderr about files that were not"
+            "changed or were ignored due to exclusion patterns."
+        ),
     )
     parser.add_argument(
         "--version",
