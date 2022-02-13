@@ -1,24 +1,15 @@
 import argparse
-import datetime
-import difflib
-import functools
 import pathlib
-import re
 import sys
 
 import black
 
 from . import __version__, format_lines, formats
-from .blackcompat import (
-    find_project_root,
-    gen_python_files,
-    get_gitignore,
-    normalize_path_maybe_ignore,
-    read_pyproject_toml,
-    wrap_stream_for_windows,
-)
-
-colors_re = re.compile("\033" + r"\[[0-9]+(?:;[0-9]+)*m")
+from .blackcompat import read_pyproject_toml
+from .colors import err, out
+from .diff import unified_diff
+from .files import collect_files
+from .report import report_changes, report_possible_changes, statistics
 
 
 def check_format_names(string):
@@ -32,124 +23,6 @@ def check_format_names(string):
             f"invalid choice: {name!r} (choose from {', '.join(sorted(allowed_names))})"
         )
     return names
-
-
-def collect_files(src, include, exclude, extend_exclude, force_exclude, quiet, verbose):
-    root, _ = find_project_root(tuple(src))
-    gitignore = get_gitignore(root)
-    report = black.Report()
-
-    for path in src:
-        if path.is_dir():
-            yield from gen_python_files(
-                path.iterdir(),
-                root,
-                include,
-                exclude,
-                extend_exclude,
-                force_exclude,
-                report,
-                gitignore,
-                quiet=quiet,
-                verbose=verbose,
-            )
-        elif str(path) == "-":
-            yield path
-        elif path.is_file():
-            normalized_path = normalize_path_maybe_ignore(path, root, report)
-            if normalized_path is None:
-                continue
-
-            normalized_path = "/" + normalized_path
-            # Hard-exclude any files that matches the `--force-exclude` regex.
-            if force_exclude:
-                force_exclude_match = force_exclude.search(normalized_path)
-            else:
-                force_exclude_match = None
-            if force_exclude_match and force_exclude_match.group(0):
-                report.path_ignored(
-                    path, "matches the --force-exclude regular expression"
-                )
-                continue
-
-            yield path
-        else:
-            print(f"invalid path: {path}", file=sys.stderr)
-
-
-def colorize(string, fg=None, bold=False):
-    foreground_colors = {
-        "white": 37,
-        "cyan": 36,
-        "green": 32,
-        "red": 31,
-    }
-    bold_code = 1
-    reset_code = 0
-
-    codes = []
-    if bold:
-        codes.append(bold_code)
-
-    if fg:
-        codes.append(foreground_colors.get(fg, fg))
-
-    return f"\033[{';'.join(map(str, codes))}m{string}\033[{reset_code}m"
-
-
-def remove_colors(message):
-    return "".join(colors_re.split(message))
-
-
-# signature inspired by click.secho
-def custom_print(message, end="\n", file=sys.stdout, **styles):
-    if file.isatty():
-        message = colorize(message, **styles)
-    else:
-        message = remove_colors(message)
-
-    print(message, end=end, file=wrap_stream_for_windows(file))
-
-
-out = functools.partial(custom_print, file=sys.stdout)
-err = functools.partial(custom_print, file=sys.stderr)
-
-
-def color_diff(contents):
-    """Inject the ANSI color codes to the diff."""
-    lines = contents.split("\n")
-    for i, line in enumerate(lines):
-        if line.startswith("+++") or line.startswith("---"):
-            line = colorize(line, fg="white", bold=True)  # bold white, reset
-        elif line.startswith("@@"):
-            line = colorize(line, fg="cyan")  # cyan, reset
-        elif line.startswith("+"):
-            line = colorize(line, fg="green")  # green, reset
-        elif line.startswith("-"):
-            line = colorize(line, fg="red")  # red, reset
-        lines[i] = line
-    return "\n".join(lines)
-
-
-def unified_diff(a, b, path, color):
-    then = datetime.datetime.utcfromtimestamp(path.stat().st_mtime)
-    now = datetime.datetime.utcnow()
-    src_name = f"{path}\t{then} +0000"
-    dst_name = f"{path}\t{now} +0000"
-
-    diff = "\n".join(
-        difflib.unified_diff(
-            a.splitlines(),
-            b.splitlines(),
-            fromfile=src_name,
-            tofile=dst_name,
-            lineterm="",
-        )
-    )
-    if color:
-        diff = color_diff(diff)
-
-    return diff
 
 
 def format_and_overwrite(path, mode):
@@ -199,77 +72,6 @@ def format_and_check(path, mode, diff=False, color=False):
         result = "error"
 
     return result
-
-
-def report_changes(n_reformatted, n_unchanged, n_error):
-    def noun(n):
-        return "file" if n < 2 else "files"
-
-    reports = []
-    if n_reformatted > 0:
-        reports.append(
-            colorize(
-                f"{n_reformatted} {noun(n_reformatted)} reformatted",
-                fg="white",
-                bold=True,
-            )
-        )
-
-    if n_unchanged > 0:
-        reports.append(
-            colorize(f"{n_unchanged} {noun(n_unchanged)} left unchanged", fg="white")
-        )
-
-    if n_error > 0:
-        reports.append(
-            colorize(f"{n_error} {noun(n_error)} fails to reformat", fg="red")
-        )
-
-    return ", ".join(reports) + "."
-
-
-def report_possible_changes(n_reformatted, n_unchanged, n_error):
-    def noun(n):
-        return "file" if n < 2 else "files"
-
-    reports = []
-    if n_reformatted > 0:
-        reports.append(
-            colorize(
-                f"{n_reformatted} {noun(n_reformatted)} would be reformatted",
-                fg="white",
-                bold=True,
-            )
-        )
-
-    if n_unchanged > 0:
-        reports.append(
-            colorize(
-                f"{n_unchanged} {noun(n_unchanged)} would be left unchanged", fg="white"
-            )
-        )
-
-    if n_error > 0:
-        reports.append(
-            colorize(f"{n_error} {noun(n_error)} would fail to reformat", fg="red")
-        )
-
-    return ", ".join(reports) + "."
-
-
-def statistics(sources):
-    from collections import Counter
-
-    statistics = Counter(sources.values())
-
-    n_unchanged = statistics.pop("unchanged", 0)
-    n_reformatted = statistics.pop("reformatted", 0)
-    n_error = statistics.pop("error", 0)
-
-    if len(statistics) != 0:
-        raise RuntimeError(f"unknown results: {statistics.keys()}")
-
-    return n_reformatted, n_unchanged, n_error
 
 
 def process(args):
