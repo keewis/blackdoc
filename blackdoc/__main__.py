@@ -341,7 +341,7 @@ def process(args):
         black.TargetVersion[version.upper()]
         for version in getattr(args, "target_versions", ())
     )
-    mode = black.FileMode(
+    mode = black.Mode(
         line_length=args.line_length,
         target_versions=target_versions,
         string_normalization=not args.skip_string_normalization,
