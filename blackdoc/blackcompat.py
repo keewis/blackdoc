@@ -185,7 +185,36 @@ def get_gitignore(root):
     return PathSpec.from_lines("gitwildmatch", lines)
 
 
-def gen_python_files(paths, root, include, exclude, force_exclude, report, gitignore):
+@lru_cache()
+def jupyter_dependencies_are_installed(*, verbose, quiet):
+    try:
+        import IPython  # noqa:F401
+        import tokenize_rt  # noqa:F401
+    except ModuleNotFoundError:
+        if verbose or not quiet:
+            msg = (
+                "Skipping .ipynb files as Jupyter dependencies are not installed.\n"
+                "You can fix this by running ``pip install black[jupyter]``"
+            )
+            print(msg)
+        return False
+    else:
+        return True
+
+
+def gen_python_files(
+    paths,
+    root,
+    include,
+    exclude,
+    extend_exclude,
+    force_exclude,
+    report,
+    gitignore,
+    *,
+    verbose,
+    quiet,
+):
     """Generate all files under `path` whose paths are not excluded by the
     `exclude_regex` or `force_exclude` regexes, but are included by the `include` regex.
 
@@ -199,12 +228,12 @@ def gen_python_files(paths, root, include, exclude, force_exclude, report, gitig
         if normalized_path is None:
             continue
 
-        # First ignore files matching .gitignore
+        # First ignore files matching .gitignore, if passed
         if gitignore is not None and gitignore.match_file(normalized_path):
             report.path_ignored(child, "matches the .gitignore file content")
             continue
 
-        # Then ignore with `--exclude` and `--force-exclude` options.
+        # Then ignore with `--exclude` `--exent-exclude` and `--force-exclude` options.
         normalized_path = "/" + normalized_path
         if child.is_dir():
             normalized_path += "/"
@@ -213,22 +242,37 @@ def gen_python_files(paths, root, include, exclude, force_exclude, report, gitig
             report.path_ignored(child, "matches the --exclude regular expression")
             continue
 
+        if path_is_excluded(normalized_path, extend_exclude):
+            report.path_ignored(
+                child, "matches the --extend-exclude regular expression"
+            )
+            continue
+
         if path_is_excluded(normalized_path, force_exclude):
             report.path_ignored(child, "matches the --force-exclude regular expression")
             continue
 
         if child.is_dir():
+            # If gitignore is None, gitignore usage is disabled, while a Falsey
+            # gitignore is when the directory doesn't have a .gitignore file.
             yield from gen_python_files(
                 child.iterdir(),
                 root,
                 include,
                 exclude,
+                extend_exclude,
                 force_exclude,
                 report,
                 gitignore + get_gitignore(child) if gitignore is not None else None,
+                verbose=verbose,
+                quiet=quiet,
             )
 
         elif child.is_file():
+            if child.suffix == ".ipynb" and not jupyter_dependencies_are_installed(
+                verbose=verbose, quiet=quiet
+            ):
+                continue
             include_match = include.search(normalized_path) if include else True
             if include_match:
                 yield child
