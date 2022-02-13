@@ -5,15 +5,10 @@ import sys
 import black
 
 from . import __version__, format_lines, formats
-from .blackcompat import (
-    find_project_root,
-    gen_python_files,
-    get_gitignore,
-    normalize_path_maybe_ignore,
-    read_pyproject_toml,
-)
+from .blackcompat import read_pyproject_toml
 from .colors import err, out
 from .diff import unified_diff
+from .files import collect_files
 from .report import report_changes, report_possible_changes, statistics
 
 
@@ -28,49 +23,6 @@ def check_format_names(string):
             f"invalid choice: {name!r} (choose from {', '.join(sorted(allowed_names))})"
         )
     return names
-
-
-def collect_files(src, include, exclude, extend_exclude, force_exclude, quiet, verbose):
-    root, _ = find_project_root(tuple(src))
-    gitignore = get_gitignore(root)
-    report = black.Report()
-
-    for path in src:
-        if path.is_dir():
-            yield from gen_python_files(
-                path.iterdir(),
-                root,
-                include,
-                exclude,
-                extend_exclude,
-                force_exclude,
-                report,
-                gitignore,
-                quiet=quiet,
-                verbose=verbose,
-            )
-        elif str(path) == "-":
-            yield path
-        elif path.is_file():
-            normalized_path = normalize_path_maybe_ignore(path, root, report)
-            if normalized_path is None:
-                continue
-
-            normalized_path = "/" + normalized_path
-            # Hard-exclude any files that matches the `--force-exclude` regex.
-            if force_exclude:
-                force_exclude_match = force_exclude.search(normalized_path)
-            else:
-                force_exclude_match = None
-            if force_exclude_match and force_exclude_match.group(0):
-                report.path_ignored(
-                    path, "matches the --force-exclude regular expression"
-                )
-                continue
-
-            yield path
-        else:
-            print(f"invalid path: {path}", file=sys.stderr)
 
 
 def format_and_overwrite(path, mode):
