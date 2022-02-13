@@ -2,7 +2,7 @@
 
  - [ ] Closes #xxxx
  - [ ] Tests added
- - [ ] Passes `isort . && black . && flake8`
+ - [ ] Passes `pre-commit run --all-files`
  - [ ] User visible changes (including notable bug fixes) are documented in `changelog.rst`
  - [ ] New features are documented in the docs
 
