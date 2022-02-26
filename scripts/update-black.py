@@ -140,7 +140,8 @@ def main(path: str, diff: bool = False):
             f.write(dumped)
         console.print(format_statistics(stats, mode="update"))
 
-    return stats["changed"] != 0
+    error_code = int(stats["changed"] != 0)
+    raise typer.Exit(code=error_code)
 
 
 if __name__ == "__main__":
