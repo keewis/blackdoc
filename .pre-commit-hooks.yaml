@@ -4,7 +4,8 @@
   language: python
   language_version: python3
   require_serial: true
-  types: [file]
+  types:
+  - file
   files: \.(py|rst)$
   additional_dependencies:
-    - black~=22.1
+  - black~=22.1.0
