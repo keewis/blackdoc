@@ -6,3 +6,5 @@
   require_serial: true
   types: [file]
   files: \.(py|rst)$
+  additional_dependencies:
+    - black~=22.1
