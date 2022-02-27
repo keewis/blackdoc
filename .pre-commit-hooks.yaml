@@ -6,3 +6,12 @@
   require_serial: true
   types: [file]
   files: \.(py|rst)$
+- id: autoupdate-black
+  name: autoupdate-black
+  entry: blackdoc.autoupdate
+  language: python
+  language_version: python3
+  require_serial: true
+  types: [file]
+  files: \.pre-commit-config\.yaml
+  additional_dependencies: ["rich"]
