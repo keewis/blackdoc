@@ -8,7 +8,7 @@
   files: \.(py|rst)$
 - id: autoupdate-black
   name: autoupdate-black
-  entry: blackdoc.autoupdate
+  entry: python -m blackdoc.autoupdate
   language: python
   language_version: python3
   require_serial: true
