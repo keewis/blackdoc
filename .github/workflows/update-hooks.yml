@@ -1,0 +1,66 @@
+name: Update hook dependencies
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"  # "At 00:00" UTC on Sundays (weekly)
+  workflow_dispatch:
+
+
+jobs:
+  autoupdate:
+    name: Autoupdate the "additional_dependencies"
+    runs-on: ubuntu-latest
+    matrix:
+      python-version: ["3.10"]
+
+    steps:
+    - name: checkout the repository
+      uses: actions/checkout@v2
+
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: upgrade packaging tools
+      run: python -m pip install --upgrade pip setuptools
+
+    - name: install script dependencies
+      run: |
+        python -m pip install --upgrade \
+            more-itertools \
+            packaging \
+            pre-commit \
+            pyyaml \
+            requests \
+            rich \
+            typer
+
+    - name: run script
+      run: python .github/workflows/update-deps.py .pre-commit-hooks.yaml
+
+    - name: add changes to the index
+      run: git add .pre-commit-hooks.yaml
+
+    - name: try the hook
+      run: pre-commit try-repo -a .
+
+    - name: clean the working directory
+      run: git restore .
+
+    - name: create a PR
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          // process:
+          // 1. detect if files changed (abort if not)
+          // 2. try to find a open PR (marked with label, by github
+          //    actions bot):
+          //    - if there is none, skip the to 3
+          //    - diff (if there's no diff, abort)
+          //    - close the old PR if there is a diff and delete the branch
+          // 3. create a new branch and switch to it
+          // 4. commit the changes
+          // 5. open the PR
+          // 6. mark the old PR as superseded by the new PR
