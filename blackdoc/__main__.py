@@ -40,8 +40,8 @@ def format_and_overwrite(path, mode):
             err(f"reformatted {path}", fg="white", bold=True)
             result = "reformatted"
 
-        with open(path, "w", encoding=encoding, newline=newline) as f:
-            f.write(new_content)
+            with open(path, "w", encoding=encoding, newline=newline) as f:
+                f.write(new_content)
     except (black.InvalidInput, formats.InvalidFormatError) as e:
         err(f"error: cannot format {path.absolute()}: {e}", fg="red")
         result = "error"
