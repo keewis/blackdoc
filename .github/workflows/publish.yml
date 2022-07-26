@@ -9,9 +9,9 @@ jobs:
     name: Publish to PyPI
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
       - name: Install dependencies
@@ -24,9 +24,8 @@ jobs:
         run: |
           twine check dist/*
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@54b39fb9371c0b3a6f9f14bb8a67394defc7a806
+        uses: pypa/gh-action-pypi-publish@37f50c210e3d2f9450da2cd423303d6a14a6e29f
         with:
-          user: __token__
           password: ${{ secrets.pypi_token }}
           repository_url: https://upload.pypi.org/legacy/
           verify_metadata: true
