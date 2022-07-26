@@ -6,6 +6,7 @@ v0.4.0 (*unreleased*)
 - officially support python 3.10 (:pull:`115`)
 - colorize removed trailing whitespace (:pull:`120`)
 - write only if the content of a file changed (:issue:`127`, :pull:`128`)
+- don't crash on strings with trailing empty strings (`"a"""`) (:issue:`131`, :pull:`132`)
 
 v0.3.4 (17 July 2021)
 ---------------------
