@@ -1,7 +1,7 @@
 Changelog
 =========
 
-v0.4.0 (*unreleased*)
+v0.3.5 (26 July 2022)
 ---------------------
 - officially support python 3.10 (:pull:`115`)
 - colorize removed trailing whitespace (:pull:`120`)
