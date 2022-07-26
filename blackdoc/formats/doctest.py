@@ -53,15 +53,44 @@ def detection_func(lines):
     return line_range, name, "\n".join(lines)
 
 
-def detect_docstring_quotes(line):
-    if "'''" in line:
-        docstring_quotes = "'''"
-    elif '"""' in line:
-        docstring_quotes = '"""'
-    else:
-        docstring_quotes = None
+def tokenize(code):
+    import io
+    import tokenize
 
-    return docstring_quotes
+    readline = io.StringIO(code).readline
+
+    return (
+        token
+        for token in tokenize.generate_tokens(readline)
+        if token.type == tokenize.STRING
+    )
+
+
+def expand_tokens(token):
+    length = token.end[0] - token.start[0] + 1
+    return [token.string] * length
+
+
+def detect_docstring_quotes(line):
+    def detect_quotes(string):
+        if string.startswith("'''"):
+            return "'''"
+        elif string.startswith('"""'):
+            return '"""'
+        else:
+            return None
+
+    def expand_quotes(quotes, n_lines):
+        lines = [None] * n_lines
+        for token, quote in quotes.items():
+            token_length = token.end[0] - token.start[0] + 1
+            lines[token.start[0] - 1 : token.end[0]] = [quote] * token_length
+        return lines
+
+    string_tokens = list(tokenize(line))
+    quotes = {token: detect_quotes(token.string) for token in string_tokens}
+    lines = line.split("\n")
+    return expand_quotes(quotes, len(lines))
 
 
 def extraction_func(line):
@@ -111,7 +140,7 @@ def reformatting_func(line, docstring_quotes):
 
     lines = iter(lines)
 
-    reformatted = "\n".join(
+    reformatted = list(
         itertools.chain(
             more_itertools.always_iterable(
                 add_prompt(prompt, more_itertools.first(lines))
@@ -119,9 +148,12 @@ def reformatting_func(line, docstring_quotes):
             (add_prompt(continuation_prompt, line) for line in lines),
         )
     )
-    # make sure nested docstrings still work
-    current_quotes = detect_docstring_quotes(reformatted)
-    if docstring_quotes != current_quotes:
-        reformatted = reformatted.replace(current_quotes, docstring_quotes)
 
-    return reformatted
+    # make sure nested docstrings still work
+    current_quotes = detect_docstring_quotes("\n".join(reformatted))
+    restored = "\n".join(
+        line.replace(current, saved) if current != saved else line
+        for line, saved, current in zip(reformatted, docstring_quotes, current_quotes)
+    )
+
+    return restored

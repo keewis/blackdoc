@@ -11,9 +11,11 @@ from .data.doctest import expected_lines, lines
 @pytest.mark.parametrize(
     ("string", "expected"),
     (
-        pytest.param("a", None, id="no quotes"),
-        pytest.param("'''a'''", "'''", id="single quotes"),
-        pytest.param('"""a"""', '"""', id="double quotes"),
+        pytest.param("", [None], id="empty string"),
+        pytest.param("a", [None], id="no quotes"),
+        pytest.param("'''a'''", ["'''"], id="single quotes"),
+        pytest.param('"""a"""', ['"""'], id="double quotes"),
+        pytest.param('"a"""', [None], id="trailing empty string"),
     ),
 )
 def test_detect_docstring_quotes(string, expected):
@@ -132,4 +134,5 @@ def test_reformatting_func(code_unit, expected):
     assert expected == actual
 
     # make sure the docstring quotes were not changed
-    assert docstring_quotes is None or docstring_quotes in actual
+    actual_quotes = doctest.detect_docstring_quotes(actual)
+    assert docstring_quotes == actual_quotes
