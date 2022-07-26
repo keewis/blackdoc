@@ -33,8 +33,8 @@ extensions = [
 ]
 
 extlinks = {
-    "issue": ("https://github.com/keewis/blackdoc/issues/%s", "GH"),
-    "pull": ("https://github.com/keewis/blackdoc/pull/%s", "PR"),
+    "issue": ("https://github.com/keewis/blackdoc/issues/%s", "GH%s"),
+    "pull": ("https://github.com/keewis/blackdoc/pull/%s", "PR%s"),
 }
 
 # Add any paths that contain templates here, relative to this directory.
