@@ -153,7 +153,9 @@ def reformatting_func(line, docstring_quotes):
     current_quotes = detect_docstring_quotes("\n".join(reformatted))
     restored = "\n".join(
         line.replace(current, saved) if current != saved else line
-        for line, saved, current in zip(reformatted, docstring_quotes, current_quotes)
+        for line, saved, current in itertools.zip_longest(
+            reformatted, docstring_quotes, current_quotes
+        )
     )
 
     return restored
