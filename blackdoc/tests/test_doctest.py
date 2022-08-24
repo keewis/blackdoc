@@ -101,7 +101,19 @@ def prepare_lines(lines, remove_prompt=False):
             "file",
             [None, None, None],
             ">>> file",
-            id="single line with mismatching quotes",
+            id="single line with more quotes",
+        ),
+        pytest.param(
+            '"""docstring"""',
+            ['"""'],
+            '>>> """docstring"""',
+            id="single-line triple-quoted string",
+        ),
+        pytest.param(
+            '"""docstring"""',
+            ['"""', '"""'],
+            '>>> """docstring"""',
+            id="single-line triple-quoted string with more quotes",
         ),
         pytest.param(
             textwrap.dedent(
@@ -164,12 +176,6 @@ def prepare_lines(lines, remove_prompt=False):
             id="multiple lines with more quotes",
         ),
         pytest.param(
-            '"""docstring"""',
-            ['"""'],
-            '>>> """docstring"""',
-            id="single-line docstring",
-        ),
-        pytest.param(
             textwrap.dedent(
                 """\
                 '''
@@ -185,38 +191,104 @@ def prepare_lines(lines, remove_prompt=False):
                 ... '''
                 """.rstrip()
             ),
-            id="multi-line docstring",
+            id="multi-line triple-quoted string",
         ),
-        # pytest.param(
-        #     prepare_lines(lines[17:21], remove_prompt=True),
-        #     [None] * 4,
-        #     prepare_lines(expected_lines[17:21]),
-        #     id="multiple lines with empty continuation line",
-        # ),
-        # pytest.param(
-        #     prepare_lines(lines[17:21], remove_prompt=True).replace("'''", '"""'),
-        #     ["'''", None, None, "'''"],
-        #     prepare_lines(expected_lines[17:21]).replace("'''", '"""'),
-        #     id="multiple lines with inverted docstring quotes",
-        # ),
-        # pytest.param(
-        #     prepare_lines(lines[21:23], remove_prompt=True),
-        #     [None] * 2,
-        #     prepare_lines(expected_lines[21:24]),
-        #     id="trailing newline at the end of a block",
-        # ),
-        # pytest.param(
-        #     prepare_lines(lines[27:29], remove_prompt=True),
-        #     [None] * 2,
-        #     prepare_lines(expected_lines[29]),
-        #     id="trailing newline at the end of a normal line",
-        # ),
-        # pytest.param(
-        #     prepare_lines(lines[29], remove_prompt=True),
-        #     [None],
-        #     prepare_lines(expected_lines[30]),
-        #     id="trailing colon at the end of a comment",
-        # ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                '''
+                docstring content
+                '''
+                """.rstrip()
+            ),
+            ["'''"],
+            textwrap.dedent(
+                """\
+                >>> '''
+                ... docstring content
+                ... '''
+                """.rstrip()
+            ),
+            id="multi-line triple-quoted string with less quotes",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                '''
+                docstring content
+                '''
+                """.rstrip()
+            ),
+            ["'''", "'''", "'''", None, None],
+            textwrap.dedent(
+                """\
+                >>> '''
+                ... docstring content
+                ... '''
+                """.rstrip()
+            ),
+            id="multi-line triple-quoted string with more quotes",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ''' arbitrary triple-quoted string
+
+                with a empty continuation line
+                '''
+                """.rstrip(),
+            ),
+            ["'''", "'''", "'''", "'''"],
+            textwrap.dedent(
+                """\
+                >>> ''' arbitrary triple-quoted string
+                ...
+                ... with a empty continuation line
+                ... '''
+                """.rstrip(),
+            ),
+            id="multi-line triple-quoted string with empty continuation line",
+        ),
+        pytest.param(
+            '"""inverted quotes"""',
+            ['"""'],
+            '>>> """inverted quotes"""',
+            id="triple-quoted string with inverted quotes",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                def myfunc(arg1, arg2):
+                    pass
+                """
+            ),
+            [None, None],
+            textwrap.dedent(
+                """\
+                >>> def myfunc(arg1, arg2):
+                ...     pass
+                ...
+                """
+            ),
+            id="trailing newline at the end of a block",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                a = 1
+
+                """
+            ),
+            [None, None],
+            ">>> a = 1",
+            id="trailing newline at the end of a normal line",
+        ),
+        pytest.param(
+            "# this is not a block:",
+            [None],
+            ">>> # this is not a block:",
+            id="trailing colon at the end of a comment",
+        ),
     ),
 )
 def test_reformatting_func(code_unit, docstring_quotes, expected):
