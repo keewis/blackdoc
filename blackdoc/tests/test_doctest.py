@@ -268,7 +268,7 @@ def prepare_lines(lines, remove_prompt=False):
                 >>> def myfunc(arg1, arg2):
                 ...     pass
                 ...
-                """
+                """.rstrip()
             ),
             id="trailing newline at the end of a block",
         ),
@@ -288,6 +288,28 @@ def prepare_lines(lines, remove_prompt=False):
             [None],
             ">>> # this is not a block:",
             id="trailing colon at the end of a comment",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                def f(arg1, arg2):
+                    ''' nested docstring
+
+                    parameter description
+                    '''
+                """
+            ),
+            [None, "'''", "'''", "'''", "'''", None],
+            textwrap.dedent(
+                """\
+                >>> def f(arg1, arg2):
+                ...     ''' nested docstring
+                ...
+                ...     parameter description
+                ...     '''
+                ...
+                """.rstrip()
+            ),
         ),
     ),
 )
