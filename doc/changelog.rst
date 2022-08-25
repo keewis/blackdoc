@@ -1,8 +1,8 @@
 Changelog
 =========
 
-v0.4.0 (*unreleased*)
----------------------
+v0.3.6 (25 August 2022)
+-----------------------
 - fix a regression in the doctest format that would either truncate
   the reformatted code or crash it (:pull:`137`)
 
