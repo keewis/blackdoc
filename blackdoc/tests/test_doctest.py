@@ -154,7 +154,6 @@ def prepare_lines(lines, remove_prompt=False):
                 """.rstrip()
             ),
             id="multiple lines with less quotes",
-            marks=[pytest.mark.skip(reason="to be fixed")],
         ),
         pytest.param(
             textwrap.dedent(
@@ -175,7 +174,6 @@ def prepare_lines(lines, remove_prompt=False):
                 """.rstrip()
             ),
             id="multiple lines with more quotes",
-            marks=[pytest.mark.skip(reason="to be fixed")],
         ),
         pytest.param(
             textwrap.dedent(
@@ -212,7 +210,6 @@ def prepare_lines(lines, remove_prompt=False):
                 """.rstrip()
             ),
             id="multi-line triple-quoted string with less quotes",
-            marks=[pytest.mark.skip(reason="to be fixed")],
         ),
         pytest.param(
             textwrap.dedent(
@@ -231,7 +228,6 @@ def prepare_lines(lines, remove_prompt=False):
                 """.rstrip()
             ),
             id="multi-line triple-quoted string with more quotes",
-            marks=[pytest.mark.skip(reason="to be fixed")],
         ),
         pytest.param(
             textwrap.dedent(
@@ -314,6 +310,7 @@ def prepare_lines(lines, remove_prompt=False):
                 ...
                 """.rstrip()
             ),
+            id="nested docstring",
         ),
     ),
 )
