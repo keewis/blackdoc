@@ -127,6 +127,15 @@ def extraction_func(line):
     }, extracted_line
 
 
+def replace_quotes(line, current, saved):
+    if current is None or saved is None:
+        return line
+    elif current == saved:
+        return line
+    else:
+        return line.replace(current, saved)
+
+
 def reformatting_func(line, docstring_quotes):
     def add_prompt(prompt, line):
         if not line:
@@ -152,8 +161,11 @@ def reformatting_func(line, docstring_quotes):
     # make sure nested docstrings still work
     current_quotes = detect_docstring_quotes("\n".join(reformatted))
     restored = "\n".join(
-        line.replace(current, saved) if current != saved else line
-        for line, saved, current in zip(reformatted, docstring_quotes, current_quotes)
+        replace_quotes(line, current, saved)
+        for line, saved, current in itertools.zip_longest(
+            reformatted, docstring_quotes, current_quotes
+        )
+        if line is not None
     )
 
     return restored
