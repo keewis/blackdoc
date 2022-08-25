@@ -156,6 +156,7 @@ def reformatting_func(line, docstring_quotes):
         for line, saved, current in itertools.zip_longest(
             reformatted, docstring_quotes, current_quotes
         )
+        if line is not None
     )
 
     return restored
