@@ -312,6 +312,13 @@ def prepare_lines(lines, remove_prompt=False):
             ),
             id="nested docstring",
         ),
+        pytest.param(
+            "s = '''triple-quoted string'''",
+            [None, "'''", None],
+            ">>> s = '''triple-quoted string'''",
+            id="moved triple-quoted string",
+            marks=[pytest.mark.skip(reason="to be fixed")],
+        ),
     ),
 )
 def test_reformatting_func(code_unit, docstring_quotes, expected):
