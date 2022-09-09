@@ -1,5 +1,7 @@
 import itertools
 import re
+import tokenize
+from tokenize import TokenError
 
 import more_itertools
 
@@ -53,16 +55,28 @@ def detection_func(lines):
     return line_range, name, "\n".join(lines)
 
 
-def tokenize(code):
+def suppress(iterable, errors):
+    iter_ = iter(iterable)
+    while True:
+        try:
+            yield next(iter_)
+        except errors:
+            yield None
+        except StopIteration:
+            break
+
+
+def extract_string_tokens(code):
     import io
-    import tokenize
 
     readline = io.StringIO(code).readline
 
+    tokens = tokenize.generate_tokens(readline)
+    # suppress invalid code errors: `black` will raise with a better error message
     return (
         token
-        for token in tokenize.generate_tokens(readline)
-        if token.type == tokenize.STRING
+        for token in suppress(tokens, TokenError)
+        if token is not None and token.type == tokenize.STRING
     )
 
 
