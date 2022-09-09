@@ -16,6 +16,28 @@ from .data.doctest import lines
         pytest.param("'''a'''", "'''", id="single quotes"),
         pytest.param('"""a"""', '"""', id="double quotes"),
         pytest.param('"a"""', None, id="trailing empty string"),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                '''
+                multiple lines
+                '''
+                """
+            ).rstrip(),
+            "'''",
+            id="multiple lines single quotes",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                '''\
+                """
+                multiple lines
+                """
+                '''
+            ).rstrip(),
+            '"""',
+            id="multiple lines double quotes",
+        ),
     ),
 )
 def test_detect_docstring_quotes(string, expected):
