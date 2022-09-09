@@ -94,17 +94,11 @@ def detect_docstring_quotes(line):
         else:
             return None
 
-    def expand_quotes(quotes, n_lines):
-        lines = [None] * n_lines
-        for token, quote in quotes.items():
-            token_length = token.end[0] - token.start[0] + 1
-            lines[token.start[0] - 1 : token.end[0]] = [quote] * token_length
-        return lines
+    string_tokens = list(extract_string_tokens(line))
+    token_quotes = {token: detect_quotes(token.string) for token in string_tokens}
+    quotes = set(token_quotes.values())
 
-    string_tokens = list(tokenize(line))
-    quotes = {token: detect_quotes(token.string) for token in string_tokens}
-    lines = line.split("\n")
-    return expand_quotes(quotes, len(lines))
+    return more_itertools.first(quotes, None)
 
 
 def extraction_func(line):

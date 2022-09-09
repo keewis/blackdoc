@@ -11,11 +11,11 @@ from .data.doctest import lines
 @pytest.mark.parametrize(
     ("string", "expected"),
     (
-        pytest.param("", [None], id="empty string"),
-        pytest.param("a", [None], id="no quotes"),
-        pytest.param("'''a'''", ["'''"], id="single quotes"),
-        pytest.param('"""a"""', ['"""'], id="double quotes"),
-        pytest.param('"a"""', [None], id="trailing empty string"),
+        pytest.param("", None, id="empty string"),
+        pytest.param("a", None, id="no quotes"),
+        pytest.param("'''a'''", "'''", id="single quotes"),
+        pytest.param('"""a"""', '"""', id="double quotes"),
+        pytest.param('"a"""', None, id="trailing empty string"),
     ),
 )
 def test_detect_docstring_quotes(string, expected):
