@@ -168,9 +168,6 @@ def restore_quotes(code_unit, original_quotes):
     offsets = line_offsets(code_unit)
     mutable_string = io.StringIO(code_unit)
     for token in triple_quote_tokens:
-        # reset stream
-        mutable_string.seek(0)
-
         # find the offset in the stream
         start = compute_offset(token.start, offsets)
         end = compute_offset(token.end, offsets) - 3
@@ -181,7 +178,6 @@ def restore_quotes(code_unit, original_quotes):
         mutable_string.seek(end)
         mutable_string.write(original_quotes)
 
-    mutable_string.seek(0)
     restored_code_unit = mutable_string.getvalue()
 
     return restored_code_unit
