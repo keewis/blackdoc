@@ -139,45 +139,73 @@ def extraction_func(line):
     }, extracted_line
 
 
-def replace_quotes(line, current, saved):
-    if current is None or saved is None:
-        return line
-    elif current == saved:
-        return line
-    else:
-        return line.replace(current, saved)
+def restore_quotes(code_unit, original_quotes):
+    def is_docstring(string):
+        return (string.startswith("'''") and string.endswith("'''")) or (
+            string.startswith('"""') and string.endswith('"""')
+        )
+
+    def compute_offset(pos, offsets):
+        lineno, charno = pos
+        return offsets[lineno - 1] + charno + 1
+
+    if original_quotes is None:
+        return code_unit
+
+    to_replace = "'''" if original_quotes == '"""' else '"""'
+
+    string_tokens = extract_string_tokens(code_unit)
+    triple_quote_tokens = [
+        token
+        for token in string_tokens
+        if token.string.startswith(to_replace) and token.string.endswith(to_replace)
+    ]
+
+    line_lengths = [len(line) for line in code_unit.split("\n")]
+    offsets = [0] + list(itertools.accumulate(line_lengths[:-1]))
+
+    mutable_string = io.StringIO(code_unit)
+    for token in triple_quote_tokens:
+        # reset stream
+        mutable_string.seek(0)
+
+        # find the offset in the stream
+        start = compute_offset(token.start, offsets)
+        end = compute_offset(token.end, offsets) - 3
+
+        mutable_string.seek(start)
+        mutable_string.write(original_quotes)
+
+        mutable_string.seek(end)
+        mutable_string.write(original_quotes)
+
+    mutable_string.seek(0)
+    restored_code_unit = mutable_string.getvalue()
+
+    return restored_code_unit
 
 
-def reformatting_func(line, docstring_quotes):
+def reformatting_func(code_unit, docstring_quotes):
     def add_prompt(prompt, line):
         if not line:
             return prompt
 
         return " ".join([prompt, line])
 
-    lines = line.rstrip().split("\n")
+    restored_quotes = restore_quotes(code_unit, docstring_quotes)
+
+    lines = restored_quotes.rstrip().split("\n")
     if block_start_re.match(lines[0]):
         lines.append("")
 
-    lines = iter(lines)
-
+    lines_ = iter(lines)
     reformatted = list(
         itertools.chain(
             more_itertools.always_iterable(
-                add_prompt(prompt, more_itertools.first(lines))
+                add_prompt(prompt, more_itertools.first(lines_))
             ),
-            (add_prompt(continuation_prompt, line) for line in lines),
+            (add_prompt(continuation_prompt, line) for line in lines_),
         )
     )
 
-    # make sure nested docstrings still work
-    current_quotes = detect_docstring_quotes("\n".join(reformatted))
-    restored = "\n".join(
-        replace_quotes(line, current, saved)
-        for line, saved, current in itertools.zip_longest(
-            reformatted, docstring_quotes, current_quotes
-        )
-        if line is not None
-    )
-
-    return restored
+    return "\n".join(reformatted)
