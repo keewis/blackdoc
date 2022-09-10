@@ -271,6 +271,25 @@ def prepare_lines(lines, remove_prompt=False):
             ),
             id="docstring and trailing empty string",
         ),
+        pytest.param(
+            textwrap.dedent(
+                '''\
+                def f(arg1, arg2):
+                    """ docstring """
+                    s = """triple-quoted string"""
+                '''
+            ),
+            "'''",
+            textwrap.dedent(
+                """\
+                >>> def f(arg1, arg2):
+                ...     ''' docstring '''
+                ...     s = '''triple-quoted string'''
+                ...
+                """.rstrip()
+            ),
+            id="docstring and triple-quoted string",
+        ),
     ),
 )
 def test_reformatting_func(code_unit, docstring_quotes, expected):
