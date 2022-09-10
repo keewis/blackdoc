@@ -140,6 +140,15 @@ def restore_quotes(code_unit, original_quotes):
             string.startswith('"""') and string.endswith('"""')
         )
 
+    def line_offsets(code_unit):
+        offsets = {
+            lineno: m.start()
+            for lineno, m in enumerate(re.finditer("\n", code_unit), start=2)
+        }
+        offsets[1] = 0
+
+        return offsets
+
     def compute_offset(pos, offsets):
         lineno, charno = pos
         return offsets[lineno] + charno + 1
@@ -156,11 +165,7 @@ def restore_quotes(code_unit, original_quotes):
         if token.string.startswith(to_replace) and token.string.endswith(to_replace)
     ]
 
-    offsets = {1: 0} | {
-        lineno: m.start()
-        for lineno, m in enumerate(re.finditer("\n", code_unit), start=2)
-    }
-
+    offsets = line_offsets(code_unit)
     mutable_string = io.StringIO(code_unit)
     for token in triple_quote_tokens:
         # reset stream
