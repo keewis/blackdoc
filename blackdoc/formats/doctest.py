@@ -84,11 +84,6 @@ def extract_string_tokens(code):
     )
 
 
-def expand_tokens(token):
-    length = token.end[0] - token.start[0] + 1
-    return [token.string] * length
-
-
 def detect_docstring_quotes(line):
     def detect_quotes(string):
         if string.startswith("'''"):
