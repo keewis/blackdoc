@@ -1,3 +1,4 @@
+import io
 import itertools
 import re
 import tokenize
@@ -66,12 +67,15 @@ def suppress(iterable, errors):
             break
 
 
-def extract_string_tokens(code):
-    import io
-
+def tokenize_string(code):
     readline = io.StringIO(code).readline
 
-    tokens = tokenize.generate_tokens(readline)
+    return tokenize.generate_tokens(readline)
+
+
+def extract_string_tokens(code):
+    tokens = tokenize_string(code)
+
     # suppress invalid code errors: `black` will raise with a better error message
     return (
         token
