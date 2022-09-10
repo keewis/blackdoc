@@ -142,7 +142,7 @@ def restore_quotes(code_unit, original_quotes):
 
     def compute_offset(pos, offsets):
         lineno, charno = pos
-        return offsets[lineno - 1] + charno + 1
+        return offsets[lineno] + charno + 1
 
     if original_quotes is None:
         return code_unit
@@ -156,8 +156,10 @@ def restore_quotes(code_unit, original_quotes):
         if token.string.startswith(to_replace) and token.string.endswith(to_replace)
     ]
 
-    line_lengths = [len(line) for line in code_unit.split("\n")]
-    offsets = [0] + list(itertools.accumulate(line_lengths[:-1]))
+    offsets = {1: 0} | {
+        lineno: m.start()
+        for lineno, m in enumerate(re.finditer("\n", code_unit), start=2)
+    }
 
     mutable_string = io.StringIO(code_unit)
     for token in triple_quote_tokens:
