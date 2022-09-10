@@ -2,7 +2,7 @@ Changelog
 =========
 v0.4.0 (*unreleased*)
 ---------------------
-
+- replace docstrings by modifying by token (:pull:`144`)
 
 v0.3.6 (25 August 2022)
 -----------------------
