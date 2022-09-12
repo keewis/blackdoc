@@ -141,17 +141,13 @@ def restore_quotes(code_unit, original_quotes):
         )
 
     def line_offsets(code_unit):
-        offsets = {
-            lineno: m.start()
-            for lineno, m in enumerate(re.finditer("\n", code_unit), start=2)
-        }
-        offsets[1] = 0
+        offsets = [m.end() for m in re.finditer("\n", code_unit)]
 
-        return offsets
+        return {lineno: offset for lineno, offset in enumerate([0] + offsets, start=1)}
 
     def compute_offset(pos, offsets):
         lineno, charno = pos
-        return offsets[lineno] + charno + 1
+        return offsets[lineno] + charno
 
     if original_quotes is None:
         return code_unit
