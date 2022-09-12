@@ -248,8 +248,8 @@ def prepare_lines(lines, remove_prompt=False):
         ),
         pytest.param(
             "s = '''triple-quoted string'''",
-            "'''",
-            ">>> s = '''triple-quoted string'''",
+            '"""',
+            '>>> s = """triple-quoted string"""',
             id="triple-quoted string",
         ),
         pytest.param(
@@ -260,13 +260,13 @@ def prepare_lines(lines, remove_prompt=False):
                 '''
                 """
             ).rstrip(),
-            "'''",
+            '"""',
             textwrap.dedent(
-                """\
-                >>> s = '''
+                '''\
+                >>> s = """
                 ...     triple-quoted string
-                ... '''
-                """.rstrip(),
+                ... """
+                '''.rstrip(),
             ),
             id="multi-line triple-quoted string",
         ),
