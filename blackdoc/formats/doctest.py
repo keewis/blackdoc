@@ -84,18 +84,18 @@ def extract_string_tokens(code):
     )
 
 
-def detect_docstring_quotes(line):
-    def detect_quotes(string):
-        if string.startswith("'''"):
+def detect_docstring_quotes(code_unit):
+    def extract_quotes(string):
+        if string.startswith("'''") and string.endswith("'''"):
             return "'''"
-        elif string.startswith('"""'):
+        elif string.startswith('"""') and string.endswith('"""'):
             return '"""'
         else:
             return None
 
-    string_tokens = list(extract_string_tokens(line))
-    token_quotes = {token: detect_quotes(token.string) for token in string_tokens}
-    quotes = set(token_quotes.values())
+    string_tokens = list(extract_string_tokens(code_unit))
+    token_quotes = {token: extract_quotes(token.string) for token in string_tokens}
+    quotes = (quote for quote in token_quotes.values() if quote is not None)
 
     return more_itertools.first(quotes, None)
 
