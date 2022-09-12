@@ -135,11 +135,6 @@ def extraction_func(line):
 
 
 def restore_quotes(code_unit, original_quotes):
-    def is_docstring(string):
-        return (string.startswith("'''") and string.endswith("'''")) or (
-            string.startswith('"""') and string.endswith('"""')
-        )
-
     def line_offsets(code_unit):
         offsets = [m.end() for m in re.finditer("\n", code_unit)]
 
