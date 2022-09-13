@@ -1,6 +1,6 @@
 Changelog
 =========
-v0.4.0 (*unreleased*)
+v0.3.7 (*unreleased*)
 ---------------------
 - replace docstrings by modifying by token (:pull:`144`)
 
