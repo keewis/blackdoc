@@ -1,8 +1,8 @@
- - [ ] Closes #xxxx
- - [ ] Tests added
- - [ ] Passes `pre-commit run --all-files`
- - [ ] User visible changes (including notable bug fixes) are documented in `changelog.rst`
- - [ ] New features are documented in the docs
+- [ ] Closes #xxxx
+- [ ] Tests added
+- [ ] Passes `pre-commit run --all-files`
+- [ ] User visible changes (including notable bug fixes) are documented in `changelog.rst`
+- [ ] New features are documented in the docs
 
 <!--
 By default, the upstream-dev CI is only run when triggered by the github website (`workflow_dispatch`)
