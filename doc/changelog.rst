@@ -3,6 +3,7 @@ Changelog
 v0.4.0 (*unreleased*)
 ---------------------
 - replace docstrings by modifying by token (:pull:`144`)
+- switch the html theme to `furo <https://pradyunsg.me/furo>`_ (:pull:`149`)
 
 v0.3.6 (25 August 2022)
 -----------------------
