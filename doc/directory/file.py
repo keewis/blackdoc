@@ -7,6 +7,22 @@ doctests:
 ...     "f", "g",'h', "i", "j", "k",'l', 'm',
 ...                                          }
 
+>>> s = (
+...     "a"
+...     + "b"
+... )
+
+>>> def f():
+...     '''nested docstring
+...
+...     parameter documentation
+...     '''
+...
+...     s = (
+...         '''triple-quoted string'''
+...     )
+...
+
 ipython:
 In [1]: d= { "a": 0, "b": 1, "c": 2,
    ...: "d": 3, "e": 4, "f": 5, "g": 6,

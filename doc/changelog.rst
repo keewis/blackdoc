@@ -1,10 +1,21 @@
 Changelog
 =========
-
 v0.4.0 (*unreleased*)
+---------------------
+- replace docstrings by modifying by token (:pull:`144`)
+- switch the html theme to `furo <https://pradyunsg.me/furo>`_ (:pull:`149`)
+
+v0.3.6 (25 August 2022)
+-----------------------
+- fix a regression in the doctest format that would either truncate
+  the reformatted code or crash it (:pull:`137`)
+
+v0.3.5 (26 July 2022)
 ---------------------
 - officially support python 3.10 (:pull:`115`)
 - colorize removed trailing whitespace (:pull:`120`)
+- write only if the content of a file changed (:issue:`127`, :pull:`128`)
+- don't crash on strings with trailing empty strings (`"a"""`) (:issue:`131`, :pull:`132`)
 
 v0.3.4 (17 July 2021)
 ---------------------

@@ -1,4 +1,4 @@
-sphinx>3,<5
-sphinx_rtd_theme
+sphinx>=5
+furo
 ipython
 more-itertools

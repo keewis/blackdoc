@@ -5,15 +5,39 @@ import pytest
 
 from blackdoc.formats import doctest
 
-from .data.doctest import expected_lines, lines
+from .data.doctest import lines
 
 
 @pytest.mark.parametrize(
     ("string", "expected"),
     (
+        pytest.param("", None, id="empty string"),
         pytest.param("a", None, id="no quotes"),
         pytest.param("'''a'''", "'''", id="single quotes"),
         pytest.param('"""a"""', '"""', id="double quotes"),
+        pytest.param('"a"""', None, id="trailing empty string"),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                '''
+                multiple lines
+                '''
+                """
+            ).rstrip(),
+            "'''",
+            id="multiple lines single quotes",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                '''\
+                """
+                multiple lines
+                """
+                '''
+            ).rstrip(),
+            '"""',
+            id="multiple lines double quotes",
+        ),
     ),
 )
 def test_detect_docstring_quotes(string, expected):
@@ -81,55 +105,216 @@ def prepare_lines(lines, remove_prompt=False):
 
 
 @pytest.mark.parametrize(
-    ["code_unit", "expected"],
+    ["code_unit", "docstring_quotes", "expected"],
     (
         pytest.param(
-            prepare_lines(lines[8], remove_prompt=True),
-            prepare_lines(expected_lines[8]),
+            "file",
+            None,
+            ">>> file",
             id="single line",
         ),
         pytest.param(
-            prepare_lines(lines[23], remove_prompt=True),
-            prepare_lines(expected_lines[24]),
+            "",
+            None,
+            ">>>",
             id="single empty line",
         ),
         pytest.param(
-            prepare_lines(lines[4:8], remove_prompt=True),
-            prepare_lines(expected_lines[4:8]),
+            '"""docstring"""',
+            '"""',
+            '>>> """docstring"""',
+            id="single-line triple-quoted string",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                a = [
+                    1,
+                    2,
+                ]
+                """.rstrip()
+            ),
+            None,
+            textwrap.dedent(
+                """\
+                >>> a = [
+                ...     1,
+                ...     2,
+                ... ]
+                """.rstrip()
+            ),
             id="multiple lines",
         ),
         pytest.param(
-            prepare_lines(lines[17:21], remove_prompt=True),
-            prepare_lines(expected_lines[17:21]),
-            id="multiple lines with empty continuation line",
+            textwrap.dedent(
+                """\
+                '''
+                docstring content
+                '''
+                """.rstrip()
+            ),
+            "'''",
+            textwrap.dedent(
+                """\
+                >>> '''
+                ... docstring content
+                ... '''
+                """.rstrip()
+            ),
+            id="multi-line triple-quoted string",
         ),
         pytest.param(
-            prepare_lines(lines[17:21], remove_prompt=True).replace("'''", '"""'),
-            prepare_lines(expected_lines[17:21]).replace("'''", '"""'),
-            id="multiple lines with inverted docstring quotes",
+            textwrap.dedent(
+                """\
+                ''' arbitrary triple-quoted string
+
+                with a empty continuation line
+                '''
+                """.rstrip(),
+            ),
+            "'''",
+            textwrap.dedent(
+                """\
+                >>> ''' arbitrary triple-quoted string
+                ...
+                ... with a empty continuation line
+                ... '''
+                """.rstrip(),
+            ),
+            id="multi-line triple-quoted string with empty continuation line",
         ),
         pytest.param(
-            prepare_lines(lines[21:23], remove_prompt=True),
-            prepare_lines(expected_lines[21:24]),
+            '"""inverted quotes"""',
+            '"""',
+            '>>> """inverted quotes"""',
+            id="triple-quoted string with inverted quotes",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                def myfunc(arg1, arg2):
+                    pass
+                """
+            ),
+            None,
+            textwrap.dedent(
+                """\
+                >>> def myfunc(arg1, arg2):
+                ...     pass
+                ...
+                """.rstrip()
+            ),
             id="trailing newline at the end of a block",
         ),
         pytest.param(
-            prepare_lines(lines[27:29], remove_prompt=True),
-            prepare_lines(expected_lines[29]),
+            textwrap.dedent(
+                """\
+                a = 1
+
+                """
+            ),
+            None,
+            ">>> a = 1",
             id="trailing newline at the end of a normal line",
         ),
         pytest.param(
-            prepare_lines(lines[29], remove_prompt=True),
-            prepare_lines(expected_lines[30]),
+            "# this is not a block:",
+            None,
+            ">>> # this is not a block:",
             id="trailing colon at the end of a comment",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                def f(arg1, arg2):
+                    ''' nested docstring
+
+                    parameter description
+                    '''
+                """
+            ),
+            "'''",
+            textwrap.dedent(
+                """\
+                >>> def f(arg1, arg2):
+                ...     ''' nested docstring
+                ...
+                ...     parameter description
+                ...     '''
+                ...
+                """.rstrip()
+            ),
+            id="nested docstring",
+        ),
+        pytest.param(
+            "s = '''triple-quoted string'''",
+            '"""',
+            '>>> s = """triple-quoted string"""',
+            id="triple-quoted string",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                s = '''
+                    triple-quoted string
+                '''
+                """
+            ).rstrip(),
+            '"""',
+            textwrap.dedent(
+                '''\
+                >>> s = """
+                ...     triple-quoted string
+                ... """
+                '''.rstrip(),
+            ),
+            id="multi-line triple-quoted string",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                '''\
+                def f(arg1, arg2):
+                    """ docstring """
+                    s = "trailing empty string"""
+                '''
+            ),
+            "'''",
+            textwrap.dedent(
+                """\
+                >>> def f(arg1, arg2):
+                ...     ''' docstring '''
+                ...     s = "trailing empty string\"""
+                ...
+                """.rstrip()
+            ),
+            id="docstring and trailing empty string",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                '''\
+                def f(arg1, arg2):
+                    """ docstring """
+                    s = """triple-quoted string"""
+                '''
+            ),
+            "'''",
+            textwrap.dedent(
+                """\
+                >>> def f(arg1, arg2):
+                ...     ''' docstring '''
+                ...     s = '''triple-quoted string'''
+                ...
+                """.rstrip()
+            ),
+            id="docstring and triple-quoted string",
         ),
     ),
 )
-def test_reformatting_func(code_unit, expected):
-    docstring_quotes = doctest.detect_docstring_quotes(code_unit)
-
+def test_reformatting_func(code_unit, docstring_quotes, expected):
     actual = doctest.reformatting_func(code_unit, docstring_quotes)
     assert expected == actual
 
     # make sure the docstring quotes were not changed
-    assert docstring_quotes is None or docstring_quotes in actual
+    expected_quotes = doctest.detect_docstring_quotes(expected)
+    actual_quotes = doctest.detect_docstring_quotes(actual)
+    assert expected_quotes == actual_quotes
