@@ -7,7 +7,7 @@
   types: [file]
   files: \.(py|rst)$
 
-- id: autoupdate-black
+- id: blackdoc-autoupdate-black
   name: autoupdate-black
   entry: python -m blackdoc.autoupdate
   language: python
