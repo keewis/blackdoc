@@ -1,8 +1,8 @@
 Changelog
 =========
-v0.4.0 (*unreleased*)
+v0.3.7 (*unreleased*)
 ---------------------
-- replace docstrings by modifying by token (:pull:`144`)
+- replace docstrings by modifying by token (:issue:`142`, :pull:`144`)
 - switch the html theme to `furo <https://pradyunsg.me/furo>`_ (:pull:`149`)
 - add a new hook to synchronize `black` pinned in `additional_dependencies` with the version from
   the `black` hook (:pull:`124`)
