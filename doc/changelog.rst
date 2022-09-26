@@ -1,5 +1,9 @@
 Changelog
 =========
+v0.3.8 (*unreleased*)
+---------------------
+
+
 v0.3.7 (13 September 2022)
 --------------------------
 - replace docstrings by modifying by token (:issue:`142`, :pull:`144`)
