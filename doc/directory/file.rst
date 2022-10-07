@@ -15,6 +15,18 @@ more code:
             iterable2, iterable3, iterable4)):
         pass
 
+doctest code:
+
+>>> 4*10
+40
+
+in a code block:
+
+.. code:: python
+
+   >>> ', '.join( ['15','30'] )
+   15, 30
+
 executed code:
 
 .. ipython:: python
