@@ -4,8 +4,11 @@ import textwrap
 
 import more_itertools
 
+from .doctest import prompt_re as doctest_prompt_re
 from .errors import InvalidFormatError
-from .ipython import hide_magic, prompt_re, reveal_magic
+from .ipython import hide_magic
+from .ipython import prompt_re as ipython_prompt_re
+from .ipython import reveal_magic
 
 name = "rst"
 
@@ -15,6 +18,13 @@ directive_re = re.compile(
 option_re = re.compile(r"^\s*:[^:]+:")
 
 include_pattern = r"\.rst$"
+
+
+def has_prompt(line):
+    return any(
+        prompt_re.match(line.lstrip())
+        for prompt_re in [ipython_prompt_re, doctest_prompt_re]
+    )
 
 
 def take_while(iterable, predicate):
@@ -39,9 +49,9 @@ def continuation_lines(lines, indent):
     if next_line is None:
         return
 
-    if prompt_re.match(next_line):
+    if has_prompt(next_line):
         lines.prepend(*options, *newlines, *decorator_lines)
-        raise RuntimeError("ipython prompt detected")
+        raise RuntimeError("prompt detected")
 
     yield from options
     yield from newlines
@@ -104,7 +114,7 @@ def detection_func(lines):
             )
         )
     except RuntimeError as e:
-        if str(e) != "ipython prompt detected":
+        if str(e) != "prompt detected":
             raise
 
         lines.prepend((line_number, line))

@@ -9,69 +9,156 @@ from .data import rst as data
 
 
 @pytest.mark.parametrize(
-    "lines,expected",
+    ("string", "expected"),
     (
-        pytest.param(data.lines[0], None, id="none"),
-        pytest.param(data.lines[2:5], None, id="no_code"),
-        pytest.param(data.lines[67:70], None, id="code_other_language"),
+        pytest.param("", None, id="empty string"),
+        pytest.param("Some string.", None, id="no_code"),
         pytest.param(
-            data.lines[8:15],
-            ((1, 8), rst.name, "\n".join(data.lines[8:15])),
+            textwrap.dedent(
+                """\
+                .. note::
+
+                    This is not a code block.
+                """
+            ),
+            None,
+            id="block",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                .. code:: sh
+
+                    find . -name "*.py"
+                """
+            ),
+            None,
+            id="code_other_language",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                .. code:: python
+
+                    10 * 5
+                """
+            ),
+            "rst",
             id="code",
         ),
         pytest.param(
-            data.lines[17:24],
-            ((1, 8), rst.name, "\n".join(data.lines[17:24])),
+            textwrap.dedent(
+                """\
+                .. code-block:: python
+
+                    10 * 5
+                """
+            ),
+            "rst",
             id="code-block",
         ),
         pytest.param(
-            data.lines[27:34],
-            ((1, 8), rst.name, "\n".join(data.lines[27:34])),
+            textwrap.dedent(
+                """\
+                .. ipython:: python
+
+                    %%time
+                    10 * 5
+                """
+            ),
+            "rst",
             id="ipython",
         ),
-        pytest.param(data.lines[38:47], None, id="ipython-prompt"),
-        pytest.param(data.lines[52:64], None, id="ipython-prompt-cell-decorator"),
         pytest.param(
-            data.lines[73:79],
-            ((1, 7), rst.name, "\n".join(data.lines[73:79])),
+            textwrap.dedent(
+                """\
+                .. ipython::
+
+                    In [1]: 10 * 5
+                    Out[1]: 50
+
+                    In [2]: %%time
+                       ...: ".".join("abc")
+                    Out[2]: 'a.b.c'
+                """
+            ),
+            None,
+            id="ipython-prompt",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                .. ipython::
+                    :okerror:
+
+                    @verbatim
+                    In [1]: 10 * 5
+                    Out[1]: 50
+                """
+            ),
+            None,
+            id="ipython-prompt-cell-decorator",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                .. testsetup::
+
+                    10 * 5
+                """
+            ),
+            "rst",
             id="testsetup",
         ),
         pytest.param(
-            data.lines[80:83],
-            ((1, 4), rst.name, "\n".join(data.lines[80:83])),
+            textwrap.dedent(
+                """\
+                .. testcode::
+
+                    10 * 5
+                """
+            ),
+            "rst",
             id="testcode",
         ),
         pytest.param(
-            data.lines[84:87],
-            ((1, 4), rst.name, "\n".join(data.lines[84:87])),
+            textwrap.dedent(
+                """\
+                .. testcleanup::
+
+                    10 * 5
+                """
+            ),
+            "rst",
             id="testcleanup",
         ),
         pytest.param(
-            [".. ipython:: python", '    print("abc")'],
-            (
-                (1, 3),
-                rst.name,
-                textwrap.dedent(
-                    """\
-                    .. ipython:: python
-                        print("abc")
-                    """
-                ).rstrip(),
+            textwrap.dedent(
+                """\
+                .. ipython:: python
+                    print("abc")
+                """
             ),
+            "rst",
             id="missing option separator",
         ),
     ),
 )
-def test_detection_func(lines, expected):
-    lines = tuple(more_itertools.always_iterable(lines))
-    lines_ = more_itertools.peekable(enumerate(lines, start=1))
+def test_detection_func(string, expected):
+    def construct_expected(label, string):
+        if label is None:
+            return None
 
-    actual = rst.detection_func(lines_)
+        n_lines = len(string.split("\n"))
 
-    leftover_lines = tuple(lines_)
+        range_ = (1, n_lines + 1)
+        return range_, label, string
 
-    assert actual == expected
-    assert expected is not None or len(lines) == len(leftover_lines)
+    lines = string.split("\n")
+    code_fragment = more_itertools.peekable(enumerate(lines, start=1))
+    actual = rst.detection_func(code_fragment)
+
+    assert actual == construct_expected(expected, string.rstrip())
 
 
 @pytest.mark.parametrize(

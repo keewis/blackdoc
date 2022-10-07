@@ -2,7 +2,7 @@ Changelog
 =========
 v0.3.8 (*unreleased*)
 ---------------------
-
+- use the `doctest` formatter for doctest lines in `rst` code blocks (:issue:`150`, :pull:`151`)
 
 v0.3.7 (13 September 2022)
 --------------------------
