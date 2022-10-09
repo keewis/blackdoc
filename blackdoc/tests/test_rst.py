@@ -298,34 +298,53 @@ def test_extraction_func(code, expected):
 
 
 @pytest.mark.parametrize(
-    "code,directive,expected",
+    ("code", "directive", "expected"),
     (
         pytest.param(
-            textwrap.dedent("\n".join(data.lines[11:15])),
+            "10 * 5",
             {
                 "name": "code",
                 "language": "python",
-                "options": (":okwarning:",),
+                "options": (),
                 "prompt_length": 3,
             },
-            textwrap.dedent("\n".join(data.lines[8:15])),
+            textwrap.dedent(
+                """\
+                .. code:: python
+
+                   10 * 5
+                """.rstrip()
+            ),
             id="code",
         ),
         pytest.param(
-            textwrap.dedent("\n".join(data.lines[19:24])),
+            "10 * 5",
             {
                 "name": "code-block",
                 "language": "python",
-                "options": (),
+                "options": (":okwarning:",),
                 "prompt_length": 4,
             },
-            textwrap.dedent("\n".join(data.lines[17:24])),
-            id="code_block",
+            textwrap.dedent(
+                """\
+                .. code-block:: python
+                    :okwarning:
+
+                    10 * 5
+                """.rstrip()
+            ),
+            id="code-block_with_options",
         ),
         pytest.param(
-            textwrap.dedent("\n".join(data.lines[29:34])),
+            "10 * 5",
             {"name": "ipython", "language": None, "options": (), "prompt_length": 4},
-            textwrap.dedent("\n".join(data.lines[27:34])),
+            textwrap.dedent(
+                """\
+                .. ipython::
+
+                    10 * 5
+                """.rstrip()
+            ),
             id="ipython",
         ),
     ),
