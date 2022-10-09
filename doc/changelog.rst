@@ -3,6 +3,7 @@ Changelog
 v0.3.8 (*unreleased*)
 ---------------------
 - use the `doctest` formatter for doctest lines in `rst` code blocks (:issue:`150`, :pull:`151`)
+- drop support for ``python=3.6`` (:pull:`153`)
 
 v0.3.7 (13 September 2022)
 --------------------------
