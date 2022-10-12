@@ -174,6 +174,25 @@ def restore_quotes(code_unit, original_quotes):
     return restored_code_unit
 
 
+def split_by_statement(code_unit):
+    """split a code unit into individual statements
+
+    At this point, the only way to have more than a single statement
+    is by joining multiple (non-block) statements with a `;`.
+    """
+    import ast
+
+    content = ast.parse(code_unit).body
+
+    lines = code_unit.split("\n")
+    if not content:
+        return [lines]
+
+    indices = [obj.lineno - 1 for obj in content]
+    slices = more_itertools.zip_offset(indices, indices, offsets=(0, 1), longest=True)
+    return [lines[start:stop] for start, stop in slices]
+
+
 def reformatting_func(code_unit, docstring_quotes):
     def add_prompt(prompt, line):
         if not line:
@@ -181,20 +200,23 @@ def reformatting_func(code_unit, docstring_quotes):
 
         return " ".join([prompt, line])
 
-    restored_quotes = restore_quotes(code_unit, docstring_quotes)
+    def reformat_code_unit(lines):
+        if block_start_re.match(lines[0]):
+            lines.append("")
 
-    lines = restored_quotes.rstrip().split("\n")
-    if block_start_re.match(lines[0]):
-        lines.append("")
-
-    lines_ = iter(lines)
-    reformatted = list(
-        itertools.chain(
+        lines_ = iter(lines)
+        return itertools.chain(
             more_itertools.always_iterable(
                 add_prompt(prompt, more_itertools.first(lines_))
             ),
             (add_prompt(continuation_prompt, line) for line in lines_),
         )
-    )
 
-    return "\n".join(reformatted)
+    restored_quotes = restore_quotes(code_unit.rstrip(), docstring_quotes)
+
+    subunits = split_by_statement(restored_quotes)
+
+    print(subunits)
+    return "\n".join(
+        itertools.chain.from_iterable(reformat_code_unit(unit) for unit in subunits)
+    )
