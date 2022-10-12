@@ -5,8 +5,6 @@ import pytest
 
 from blackdoc.formats import doctest
 
-from .data.doctest import lines
-
 
 @pytest.mark.parametrize(
     ("string", "expected"),
@@ -116,25 +114,82 @@ def test_detection_func(string, expected):
 
 
 @pytest.mark.parametrize(
-    "line",
+    ["code_unit", "expected"],
     (
-        pytest.param(textwrap.dedent(lines[8]), id="single line"),
-        pytest.param(textwrap.dedent(lines[23]), id="single empty line"),
-        pytest.param(textwrap.dedent("\n".join(lines[4:8])), id="multiple lines"),
         pytest.param(
-            textwrap.dedent("\n".join(lines[17:23])),
-            id="multiple lines with empty continuation line",
+            ">>>", ({"prompt_length": 4, "docstring_quotes": None}, ""), id="empty_line"
+        ),
+        pytest.param(
+            ">>> 10 * 5",
+            ({"prompt_length": 4, "docstring_quotes": None}, "10 * 5"),
+            id="single_line",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                >>> a = [
+                ...     1,
+                ...     2,
+                ...     3,
+                ... ]
+                """.rstrip()
+            ),
+            (
+                {"prompt_length": 4, "docstring_quotes": None},
+                textwrap.dedent(
+                    """\
+                    a = [
+                        1,
+                        2,
+                        3,
+                    ]
+                    """.rstrip()
+                ),
+            ),
+            id="multiple_lines",
+        ),
+        pytest.param(
+            ">>> s = '''abc'''",
+            (
+                {"prompt_length": 4, "docstring_quotes": "'''"},
+                "s = '''abc'''",
+            ),
+            id="triple_quoted_string-single_quotes",
+        ),
+        pytest.param(
+            '>>> s = """abc"""',
+            (
+                {"prompt_length": 4, "docstring_quotes": '"""'},
+                's = """abc"""',
+            ),
+            id="triple_quoted_string-double_quotes",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                >>> ''' arbitrary triple-quoted string
+                ...
+                ... with empty continuation line
+                ... '''
+                """.rstrip()
+            ),
+            (
+                {"prompt_length": 4, "docstring_quotes": "'''"},
+                textwrap.dedent(
+                    """\
+                    ''' arbitrary triple-quoted string
+
+                    with empty continuation line
+                    '''
+                    """.rstrip()
+                ),
+            ),
+            id="multiple_lines_with_empty_continuation_line",
         ),
     ),
 )
-def test_extraction_func(line):
-    docstring_quotes = doctest.detect_docstring_quotes(line)
-
-    expected = (
-        {"prompt_length": doctest.prompt_length, "docstring_quotes": docstring_quotes},
-        "\n".join(line.lstrip()[4:] for line in line.split("\n")),
-    )
-    actual = doctest.extraction_func(line)
+def test_extraction_func(code_unit, expected):
+    actual = doctest.extraction_func(code_unit)
 
     assert expected == actual
 
