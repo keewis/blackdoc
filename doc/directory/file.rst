@@ -19,6 +19,8 @@ doctest code:
 
 >>> 4*10
 40
+>>> a = 1; print("abc:", a)
+abc
 
 in a code block:
 

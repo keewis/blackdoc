@@ -148,6 +148,22 @@ def prepare_lines(lines, remove_prompt=False):
         pytest.param(
             textwrap.dedent(
                 """\
+                print("abc")
+                print("def")
+                """
+            ),
+            None,
+            textwrap.dedent(
+                """\
+                >>> print("abc")
+                >>> print("def")
+                """.rstrip()
+            ),
+            id="multiple lines multiple statements",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
                 '''
                 docstring content
                 '''
