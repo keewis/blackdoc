@@ -46,32 +46,73 @@ def test_detect_docstring_quotes(string, expected):
 
 
 @pytest.mark.parametrize(
-    "lines,expected",
+    ["string", "expected"],
     (
-        pytest.param(lines[0], None, id="no_line"),
-        pytest.param(lines[8], ((1, 2), doctest.name, lines[8]), id="single_line"),
+        pytest.param("", None, id="empty_line"),
+        pytest.param("a function to open lines", None, id="no_code"),
+        pytest.param(">>>", "doctest", id="empty_line_with_prompt"),
+        pytest.param(">>> 10 * 5", "doctest", id="single_line"),
+        pytest.param("    >>> 10 * 5", "doctest", id="single_line_with_indent"),
         pytest.param(
-            lines[4:8],
-            ((1, 5), doctest.name, "\n".join(lines[4:8])),
+            textwrap.dedent(
+                """\
+                >>> a = [
+                ...     1,
+                ...     2,
+                ... ]
+                """
+            ),
+            "doctest",
             id="multiple_lines",
         ),
         pytest.param(
-            lines[23], ((1, 2), doctest.name, lines[23]), id="single empty line"
+            textwrap.dedent(
+                """\
+                >>> ''' arbitrary triple-quoted string
+                ...
+                ... with empty continuation line
+                ... '''
+                """
+            ),
+            "doctest",
+            id="multiple_lines_with_empty_continuation_line",
         ),
         pytest.param(
-            lines[17:21],
-            ((1, 5), doctest.name, "\n".join(lines[17:21])),
-            id="multiple lines with empty continuation line",
+            textwrap.dedent(
+                """\
+                >>>
+                ... '''arbitrary triple-quoted string'''
+                """
+            ),
+            "doctest",
+            id="multiple_lines_with_leading_empty_continuation_line",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                >>> '''arbitrary triple-quoted string'''
+                ...
+                """
+            ),
+            "doctest",
+            id="multiple_lines_with_trailing_empty_continuation_line",
         ),
     ),
 )
-def test_detection_func(lines, expected):
-    lines = more_itertools.peekable(
-        enumerate(more_itertools.always_iterable(lines), start=1)
-    )
+def test_detection_func(string, expected):
+    def construct_expected(label, string):
+        if label is None:
+            return None
 
-    actual = doctest.detection_func(lines)
-    assert actual == expected
+        n_lines = len(string.split("\n"))
+        range_ = (1, n_lines + 1)
+        return range_, label, string
+
+    lines = string.split("\n")
+    lines_ = more_itertools.peekable(enumerate(lines, start=1))
+
+    actual = doctest.detection_func(lines_)
+    assert actual == construct_expected(expected, string.rstrip())
 
 
 @pytest.mark.parametrize(
