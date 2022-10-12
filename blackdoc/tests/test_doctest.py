@@ -177,7 +177,25 @@ def prepare_lines(lines, remove_prompt=False):
                 ... '''
                 """.rstrip()
             ),
-            id="multi-line triple-quoted string",
+            id="multi-line triple-quoted string-single quotes",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                s = '''
+                    triple-quoted string
+                '''
+                """
+            ).rstrip(),
+            '"""',
+            textwrap.dedent(
+                '''\
+                >>> s = """
+                ...     triple-quoted string
+                ... """
+                '''.rstrip(),
+            ),
+            id="multi-line triple-quoted string-double quotes",
         ),
         pytest.param(
             textwrap.dedent(
@@ -267,24 +285,6 @@ def prepare_lines(lines, remove_prompt=False):
             '"""',
             '>>> s = """triple-quoted string"""',
             id="triple-quoted string",
-        ),
-        pytest.param(
-            textwrap.dedent(
-                """\
-                s = '''
-                    triple-quoted string
-                '''
-                """
-            ).rstrip(),
-            '"""',
-            textwrap.dedent(
-                '''\
-                >>> s = """
-                ...     triple-quoted string
-                ... """
-                '''.rstrip(),
-            ),
-            id="multi-line triple-quoted string",
         ),
         pytest.param(
             textwrap.dedent(
