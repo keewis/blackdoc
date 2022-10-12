@@ -3,7 +3,9 @@ import textwrap
 import more_itertools
 import pytest
 
-from blackdoc.formats import doctest
+from .. import blacken
+from ..formats import doctest
+from .data import doctest as data
 
 
 @pytest.mark.parametrize(
@@ -414,3 +416,13 @@ def test_reformatting_func(code_unit, docstring_quotes, expected):
     expected_quotes = doctest.detect_docstring_quotes(expected)
     actual_quotes = doctest.detect_docstring_quotes(actual)
     assert expected_quotes == actual_quotes
+
+
+def test_blacken():
+    labeled = tuple(
+        ((min_ + 1, max_ + 1), label, "\n".join(data.lines[slice(min_, max_)]))
+        for label, (min_, max_) in zip(data.line_labels, data.line_ranges)
+    )
+    actual = tuple(blacken(labeled))
+
+    assert len("\n".join(actual).split("\n")) == 32
