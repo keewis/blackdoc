@@ -188,11 +188,11 @@ def split_by_statement(code_unit):
         version = (sys.version_info.major, sys.version_info.minor)
 
         if (
-            version == (3, 7)
+            version < (3, 8)
             and isinstance(node, ast.Expr)
             and isinstance(node.value, ast.Str)
         ):
-            # bug in ast: lineno is wrong for multi-line string expressions
+            # bug in ast (fixed in py38): lineno is wrong for multi-line string expressions
             # https://bugs.python.org/issue16806
             n_lines = len(node.value.s.split("\n"))
             lineno = node.lineno - n_lines + 1
