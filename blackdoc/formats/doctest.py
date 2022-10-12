@@ -1,6 +1,8 @@
+import ast
 import io
 import itertools
 import re
+import sys
 import tokenize
 from tokenize import TokenError
 
@@ -180,7 +182,24 @@ def split_by_statement(code_unit):
     At this point, the only way to have more than a single statement
     is by joining multiple (non-block) statements with a `;`.
     """
-    import ast
+
+    def lineno(node):
+        # TODO: remove once we drop support for python=3.7
+        version = (sys.version_info.major, sys.version_info.minor)
+
+        if (
+            version == (3, 7)
+            and isinstance(node, ast.Expr)
+            and isinstance(node.value, ast.Str)
+        ):
+            # bug in ast: lineno is wrong for multi-line string expressions
+            # https://bugs.python.org/issue16806
+            n_lines = len(node.value.s.split("\n"))
+            lineno = node.lineno - n_lines + 1
+        else:
+            lineno = node.lineno
+
+        return lineno
 
     content = ast.parse(code_unit).body
 
@@ -188,7 +207,7 @@ def split_by_statement(code_unit):
     if not content:
         return [lines]
 
-    indices = [obj.lineno - 1 for obj in content]
+    indices = [lineno(obj) - 1 for obj in content]
     slices = more_itertools.zip_offset(indices, indices, offsets=(0, 1), longest=True)
     return [lines[start:stop] for start, stop in slices]
 
@@ -216,7 +235,6 @@ def reformatting_func(code_unit, docstring_quotes):
 
     subunits = split_by_statement(restored_quotes)
 
-    print(subunits)
     return "\n".join(
         itertools.chain.from_iterable(reformat_code_unit(unit) for unit in subunits)
     )
