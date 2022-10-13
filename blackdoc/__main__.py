@@ -12,6 +12,8 @@ from .diff import unified_diff
 from .files import collect_files
 from .report import report_changes, report_possible_changes, statistics
 
+diff_highlighter = DiffHighlighter()
+
 
 def check_format_names(string):
     names = string.split(",")
@@ -67,7 +69,7 @@ def format_and_check(path, mode, diff=False, color=False):
             if diff:
                 diff_ = unified_diff(content, new_content, path)
 
-                out.print(DiffHighlighter(diff_) if color else diff_)
+                out.print(diff_highlighter(diff_) if color else diff_)
 
             result = "reformatted"
     except (black.InvalidInput, formats.InvalidFormatError) as e:
