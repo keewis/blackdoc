@@ -3,17 +3,14 @@ import pathlib
 import sys
 
 import black
-from rich.console import Console
 
 from . import __version__, format_lines, formats
 from .blackcompat import read_pyproject_toml
 from .colors import DiffHighlighter
+from .console import err, out
 from .diff import unified_diff
 from .files import collect_files
 from .report import report_changes, report_possible_changes, statistics
-
-out = Console()
-err = Console(stderr=True)
 
 
 def check_format_names(string):
