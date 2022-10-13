@@ -15,7 +15,7 @@ def line_style(lineno, line):
     elif line.startswith("+"):
         yield lineno, (0, len(line)), "green"
     elif line.startswith("-"):
-        yield lineno, (0, len(line)), "red"
+        yield lineno, (0, len(line.rstrip())), "red"
         trailing_whitespace = trailing_whitespace_re.search(line)
         if trailing_whitespace:
             start, end = trailing_whitespace.span()
