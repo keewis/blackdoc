@@ -87,7 +87,7 @@ def process(args):
     selected_formats = getattr(args, "formats", None)
     if selected_formats:
         formats.disable(
-            set(formats.detection_funcs.keys()) - set(selected_formats) - set(["none"])
+            set(formats.detection_funcs.keys()) - set(selected_formats) - {"none"}
         )
 
     disabled_formats = getattr(args, "disable_formats", None)
