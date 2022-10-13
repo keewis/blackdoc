@@ -1,22 +1,53 @@
-import re
+import textwrap
+
+import pytest
+from rich.text import Span
 
 from blackdoc import colors
 
 
-def test_color_diff_trailing_whitespace():
-    # can't use triple-quotes because the formatters would remove the trailing whitespace
-    line = ">>> a"
-    whitespace = " " * 5
-    contents = "\n".join(
-        [
-            f"-{line}{whitespace}",
-            f"+{line}",
-        ]
-    )
-    colorized = colors.color_diff(contents)
+@pytest.mark.parametrize(
+    ["text", "spans"],
+    (
+        pytest.param(
+            textwrap.dedent(
+                """\
+                - >>> a
+                + >>> a + 1
+                """.rstrip()
+            ),
+            [Span(0, 7, "red"), Span(8, 19, "green")],
+            id="simple replacement",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                f"""\
+                - >>> a{' ' * 5}
+                + >>> a + 1
+                """.rstrip()
+            ),
+            [Span(0, 7, "red"), Span(7, 12, "red on red"), Span(13, 24, "green")],
+            id="trailing whitespace",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                --- file1 time1
+                +++ file2 time2
+                """
+            ),
+            [Span(0, 15, "bold white"), Span(16, 31, "bold white")],
+            id="header",
+        ),
+        pytest.param(
+            "@@ line1,line2",
+            [Span(0, 14, "cyan")],
+            id="block header",
+        ),
+    ),
+)
+def test_diff_highlighter(text, spans):
+    diff_highlighter = colors.DiffHighlighter()
 
-    pattern = colors.colors_re.pattern
-    expected_pattern = re.compile(rf"{pattern}\s+{pattern}")
-    match = expected_pattern.search(colorized)
-
-    assert match is not None and whitespace in match.group(0)
+    actual = diff_highlighter(text)
+    assert actual.spans == spans

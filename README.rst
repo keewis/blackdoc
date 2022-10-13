@@ -23,8 +23,16 @@ Dependencies:
 
 - `black`_
 - `more-itertools`_
+- `rich`_
+- `tomli`_
+- `pathspec`_
+- `importlib-metadata`_ for ``python < 3.8``
 
 .. _more-itertools: https://github.com/more-itertools/more-itertools
+.. _rich: https://github.com/textualize/rich
+.. _tomli: https://github.com/hukkin/tomli
+.. _pathspec: https://github.com/cpburnz/python-pathspec
+.. _importlib-metadata: https://github.com/python/importlib_metadata
 
 Install it with:
 

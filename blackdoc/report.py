@@ -1,6 +1,3 @@
-from .colors import colorize
-
-
 def report_changes(n_reformatted, n_unchanged, n_error):
     def noun(n):
         return "file" if n < 2 else "files"
@@ -8,22 +5,14 @@ def report_changes(n_reformatted, n_unchanged, n_error):
     reports = []
     if n_reformatted > 0:
         reports.append(
-            colorize(
-                f"{n_reformatted} {noun(n_reformatted)} reformatted",
-                fg="white",
-                bold=True,
-            )
+            f"[bold white]{n_reformatted} {noun(n_reformatted)} reformatted[/]",
         )
 
     if n_unchanged > 0:
-        reports.append(
-            colorize(f"{n_unchanged} {noun(n_unchanged)} left unchanged", fg="white")
-        )
+        reports.append(f"[white]{n_unchanged} {noun(n_unchanged)} left unchanged[/]")
 
     if n_error > 0:
-        reports.append(
-            colorize(f"{n_error} {noun(n_error)} fails to reformat", fg="red")
-        )
+        reports.append(f"[red]{n_error} {noun(n_error)} fails to reformat[/]")
 
     return ", ".join(reports) + "."
 
@@ -35,24 +24,16 @@ def report_possible_changes(n_reformatted, n_unchanged, n_error):
     reports = []
     if n_reformatted > 0:
         reports.append(
-            colorize(
-                f"{n_reformatted} {noun(n_reformatted)} would be reformatted",
-                fg="white",
-                bold=True,
-            )
+            f"[bold white]{n_reformatted} {noun(n_reformatted)} would be reformatted[/]",
         )
 
     if n_unchanged > 0:
         reports.append(
-            colorize(
-                f"{n_unchanged} {noun(n_unchanged)} would be left unchanged", fg="white"
-            )
+            f"[white]{n_unchanged} {noun(n_unchanged)} would be left unchanged[/]"
         )
 
     if n_error > 0:
-        reports.append(
-            colorize(f"{n_error} {noun(n_error)} would fail to reformat", fg="red")
-        )
+        reports.append(f"[red]{n_error} {noun(n_error)} would fail to reformat[/]")
 
     return ", ".join(reports) + "."
 

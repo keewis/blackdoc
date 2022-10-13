@@ -3,13 +3,17 @@ import pathlib
 import sys
 
 import black
+from rich.text import Text
 
 from . import __version__, format_lines, formats
 from .blackcompat import read_pyproject_toml
-from .colors import err, out
+from .colors import DiffHighlighter
+from .console import err, out
 from .diff import unified_diff
 from .files import collect_files
 from .report import report_changes, report_possible_changes, statistics
+
+diff_highlighter = DiffHighlighter()
 
 
 def check_format_names(string):
@@ -37,13 +41,13 @@ def format_and_overwrite(path, mode):
         if new_content == content:
             result = "unchanged"
         else:
-            err(f"reformatted {path}", fg="white", bold=True)
+            err.print(f"reformatted {path}", style="bold white")
             result = "reformatted"
 
             with open(path, "w", encoding=encoding, newline=newline) as f:
                 f.write(new_content)
     except (black.InvalidInput, formats.InvalidFormatError) as e:
-        err(f"error: cannot format {path.absolute()}: {e}", fg="red")
+        err.print(f"error: cannot format {path.absolute()}: {e}", style="red")
         result = "error"
 
     return result
@@ -61,14 +65,21 @@ def format_and_check(path, mode, diff=False, color=False):
         if new_content == content:
             result = "unchanged"
         else:
-            err(f"would reformat {path}", fg="white", bold=True)
+            err.print(f"would reformat {path}", style="bold white")
 
             if diff:
-                out(unified_diff(content, new_content, path, color))
+                diff_ = unified_diff(content, new_content, path)
+
+                if color:
+                    formatted_diff = diff_highlighter(diff_)
+                else:
+                    formatted_diff = Text(diff_)
+
+                out.print(formatted_diff)
 
             result = "reformatted"
     except (black.InvalidInput, formats.InvalidFormatError) as e:
-        err(f"error: cannot format {path.absolute()}: {e}", fg="red")
+        err.print(f"error: cannot format {path.absolute()}: {e}", style="red")
         result = "error"
 
     return result
@@ -76,13 +87,13 @@ def format_and_check(path, mode, diff=False, color=False):
 
 def process(args):
     if not args.src:
-        err("No Path provided. Nothing to do 😴", fg="white", bold=True)
+        err.print("No Path provided. Nothing to do :sleeping:", style="bold white")
         return 0
 
     selected_formats = getattr(args, "formats", None)
     if selected_formats:
         formats.disable(
-            set(formats.detection_funcs.keys()) - set(selected_formats) - set(["none"])
+            set(formats.detection_funcs.keys()) - set(selected_formats) - {"none"}
         )
 
     disabled_formats = getattr(args, "disable_formats", None)
@@ -92,21 +103,27 @@ def process(args):
     try:
         include_regex = black.re_compile_maybe_verbose(args.include)
     except black.re.error:
-        err(f"Invalid regular expression for include given: {args.include!r}", fg="red")
+        err.print(
+            f"Invalid regular expression for include given: {args.include!r}",
+            style="red",
+        )
         return 2
 
     try:
         exclude_regex = black.re_compile_maybe_verbose(args.exclude)
     except black.re.error:
-        err(f"Invalid regular expression for exclude given: {args.exclude!r}", fg="red")
+        err.print(
+            f"Invalid regular expression for exclude given: {args.exclude!r}",
+            style="red",
+        )
         return 2
 
     try:
         extend_exclude_regex = black.re_compile_maybe_verbose(args.extend_exclude)
     except black.re.error:
-        err(
+        err.print(
             f"Invalid regular expression for extend exclude given: {args.extend_exclude!r}",
-            fg="red",
+            style="red",
         )
         return 2
 
@@ -116,9 +133,9 @@ def process(args):
             black.re_compile_maybe_verbose(force_exclude) if force_exclude else None
         )
     except black.re.error:
-        err(
+        err.print(
             f"Invalid regular expression for force_exclude given: {force_exclude!r}",
-            fg="red",
+            style="red",
         )
         return 2
 
@@ -134,10 +151,9 @@ def process(args):
         )
     )
     if len(sources) == 0:
-        err(
-            "No files are present to be formatted. Nothing to do 😴",
-            fg="white",
-            bold=True,
+        err.print(
+            "No files are present to be formatted. Nothing to do :sleeping:",
+            style="bold white",
         )
         return 0
 
@@ -178,14 +194,13 @@ def process(args):
     else:
         return_code = 0
 
-    reformatted_message = "Oh no! 💥 💔 💥"
-    no_reformatting_message = "All done! ✨ 🍰 ✨"
-    err(
+    reformatted_message = "Oh no! :boom: :broken_heart: :boom:"
+    no_reformatting_message = "All done! :sparkles: :cake: :sparkles:"
+    err.print(
         reformatted_message if return_code else no_reformatting_message,
-        fg="white",
-        bold=True,
+        style="bold white",
     )
-    err(report)
+    err.print(report)
     return return_code
 
 
@@ -212,8 +227,8 @@ def main():
         action="append",
         choices=[v.name.lower() for v in black.TargetVersion],
         help=(
-            "Python versions that should be supported by Black's output. (default: "
-            "per-file auto-detection)"
+            "Python versions that should be supported by Black's output."
+            " (default: per-file auto-detection)"
         ),
         default=argparse.SUPPRESS,
     )
@@ -232,9 +247,9 @@ def main():
         const="check",
         default="inplace",
         help=(
-            "Don't write the files back, just return the status.  Return code 0 "
-            "means nothing would change.  Return code 1 means some files would be "
-            "reformatted.  Return code 123 means there was an internal error."
+            "Don't write the files back, just return the status.  Return code 0"
+            " means nothing would change.  Return code 1 means some files would be"
+            " reformatted.  Return code 123 means there was an internal error."
         ),
     )
     parser.add_argument(
@@ -258,11 +273,11 @@ def main():
         type=str,
         default=formats.format_include_patterns(),
         help=(
-            "A regular expression that matches files and directories that should be "
-            "included on recursive searches.  An empty value means all files are "
-            "included regardless of the name.  Use forward slashes for directories on "
-            "all platforms (Windows, too).  Exclusions are calculated first, inclusions "
-            "later."
+            "A regular expression that matches files and directories that should be"
+            " included on recursive searches.  An empty value means all files are"
+            " included regardless of the name.  Use forward slashes for directories on"
+            " all platforms (Windows, too).  Exclusions are calculated first, inclusions"
+            " later."
         ),
     )
     parser.add_argument(
@@ -271,10 +286,10 @@ def main():
         type=str,
         default=black.DEFAULT_EXCLUDES,
         help=(
-            "A regular expression that matches files and directories that should be "
-            "excluded on recursive searches.  An empty value means no paths are excluded. "
-            "Use forward slashes for directories on all platforms (Windows, too).  "
-            "Exclusions are calculated first, inclusions later."
+            "A regular expression that matches files and directories that should be"
+            " excluded on recursive searches.  An empty value means no paths are excluded."
+            " Use forward slashes for directories on all platforms (Windows, too)."
+            "  Exclusions are calculated first, inclusions later."
         ),
     )
     parser.add_argument(
@@ -284,8 +299,8 @@ def main():
         default="",
         help=(
             "Like --exclude, but adds additional files and directories"
-            "on top of the excluded ones. (Useful if you simply want to"
-            "add to the default)"
+            " on top of the excluded ones. (Useful if you simply want to"
+            " add to the default)"
         ),
     )
     parser.add_argument(
@@ -311,8 +326,8 @@ def main():
         metavar="FMT[,FMT[,FMT...]]",
         type=check_format_names,
         help=(
-            "Disable the given formats. "
-            "This option also affects formats explicitly set."
+            "Disable the given formats."
+            " This option also affects formats explicitly set."
         ),
         default=argparse.SUPPRESS,
     )
@@ -329,7 +344,7 @@ def main():
         action="store_true",
         help=(
             "Don't emit non-error messages to stderr. Errors are still"
-            "emitted; silence those with 2>/dev/null."
+            " emitted; silence those with 2>/dev/null."
         ),
     )
     parser.add_argument(
@@ -338,7 +353,7 @@ def main():
         action="store_true",
         help=(
             "Also emit messages to stderr about files that were not"
-            "changed or were ignored due to exclusion patterns."
+            " changed or were ignored due to exclusion patterns."
         ),
     )
     parser.add_argument(

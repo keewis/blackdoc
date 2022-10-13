@@ -55,24 +55,6 @@ def find_project_root(srcs):
     return directory, "file system root"
 
 
-def wrap_stream_for_windows(f):
-    """
-    Wrap stream with colorama's wrap_stream so colors are shown on Windows.
-
-    If `colorama` is unavailable, the original stream is returned unmodified.
-    Otherwise, the `wrap_stream()` function determines whether the stream needs
-    to be wrapped for a Windows environment and will accordingly either return
-    an `AnsiToWin32` wrapper or the original stream.
-    """
-    try:
-        from colorama.initialise import wrap_stream
-    except ImportError:
-        return f
-    else:
-        # Set `strip=False` to avoid needing to modify test_express_diff_with_color.
-        return wrap_stream(f, convert=None, strip=False, autoreset=False, wrap=True)
-
-
 def find_pyproject_toml(path_search_start):
     """Find the absolute filepath to a pyproject.toml if it exists"""
     path_project_root, _ = find_project_root(path_search_start)

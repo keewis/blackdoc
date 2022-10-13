@@ -6,7 +6,7 @@ from .blackcompat import (
     get_gitignore,
     normalize_path_maybe_ignore,
 )
-from .colors import err
+from .console import err
 
 
 def collect_files(src, include, exclude, extend_exclude, force_exclude, quiet, verbose):
@@ -49,4 +49,4 @@ def collect_files(src, include, exclude, extend_exclude, force_exclude, quiet, v
 
             yield path
         else:
-            err(f"invalid path: {path}")
+            err.print(f"invalid path: {path}", style="red")
