@@ -73,7 +73,7 @@ def format_and_check(path, mode, diff=False, color=False):
 
             result = "reformatted"
     except (black.InvalidInput, formats.InvalidFormatError) as e:
-        err.print(f"error: cannot format {path.absolute()}: {e}[/]", style="red")
+        err.print(f"error: cannot format {path.absolute()}: {e}", style="red")
         result = "error"
 
     return result
