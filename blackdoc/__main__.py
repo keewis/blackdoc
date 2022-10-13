@@ -3,6 +3,7 @@ import pathlib
 import sys
 
 import black
+from rich.text import Text
 
 from . import __version__, format_lines, formats
 from .blackcompat import read_pyproject_toml
@@ -69,7 +70,12 @@ def format_and_check(path, mode, diff=False, color=False):
             if diff:
                 diff_ = unified_diff(content, new_content, path)
 
-                out.print(diff_highlighter(diff_) if color else diff_)
+                if color:
+                    formatted_diff = diff_highlighter(diff_)
+                else:
+                    formatted_diff = Text(diff_)
+
+                out.print(formatted_diff)
 
             result = "reformatted"
     except (black.InvalidInput, formats.InvalidFormatError) as e:
