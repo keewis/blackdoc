@@ -1,10 +1,8 @@
 import datetime
 import difflib
 
-from .colors import color_diff
 
-
-def unified_diff(a, b, path, color):
+def unified_diff(a, b, path):
     then = datetime.datetime.utcfromtimestamp(path.stat().st_mtime)
     now = datetime.datetime.utcnow()
     src_name = f"{path}\t{then} +0000"
@@ -19,7 +17,5 @@ def unified_diff(a, b, path, color):
             lineterm="",
         )
     )
-    if color:
-        diff = color_diff(diff)
 
     return diff
