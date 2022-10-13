@@ -3,13 +3,17 @@ import pathlib
 import sys
 
 import black
+from rich.console import Console
 
 from . import __version__, format_lines, formats
 from .blackcompat import read_pyproject_toml
-from .colors import err, out
+from .colors import DiffHighlighter
 from .diff import unified_diff
 from .files import collect_files
 from .report import report_changes, report_possible_changes, statistics
+
+out = Console()
+err = Console(stderr=True)
 
 
 def check_format_names(string):
@@ -37,13 +41,13 @@ def format_and_overwrite(path, mode):
         if new_content == content:
             result = "unchanged"
         else:
-            err(f"reformatted {path}", fg="white", bold=True)
+            err.print(f"reformatted {path}", style="bold white")
             result = "reformatted"
 
             with open(path, "w", encoding=encoding, newline=newline) as f:
                 f.write(new_content)
     except (black.InvalidInput, formats.InvalidFormatError) as e:
-        err(f"error: cannot format {path.absolute()}: {e}", fg="red")
+        err.print(f"error: cannot format {path.absolute()}: {e}", style="red")
         result = "error"
 
     return result
@@ -61,14 +65,16 @@ def format_and_check(path, mode, diff=False, color=False):
         if new_content == content:
             result = "unchanged"
         else:
-            err(f"would reformat {path}", fg="white", bold=True)
+            err.print(f"would reformat {path}", style="bold white")
 
             if diff:
-                out(unified_diff(content, new_content, path, color))
+                diff_ = unified_diff(content, new_content, path)
+
+                out.print(DiffHighlighter(diff_) if color else diff_)
 
             result = "reformatted"
     except (black.InvalidInput, formats.InvalidFormatError) as e:
-        err(f"error: cannot format {path.absolute()}: {e}", fg="red")
+        err.print(f"error: cannot format {path.absolute()}: {e}[/]", style="red")
         result = "error"
 
     return result
@@ -76,7 +82,7 @@ def format_and_check(path, mode, diff=False, color=False):
 
 def process(args):
     if not args.src:
-        err("No Path provided. Nothing to do 😴", fg="white", bold=True)
+        err.print("No Path provided. Nothing to do 😴", style="bold white")
         return 0
 
     selected_formats = getattr(args, "formats", None)
@@ -92,21 +98,27 @@ def process(args):
     try:
         include_regex = black.re_compile_maybe_verbose(args.include)
     except black.re.error:
-        err(f"Invalid regular expression for include given: {args.include!r}", fg="red")
+        err.print(
+            f"Invalid regular expression for include given: {args.include!r}",
+            style="red",
+        )
         return 2
 
     try:
         exclude_regex = black.re_compile_maybe_verbose(args.exclude)
     except black.re.error:
-        err(f"Invalid regular expression for exclude given: {args.exclude!r}", fg="red")
+        err.print(
+            f"Invalid regular expression for exclude given: {args.exclude!r}",
+            style="red",
+        )
         return 2
 
     try:
         extend_exclude_regex = black.re_compile_maybe_verbose(args.extend_exclude)
     except black.re.error:
-        err(
+        err.print(
             f"Invalid regular expression for extend exclude given: {args.extend_exclude!r}",
-            fg="red",
+            style="red",
         )
         return 2
 
@@ -116,9 +128,9 @@ def process(args):
             black.re_compile_maybe_verbose(force_exclude) if force_exclude else None
         )
     except black.re.error:
-        err(
+        err.print(
             f"Invalid regular expression for force_exclude given: {force_exclude!r}",
-            fg="red",
+            style="red",
         )
         return 2
 
@@ -134,10 +146,9 @@ def process(args):
         )
     )
     if len(sources) == 0:
-        err(
+        err.print(
             "No files are present to be formatted. Nothing to do 😴",
-            fg="white",
-            bold=True,
+            style="bold white",
         )
         return 0
 
@@ -180,12 +191,11 @@ def process(args):
 
     reformatted_message = "Oh no! 💥 💔 💥"
     no_reformatting_message = "All done! ✨ 🍰 ✨"
-    err(
+    err.print(
         reformatted_message if return_code else no_reformatting_message,
-        fg="white",
-        bold=True,
+        style="bold white",
     )
-    err(report)
+    err.print(report)
     return return_code
 
 
