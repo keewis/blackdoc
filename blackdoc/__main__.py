@@ -221,8 +221,8 @@ def main():
         action="append",
         choices=[v.name.lower() for v in black.TargetVersion],
         help=(
-            "Python versions that should be supported by Black's output. (default: "
-            "per-file auto-detection)"
+            "Python versions that should be supported by Black's output."
+            " (default: per-file auto-detection)"
         ),
         default=argparse.SUPPRESS,
     )
@@ -241,9 +241,9 @@ def main():
         const="check",
         default="inplace",
         help=(
-            "Don't write the files back, just return the status.  Return code 0 "
-            "means nothing would change.  Return code 1 means some files would be "
-            "reformatted.  Return code 123 means there was an internal error."
+            "Don't write the files back, just return the status.  Return code 0"
+            " means nothing would change.  Return code 1 means some files would be"
+            " reformatted.  Return code 123 means there was an internal error."
         ),
     )
     parser.add_argument(
@@ -267,11 +267,11 @@ def main():
         type=str,
         default=formats.format_include_patterns(),
         help=(
-            "A regular expression that matches files and directories that should be "
-            "included on recursive searches.  An empty value means all files are "
-            "included regardless of the name.  Use forward slashes for directories on "
-            "all platforms (Windows, too).  Exclusions are calculated first, inclusions "
-            "later."
+            "A regular expression that matches files and directories that should be"
+            " included on recursive searches.  An empty value means all files are"
+            " included regardless of the name.  Use forward slashes for directories on"
+            " all platforms (Windows, too).  Exclusions are calculated first, inclusions"
+            " later."
         ),
     )
     parser.add_argument(
@@ -280,10 +280,10 @@ def main():
         type=str,
         default=black.DEFAULT_EXCLUDES,
         help=(
-            "A regular expression that matches files and directories that should be "
-            "excluded on recursive searches.  An empty value means no paths are excluded. "
-            "Use forward slashes for directories on all platforms (Windows, too).  "
-            "Exclusions are calculated first, inclusions later."
+            "A regular expression that matches files and directories that should be"
+            " excluded on recursive searches.  An empty value means no paths are excluded."
+            " Use forward slashes for directories on all platforms (Windows, too)."
+            "  Exclusions are calculated first, inclusions later."
         ),
     )
     parser.add_argument(
@@ -293,8 +293,8 @@ def main():
         default="",
         help=(
             "Like --exclude, but adds additional files and directories"
-            "on top of the excluded ones. (Useful if you simply want to"
-            "add to the default)"
+            " on top of the excluded ones. (Useful if you simply want to"
+            " add to the default)"
         ),
     )
     parser.add_argument(
@@ -320,8 +320,8 @@ def main():
         metavar="FMT[,FMT[,FMT...]]",
         type=check_format_names,
         help=(
-            "Disable the given formats. "
-            "This option also affects formats explicitly set."
+            "Disable the given formats."
+            " This option also affects formats explicitly set."
         ),
         default=argparse.SUPPRESS,
     )
@@ -338,7 +338,7 @@ def main():
         action="store_true",
         help=(
             "Don't emit non-error messages to stderr. Errors are still"
-            "emitted; silence those with 2>/dev/null."
+            " emitted; silence those with 2>/dev/null."
         ),
     )
     parser.add_argument(
@@ -347,7 +347,7 @@ def main():
         action="store_true",
         help=(
             "Also emit messages to stderr about files that were not"
-            "changed or were ignored due to exclusion patterns."
+            " changed or were ignored due to exclusion patterns."
         ),
     )
     parser.add_argument(
