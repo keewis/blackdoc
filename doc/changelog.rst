@@ -2,8 +2,9 @@ Changelog
 =========
 v0.3.8 (*unreleased*)
 ---------------------
-- use the `doctest` formatter for doctest lines in `rst` code blocks (:issue:`150`, :pull:`151`)
+- use the ``doctest`` formatter for doctest lines in ``rst`` code blocks (:issue:`150`, :pull:`151`)
 - drop support for ``python=3.6`` (:pull:`153`)
+- split chained statements into multiple ``doctest`` lines (:issue:`143`, :pull:`155`)
 - replace the custom color formatting code with `rich <https://github.com/textualize/rich>`_
   (:issue:`146`, :pull:`157`).
 
