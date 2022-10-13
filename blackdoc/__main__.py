@@ -82,7 +82,7 @@ def format_and_check(path, mode, diff=False, color=False):
 
 def process(args):
     if not args.src:
-        err.print("No Path provided. Nothing to do 😴", style="bold white")
+        err.print("No Path provided. Nothing to do :sleeping:", style="bold white")
         return 0
 
     selected_formats = getattr(args, "formats", None)
@@ -147,7 +147,7 @@ def process(args):
     )
     if len(sources) == 0:
         err.print(
-            "No files are present to be formatted. Nothing to do 😴",
+            "No files are present to be formatted. Nothing to do :sleeping:",
             style="bold white",
         )
         return 0
@@ -189,8 +189,8 @@ def process(args):
     else:
         return_code = 0
 
-    reformatted_message = "Oh no! 💥 💔 💥"
-    no_reformatting_message = "All done! ✨ 🍰 ✨"
+    reformatted_message = "Oh no! :boom: :broken_heart: :boom:"
+    no_reformatting_message = "All done! :sparkles: :cake: :sparkles:"
     err.print(
         reformatted_message if return_code else no_reformatting_message,
         style="bold white",
