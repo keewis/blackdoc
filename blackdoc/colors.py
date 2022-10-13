@@ -10,6 +10,7 @@ from .blackcompat import wrap_stream_for_windows
 # TODO: use rich instead
 
 colors_re = re.compile("\033" + r"\[[0-9]+(?:;[0-9]+)*m")
+line_re = re.compile("\n")
 trailing_whitespace_re = re.compile(r"\s+$")
 
 
@@ -90,35 +91,35 @@ def color_diff(contents):
     return "\n".join(colorize_line(line) for line in lines)
 
 
+def line_style(lineno, line):
+    if line.startswith("+++") or line.startswith("---"):
+        yield lineno, (0, len(line)), "bold white"
+    elif line.startswith("@@"):
+        yield lineno, (0, len(line)), "cyan"
+    elif line.startswith("+"):
+        yield lineno, (0, len(line)), "green"
+    elif line.startswith("-"):
+        yield lineno, (0, len(line)), "red"
+        trailing_whitespace = trailing_whitespace_re.search(line)
+        if trailing_whitespace:
+            start, end = trailing_whitespace.span()
+            yield lineno, (start, end), "red on red"
+    else:
+        yield lineno, (0, len(line)), ""
+
+
+def line_offsets(text):
+    matches = line_re.finditer(text)
+
+    return [0] + [m.end() for m in matches]
+
+
+def move_span(start, end, offset):
+    return start + offset, end + offset
+
+
 class DiffHighlighter(Highlighter):
     def highlight(self, text):
-        def line_style(lineno, line):
-            if line.startswith("+++") or line.startswith("---"):
-                yield lineno, (0, len(line)), "bold white"
-            elif line.startswith("@@"):
-                yield lineno, (0, len(line)), "cyan"
-            elif line.startswith("+"):
-                yield lineno, (0, len(line)), "green"
-            elif line.startswith("-"):
-                yield lineno, (0, len(line)), "red"
-                trailing_whitespace = trailing_whitespace_re.search(line)
-                if trailing_whitespace:
-                    start, end = trailing_whitespace.span()
-                    yield lineno, (start, end), "red on red"
-            else:
-                yield lineno, (0, len(line)), ""
-
-        def line_offsets(text):
-            import re
-
-            line_re = re.compile("\n")
-            matches = line_re.finditer(text)
-
-            return [0] + [m.end() for m in matches]
-
-        def move_span(start, end, offset):
-            return start + offset, end + offset
-
         def diff_styles(text):
             lines = text.split("\n")
             line_styles = itertools.chain.from_iterable(
