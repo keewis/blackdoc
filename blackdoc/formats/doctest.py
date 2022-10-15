@@ -218,6 +218,33 @@ def split_by_statement(code_unit):
 
 
 def reformatting_func(code_unit, docstring_quotes):
+    def is_comment(line):
+        return line.lstrip().startswith("#")
+
+    def is_decorator(line):
+        return line.lstrip().startswith("@")
+
+    def drop_while(iterable, predicate):
+        peekable = more_itertools.peekable(iterable)
+        while True:
+            try:
+                current = peekable.peek()
+            except StopIteration:
+                break
+
+            if not predicate(current):
+                break
+
+            more_itertools.consume(peekable, n=1)
+
+        yield from peekable
+
+    def is_block(lines):
+        block_lines = drop_while(lines, lambda l: is_comment(l) or is_decorator(l))
+        first_line = more_itertools.first(block_lines, default="")
+        match = block_start_re.match(first_line)
+        return match is not None
+
     def add_prompt(prompt, line):
         if not line:
             return prompt
@@ -225,7 +252,7 @@ def reformatting_func(code_unit, docstring_quotes):
         return " ".join([prompt, line])
 
     def reformat_code_unit(lines):
-        if block_start_re.match(lines[0]):
+        if is_block(lines):
             lines.append("")
 
         lines_ = iter(lines)
