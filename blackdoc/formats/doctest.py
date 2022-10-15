@@ -196,6 +196,9 @@ def split_by_statement(code_unit):
             # https://bugs.python.org/issue16806
             n_lines = len(node.value.s.split("\n"))
             lineno = node.lineno - n_lines + 1
+        elif isinstance(node, (ast.FunctionDef, ast.ClassDef)):
+            linenos = [node.lineno] + [dec.lineno for dec in node.decorator_list]
+            lineno = min(linenos)
         else:
             lineno = node.lineno
 
