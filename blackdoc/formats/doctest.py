@@ -211,6 +211,8 @@ def split_by_statement(code_unit):
         return [lines]
 
     indices = [lineno(obj) - 1 for obj in content]
+    # make sure comments are included
+    indices[0] = 0
     slices = more_itertools.zip_offset(indices, indices, offsets=(0, 1), longest=True)
     return [lines[start:stop] for start, stop in slices]
 
