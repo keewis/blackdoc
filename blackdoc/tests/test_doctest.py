@@ -262,6 +262,79 @@ def prepare_lines(lines, remove_prompt=False):
         pytest.param(
             textwrap.dedent(
                 """\
+                # comment
+                print("abc")
+                """
+            ),
+            None,
+            textwrap.dedent(
+                """\
+                >>> # comment
+                ... print("abc")
+                """.rstrip()
+            ),
+            id="multiple lines with comment",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                # comment
+                def func():
+                    pass
+                """
+            ),
+            None,
+            textwrap.dedent(
+                """\
+                >>> # comment
+                ... def func():
+                ...     pass
+                ...
+                """.rstrip()
+            ),
+            id="multiple lines comment before block",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                @decorator
+                def func():
+                    pass
+                """
+            ),
+            None,
+            textwrap.dedent(
+                """\
+                >>> @decorator
+                ... def func():
+                ...     pass
+                ...
+                """.rstrip()
+            ),
+            id="multiple lines function decorator",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                @decorator
+                class A:
+                    pass
+                """
+            ),
+            None,
+            textwrap.dedent(
+                """\
+                >>> @decorator
+                ... class A:
+                ...     pass
+                ...
+                """.rstrip()
+            ),
+            id="multiple lines class decorator",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
                 '''
                 docstring content
                 '''

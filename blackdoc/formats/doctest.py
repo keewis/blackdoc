@@ -196,6 +196,9 @@ def split_by_statement(code_unit):
             # https://bugs.python.org/issue16806
             n_lines = len(node.value.s.split("\n"))
             lineno = node.lineno - n_lines + 1
+        elif isinstance(node, (ast.FunctionDef, ast.ClassDef)):
+            linenos = [node.lineno] + [dec.lineno for dec in node.decorator_list]
+            lineno = min(linenos)
         else:
             lineno = node.lineno
 
@@ -208,11 +211,40 @@ def split_by_statement(code_unit):
         return [lines]
 
     indices = [lineno(obj) - 1 for obj in content]
+    # make sure comments are included
+    indices[0] = 0
     slices = more_itertools.zip_offset(indices, indices, offsets=(0, 1), longest=True)
     return [lines[start:stop] for start, stop in slices]
 
 
 def reformatting_func(code_unit, docstring_quotes):
+    def is_comment(line):
+        return line.lstrip().startswith("#")
+
+    def is_decorator(line):
+        return line.lstrip().startswith("@")
+
+    def drop_while(iterable, predicate):
+        peekable = more_itertools.peekable(iterable)
+        while True:
+            try:
+                current = peekable.peek()
+            except StopIteration:
+                break
+
+            if not predicate(current):
+                break
+
+            more_itertools.consume(peekable, n=1)
+
+        yield from peekable
+
+    def is_block(lines):
+        block_lines = drop_while(lines, lambda l: is_comment(l) or is_decorator(l))
+        first_line = more_itertools.first(block_lines, default="")
+        match = block_start_re.match(first_line)
+        return match is not None
+
     def add_prompt(prompt, line):
         if not line:
             return prompt
@@ -220,7 +252,7 @@ def reformatting_func(code_unit, docstring_quotes):
         return " ".join([prompt, line])
 
     def reformat_code_unit(lines):
-        if block_start_re.match(lines[0]):
+        if is_block(lines):
             lines.append("")
 
         lines_ = iter(lines)

@@ -21,6 +21,11 @@ doctest code:
 40
 >>> a=1;print("abc:",a)
 abc: 1
+>>> # comment
+... a=1
+>>> @decorator
+... def f():
+...     pass
 
 in a code block:
 
