@@ -41,7 +41,7 @@ def format_and_overwrite(path, mode):
         if new_content == content:
             result = "unchanged"
         else:
-            err.print(f"reformatted {path}", style="bold white", highlight=False)
+            err.print(f"reformatted {path}", style="bold", highlight=False)
             result = "reformatted"
 
             with open(path, "w", encoding=encoding, newline=newline) as f:
@@ -67,7 +67,7 @@ def format_and_check(path, mode, diff=False, color=False):
         if new_content == content:
             result = "unchanged"
         else:
-            err.print(f"would reformat {path}", style="bold white", highlight=False)
+            err.print(f"would reformat {path}", style="bold", highlight=False)
 
             if diff:
                 diff_ = unified_diff(content, new_content, path)
@@ -91,7 +91,7 @@ def format_and_check(path, mode, diff=False, color=False):
 
 def process(args):
     if not args.src:
-        err.print("No Path provided. Nothing to do :sleeping:", style="bold white")
+        err.print("No Path provided. Nothing to do :sleeping:", style="bold")
         return 0
 
     selected_formats = getattr(args, "formats", None)
@@ -157,7 +157,7 @@ def process(args):
     if len(sources) == 0:
         err.print(
             "No files are present to be formatted. Nothing to do :sleeping:",
-            style="bold white",
+            style="bold",
         )
         return 0
 
@@ -202,7 +202,7 @@ def process(args):
     no_reformatting_message = "All done! :sparkles: :cake: :sparkles:"
     err.print(
         reformatted_message if return_code else no_reformatting_message,
-        style="bold white",
+        style="bold",
     )
     err.print(report, highlight=False)
     return return_code
