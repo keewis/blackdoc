@@ -41,13 +41,15 @@ def format_and_overwrite(path, mode):
         if new_content == content:
             result = "unchanged"
         else:
-            err.print(f"reformatted {path}", style="bold white")
+            err.print(f"reformatted {path}", style="bold white", highlight=False)
             result = "reformatted"
 
             with open(path, "w", encoding=encoding, newline=newline) as f:
                 f.write(new_content)
     except (black.InvalidInput, formats.InvalidFormatError) as e:
-        err.print(f"error: cannot format {path.absolute()}: {e}", style="red")
+        err.print(
+            f"error: cannot format {path.absolute()}: {e}", style="red", highlight=False
+        )
         result = "error"
 
     return result
@@ -65,7 +67,7 @@ def format_and_check(path, mode, diff=False, color=False):
         if new_content == content:
             result = "unchanged"
         else:
-            err.print(f"would reformat {path}", style="bold white")
+            err.print(f"would reformat {path}", style="bold white", highlight=False)
 
             if diff:
                 diff_ = unified_diff(content, new_content, path)
@@ -79,7 +81,9 @@ def format_and_check(path, mode, diff=False, color=False):
 
             result = "reformatted"
     except (black.InvalidInput, formats.InvalidFormatError) as e:
-        err.print(f"error: cannot format {path.absolute()}: {e}", style="red")
+        err.print(
+            f"error: cannot format {path.absolute()}: {e}", style="red", highlight=False
+        )
         result = "error"
 
     return result
@@ -200,7 +204,7 @@ def process(args):
         reformatted_message if return_code else no_reformatting_message,
         style="bold white",
     )
-    err.print(report)
+    err.print(report, highlight=False)
     return return_code
 
 
