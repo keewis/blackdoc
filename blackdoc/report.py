@@ -5,11 +5,11 @@ def report_changes(n_reformatted, n_unchanged, n_error):
     reports = []
     if n_reformatted > 0:
         reports.append(
-            f"[bold white]{n_reformatted} {noun(n_reformatted)} reformatted[/]",
+            f"[bold][blue]{n_reformatted} {noun(n_reformatted)}[/blue] reformatted[/]",
         )
 
     if n_unchanged > 0:
-        reports.append(f"[white]{n_unchanged} {noun(n_unchanged)} left unchanged[/]")
+        reports.append(f"[blue]{n_unchanged} {noun(n_unchanged)}[/] left unchanged")
 
     if n_error > 0:
         reports.append(f"[red]{n_error} {noun(n_error)} fails to reformat[/]")
@@ -24,12 +24,12 @@ def report_possible_changes(n_reformatted, n_unchanged, n_error):
     reports = []
     if n_reformatted > 0:
         reports.append(
-            f"[bold white]{n_reformatted} {noun(n_reformatted)} would be reformatted[/]",
+            f"[bold][blue]{n_reformatted} {noun(n_reformatted)}[/blue] would be reformatted[/]",
         )
 
     if n_unchanged > 0:
         reports.append(
-            f"[white]{n_unchanged} {noun(n_unchanged)} would be left unchanged[/]"
+            f"[blue]{n_unchanged} {noun(n_unchanged)}[/] would be left unchanged"
         )
 
     if n_error > 0:
