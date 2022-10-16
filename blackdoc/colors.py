@@ -9,7 +9,7 @@ trailing_whitespace_re = re.compile(r"\s+$")
 
 def line_style(lineno, line):
     if line.startswith("+++") or line.startswith("---"):
-        yield lineno, (0, len(line)), "bold white"
+        yield lineno, (0, len(line)), "bold"
     elif line.startswith("@@"):
         yield lineno, (0, len(line)), "cyan"
     elif line.startswith("+"):
