@@ -58,43 +58,63 @@ def test_diff_highlighter(text, spans):
     (
         pytest.param(
             "1 file would be reformatted",
-            [Span(0, 6, "blue")],
-            id="single file conditional",
+            [Span(0, 6, "blue"), Span(0, 27, "bold")],
+            id="single file-reformatted-conditional",
         ),
         pytest.param(
             "1 file reformatted",
-            [Span(0, 6, "blue")],
-            id="single file",
+            [Span(0, 6, "blue"), Span(0, 18, "bold")],
+            id="single file-reformatted",
         ),
         pytest.param(
             "26 files would be reformatted",
-            [Span(0, 8, "blue")],
-            id="multiple files conditional",
+            [Span(0, 8, "blue"), Span(0, 29, "bold")],
+            id="multiple files-reformatted-conditional",
         ),
         pytest.param(
             "26 files reformatted",
+            [Span(0, 8, "blue"), Span(0, 20, "bold")],
+            id="multiple files-reformatted",
+        ),
+        pytest.param(
+            "1 file would be left unchanged",
+            [Span(0, 6, "blue")],
+            id="single file-unchanged-conditional",
+        ),
+        pytest.param(
+            "1 file left unchanged",
+            [Span(0, 6, "blue")],
+            id="single file-unchanged",
+        ),
+        pytest.param(
+            "26 files would be left unchanged",
             [Span(0, 8, "blue")],
-            id="multiple files",
+            id="multiple files-unchanged-conditional",
+        ),
+        pytest.param(
+            "26 files left unchanged",
+            [Span(0, 8, "blue")],
+            id="multiple files-unchanged",
         ),
         pytest.param(
             "1 file would fail to reformat",
             [Span(0, 29, "red")],
-            id="failed single file conditional",
+            id="single file-error-conditional",
         ),
         pytest.param(
             "1 file failed to reformat",
             [Span(0, 25, "red")],
-            id="failed single file",
+            id="single file-error",
         ),
         pytest.param(
             "15 files would fail to reformat",
             [Span(0, 31, "red")],
-            id="failed multiple files conditional",
+            id="multiple files-error-conditional",
         ),
         pytest.param(
             "15 files failed to reformat",
             [Span(0, 27, "red")],
-            id="failed multiple files",
+            id="multiple files-error",
         ),
     ),
 )

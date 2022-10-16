@@ -57,6 +57,7 @@ class DiffHighlighter(Highlighter):
 class FileHighlighter(Highlighter):
     highlights = {
         r"[0-9]+ files?(?!.*fail)": "blue",
+        r"^.+reformatted$": "bold",
         r"^.+fail.+$": "red",
     }
 
