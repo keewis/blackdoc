@@ -200,6 +200,7 @@ def process(args):
 
     error_message = "Oh no! :boom: :broken_heart: :boom:"
     no_error_message = "All done! :sparkles: :cake: :sparkles:"
+    err.print()
     err.print(
         error_message if n_error > 0 else no_error_message,
         style="bold",
