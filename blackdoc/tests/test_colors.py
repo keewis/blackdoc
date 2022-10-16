@@ -36,7 +36,7 @@ from blackdoc import colors
                 +++ file2 time2
                 """
             ),
-            [Span(0, 15, "bold white"), Span(16, 31, "bold white")],
+            [Span(0, 15, "bold"), Span(16, 31, "bold")],
             id="header",
         ),
         pytest.param(
