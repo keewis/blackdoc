@@ -52,3 +52,14 @@ class DiffHighlighter(Highlighter):
 
         for (start, end), style in diff_styles(text.plain):
             text.stylize(style, start=start, end=end)
+
+
+class FileHighlighter(Highlighter):
+    highlights = {
+        r"[0-9]+ files?(?!.*fail)": "blue",
+        r"^.+fail.+$": "red",
+    }
+
+    def highlight(self, text):
+        for highlight_re, style in self.highlights.items():
+            text.highlight_regex(highlight_re, style=style)
