@@ -198,10 +198,10 @@ def process(args):
     else:
         return_code = 0
 
-    reformatted_message = "Oh no! :boom: :broken_heart: :boom:"
-    no_reformatting_message = "All done! :sparkles: :cake: :sparkles:"
+    error_message = "Oh no! :boom: :broken_heart: :boom:"
+    no_error_message = "All done! :sparkles: :cake: :sparkles:"
     err.print(
-        reformatted_message if return_code else no_reformatting_message,
+        error_message if n_error > 0 else no_error_message,
         style="bold",
     )
     err.print(report, highlight=False)
