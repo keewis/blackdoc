@@ -24,6 +24,25 @@ def noun(n):
     return "file" if n < 2 else "files"
 
 
+def _report_words(report_type, conditional):
+    mapping = {
+        "reformatted": {
+            False: "reformatted",
+            True: "would be reformatted",
+        },
+        "unchanged": {
+            False: "left unchanged",
+            True: "would be left unchanged",
+        },
+        "error": {
+            False: "failed to reformat",
+            True: "would fail to reformat",
+        },
+    }
+
+    return mapping.get(report_type, {}).get(conditional)
+
+
 class Report:
     def __init__(self, n_reformatted, n_unchanged, n_error, conditional=False):
         self.n_reformatted = n_reformatted
@@ -45,36 +64,23 @@ class Report:
         ]
         return f"Report({', '.join(params)})"
 
-    @property
-    def _reformatted_report(self):
-        if self.conditional:
-            return (
-                f"{self.n_reformatted} {noun(self.n_reformatted)} would be reformatted"
-            )
-        else:
-            return f"{self.n_reformatted} {noun(self.n_reformatted)} reformatted"
+    def _report_parts(self):
+        report_types = ["reformatted", "unchanged", "error"]
+        values = {
+            report_type: getattr(self, f"n_{report_type}")
+            for report_type in report_types
+        }
+        parts = [
+            f"{value} {noun(value)} {_report_words(report_type, self.conditional)}"
+            for report_type, value in values.items()
+            if value > 0
+        ]
+        return parts
 
-    @property
-    def _unchanged_report(self):
-        if self.conditional:
-            return (
-                f"{self.n_unchanged} {noun(self.n_unchanged)} would be left unchanged"
-            )
-        else:
-            return f"{self.n_unchanged} {noun(self.n_unchanged)} left unchanged"
-
-    @property
-    def _error_report(self):
-        if self.conditional:
-            return f"{self.n_error} {noun(self.n_error)} would fail to reformat"
-        else:
-            return f"{self.n_error} {noun(self.n_error)} failed to reformat"
+    def __str__(self):
+        parts = self._report_parts()
+        return ", ".join(parts) + "."
 
     def __rich__(self):
-        raw_parts = [
-            self._reformatted_report,
-            self._unchanged_report,
-            self._error_report,
-        ]
-        parts = [highlighter(part) for part in raw_parts]
+        parts = [highlighter(part) for part in self._report_parts()]
         return Text(", ").join(parts) + Text(".")
