@@ -9,7 +9,7 @@ trailing_whitespace_re = re.compile(r"\s+$")
 
 def line_style(lineno, line):
     if line.startswith("+++") or line.startswith("---"):
-        yield lineno, (0, len(line)), "bold white"
+        yield lineno, (0, len(line)), "bold"
     elif line.startswith("@@"):
         yield lineno, (0, len(line)), "cyan"
     elif line.startswith("+"):
@@ -52,3 +52,15 @@ class DiffHighlighter(Highlighter):
 
         for (start, end), style in diff_styles(text.plain):
             text.stylize(style, start=start, end=end)
+
+
+class FileHighlighter(Highlighter):
+    highlights = {
+        r"[0-9]+ files?(?!.*fail)": "blue",
+        r"^.+reformatted$": "bold",
+        r"^.+fail.+$": "red",
+    }
+
+    def highlight(self, text):
+        for highlight_re, style in self.highlights.items():
+            text.highlight_regex(highlight_re, style=style)

@@ -11,7 +11,7 @@ from .colors import DiffHighlighter
 from .console import err, out
 from .diff import unified_diff
 from .files import collect_files
-from .report import report_changes, report_possible_changes, statistics
+from .report import Report
 
 diff_highlighter = DiffHighlighter()
 
@@ -41,13 +41,15 @@ def format_and_overwrite(path, mode):
         if new_content == content:
             result = "unchanged"
         else:
-            err.print(f"reformatted {path}", style="bold white")
+            err.print(f"reformatted {path}", style="bold", highlight=False)
             result = "reformatted"
 
             with open(path, "w", encoding=encoding, newline=newline) as f:
                 f.write(new_content)
     except (black.InvalidInput, formats.InvalidFormatError) as e:
-        err.print(f"error: cannot format {path.absolute()}: {e}", style="red")
+        err.print(
+            f"error: cannot format {path.absolute()}: {e}", style="red", highlight=False
+        )
         result = "error"
 
     return result
@@ -65,7 +67,7 @@ def format_and_check(path, mode, diff=False, color=False):
         if new_content == content:
             result = "unchanged"
         else:
-            err.print(f"would reformat {path}", style="bold white")
+            err.print(f"would reformat {path}", style="bold", highlight=False)
 
             if diff:
                 diff_ = unified_diff(content, new_content, path)
@@ -79,7 +81,9 @@ def format_and_check(path, mode, diff=False, color=False):
 
             result = "reformatted"
     except (black.InvalidInput, formats.InvalidFormatError) as e:
-        err.print(f"error: cannot format {path.absolute()}: {e}", style="red")
+        err.print(
+            f"error: cannot format {path.absolute()}: {e}", style="red", highlight=False
+        )
         result = "error"
 
     return result
@@ -87,7 +91,7 @@ def format_and_check(path, mode, diff=False, color=False):
 
 def process(args):
     if not args.src:
-        err.print("No Path provided. Nothing to do :sleeping:", style="bold white")
+        err.print("No Path provided. Nothing to do :sleeping:", style="bold")
         return 0
 
     selected_formats = getattr(args, "formats", None)
@@ -153,7 +157,7 @@ def process(args):
     if len(sources) == 0:
         err.print(
             "No files are present to be formatted. Nothing to do :sleeping:",
-            style="bold white",
+            style="bold",
         )
         return 0
 
@@ -178,29 +182,25 @@ def process(args):
     changed_sources = {
         source: action(source, mode, **action_kwargs) for source in sorted(sources)
     }
-    n_reformatted, n_unchanged, n_error = statistics(changed_sources)
 
-    report_formatters = {
-        "inplace": report_changes,
-        "check": report_possible_changes,
-    }
+    conditional = args.action == "check"
+    report = Report.from_sources(changed_sources, conditional=conditional)
 
-    report = report_formatters.get(args.action)(n_reformatted, n_unchanged, n_error)
-
-    if n_error > 0:
+    if report.n_error > 0:
         return_code = 123
-    elif args.action == "check" and n_reformatted > 0:
+    elif args.action == "check" and report.n_reformatted > 0:
         return_code = 1
     else:
         return_code = 0
 
-    reformatted_message = "Oh no! :boom: :broken_heart: :boom:"
-    no_reformatting_message = "All done! :sparkles: :cake: :sparkles:"
+    error_message = "Oh no! :boom: :broken_heart: :boom:"
+    no_error_message = "All done! :sparkles: :cake: :sparkles:"
+    err.print()
     err.print(
-        reformatted_message if return_code else no_reformatting_message,
-        style="bold white",
+        error_message if report.n_error > 0 else no_error_message,
+        style="bold",
     )
-    err.print(report)
+    err.print(report, highlight=False)
     return return_code
 
 
