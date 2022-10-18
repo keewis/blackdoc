@@ -17,7 +17,7 @@ jobs:
     outputs:
       triggered: ${{ steps.detect-trigger.outputs.trigger-found }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 2
     - uses: xarray-contrib/ci-trigger@v1
@@ -54,13 +54,13 @@ jobs:
         access_token: ${{ github.token }}
 
     - name: checkout the repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         # need to fetch all tags to get a correct version
         fetch-depth: 0  # fetch all branches and tags
 
     - name: setup python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -96,7 +96,7 @@ jobs:
         failure()
         && steps.status.outcome == 'failure'
         && github.event_name == 'schedule'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: output-${{ matrix.python-version }}-log
         path: output-${{ matrix.python-version }}-log
@@ -113,12 +113,12 @@ jobs:
       && needs.upstream-dev.outputs.artifacts_availability == 'true'
     steps:
     - name: checkout the repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: setup python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: "3.x"
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         path: /tmp/workspace/logs
     - name: Move all log files into a single directory
@@ -130,7 +130,7 @@ jobs:
         shopt -s globstar
         python .github/workflows/parse_logs.py logs/**/*-log
     - name: Report failures
-      uses: actions/github-script@v3
+      uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
