@@ -7,6 +7,7 @@ v0.3.8 (*unreleased*)
 - split chained statements into multiple ``doctest`` lines (:issue:`143`, :pull:`155`, :pull:`158`)
 - replace the custom color formatting code with `rich <https://github.com/textualize/rich>`_
   (:issue:`146`, :pull:`157`, :pull:`159`, :pull:`160`).
+- officially support python 3.11 (:pull:`163`)
 
 v0.3.7 (13 September 2022)
 --------------------------
