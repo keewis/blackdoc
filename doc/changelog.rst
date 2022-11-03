@@ -1,7 +1,7 @@
 Changelog
 =========
-v0.3.8 (*unreleased*)
----------------------
+v0.3.8 (03 November 2022)
+-------------------------
 - use the ``doctest`` formatter for doctest lines in ``rst`` code blocks (:issue:`150`, :pull:`151`)
 - drop support for ``python=3.6`` (:pull:`153`)
 - split chained statements into multiple ``doctest`` lines (:issue:`143`, :pull:`155`, :pull:`158`)
