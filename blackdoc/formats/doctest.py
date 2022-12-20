@@ -240,7 +240,9 @@ def reformatting_func(code_unit, docstring_quotes):
         yield from peekable
 
     def is_block(lines):
-        block_lines = drop_while(lines, lambda l: is_comment(l) or is_decorator(l))
+        block_lines = drop_while(
+            lines, lambda line: is_comment(line) or is_decorator(line)
+        )
         first_line = more_itertools.first(block_lines, default="")
         match = block_start_re.match(first_line)
         return match is not None
