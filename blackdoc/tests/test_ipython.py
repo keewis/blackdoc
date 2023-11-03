@@ -51,40 +51,71 @@ def test_detection_func(lines, expected):
 
 
 @pytest.mark.parametrize(
-    "line,expected",
+    ["line", "expected"],
     (
         pytest.param(
-            textwrap.dedent(data.lines[9]),
-            ({"count": 2}, textwrap.dedent(data.lines[9])[8:]),
+            "In [2]: file",
+            ({"count": 2}, "file"),
             id="single_line",
         ),
         pytest.param(
-            textwrap.dedent("\n".join(data.lines[4:8])),
-            ({"count": 1}, "\n".join(line[12:] for line in data.lines[4:8])),
+            textwrap.dedent(
+                """\
+            In [1]: file = open(
+               ...:     "very_long_filepath",
+               ...:     mode="a",
+               ...: )
+            """.rstrip()
+            ),
+            (
+                {"count": 1},
+                "\n".join(
+                    [
+                        "file = open(",
+                        '    "very_long_filepath",',
+                        '    mode="a",',
+                        ")",
+                    ]
+                ),
+            ),
             id="multiple_lines",
         ),
         pytest.param(
-            textwrap.dedent("\n".join(data.lines[18:20])),
+            textwrap.dedent(
+                """\
+            In [4]: %%time
+               ...: file.close()
+            """.rstrip()
+            ),
             (
                 {"count": 4},
-                "\n".join(
-                    line[12:]
-                    if not ipython.magic_re.match(line[12:])
-                    else f"# {ipython.magic_comment}{line[12:]}"
-                    for line in data.lines[18:20]
+                textwrap.dedent(
+                    f"""\
+                # {ipython.magic_comment}%%time
+                file.close()
+                """.rstrip()
                 ),
             ),
             id="lines_with_cell_magic",
         ),
         pytest.param(
-            textwrap.dedent("\n".join(data.lines[21:25])),
+            textwrap.dedent(
+                """\
+                In [5]: @savefig simple.png width=4in
+                   ...: @property
+                   ...: def my_property(self):
+                   ...:     pass
+                """.rstrip()
+            ),
             (
                 {"count": 5},
-                "\n".join(
-                    line[12:]
-                    if not ipython.magic_re.match(line[12:])
-                    else f"# {ipython.magic_comment}{line[12:]}"
-                    for line in data.lines[21:25]
+                textwrap.dedent(
+                    f"""\
+                    # {ipython.magic_comment}@savefig simple.png width=4in
+                    @property
+                    def my_property(self):
+                        pass
+                    """.rstrip()
                 ),
             ),
             id="lines_with_line_decorator",
