@@ -11,6 +11,18 @@ black_pin_re = re.compile(
 )
 
 
+def find_black_version(content):
+    match = version_re.search(content)
+    if match is None:
+        raise ValueError("cannot find the black hook")
+    version = match.group(1)
+    return version
+
+
+def update_black_pin(content, version):
+    return black_pin_re.sub(rf"\g<1>{version}", content)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("path")
@@ -18,11 +30,8 @@ def main():
     with open(args.path) as f:
         content = f.read()
 
-    match = version_re.search(content)
-    if match is None:
-        raise ValueError("cannot find the black hook")
-    version = match.group(1)
-    replaced = black_pin_re.sub(rf"\g<1>{version}", content)
+    version = find_black_version(content)
+    replaced = update_black_pin(content, version)
 
     if content != replaced:
         with open(args.path, mode="w") as f:
