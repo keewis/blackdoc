@@ -2,7 +2,7 @@ import argparse
 import re
 
 version_re = re.compile(
-    r"https://github.com/(?:.+)/(?:black|black-pre-commit-mirror)\s+"
+    r"https://github.com/psf/(?:black|black-pre-commit-mirror)\s+"
     r"rev: (.+)\s+hooks:(?:\s+-id: [-_a-zA-Z0-9]+)*\s+- id: (?:black|black-jupyter)"
 )
 black_pin_re = re.compile(
