@@ -23,18 +23,15 @@ def update_black_pin(content, version):
     return black_pin_re.sub(rf"\g<1>{version}", content)
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("path")
-    args = parser.parse_args()
-    with open(args.path) as f:
+def main(path):
+    with open(path) as f:
         content = f.read()
 
     version = find_black_version(content)
     replaced = update_black_pin(content, version)
 
     if content != replaced:
-        with open(args.path, mode="w") as f:
+        with open(path, mode="w") as f:
             f.write(replaced)
         return 1
     else:
@@ -42,4 +39,7 @@ def main():
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("path")
+    args = parser.parse_args()
+    raise SystemExit(main(args.path))

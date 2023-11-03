@@ -148,3 +148,82 @@ def test_update_black_pin(content, version, expected):
     updated = autoupdate.update_black_pin(content, version)
 
     assert updated == expected
+
+
+@pytest.mark.parametrize(
+    ["content", "expected"],
+    (
+        pytest.param(
+            """\
+        hooks:
+        - repo: https://github.com/psf/black
+          rev: 22.0.1
+          hooks:
+          - id: black
+
+        - repo: https://github.com/keewis/blackdoc
+          rev: 3.9.0
+          hooks:
+            - id: blackdoc
+              additional_dependencies: ["black==22.0.1"]
+        """,
+            """\
+        hooks:
+        - repo: https://github.com/psf/black
+          rev: 22.0.1
+          hooks:
+          - id: black
+
+        - repo: https://github.com/keewis/blackdoc
+          rev: 3.9.0
+          hooks:
+            - id: blackdoc
+              additional_dependencies: ["black==22.0.1"]
+        """,
+        ),
+        pytest.param(
+            """\
+        hooks:
+        - repo: https://github.com/psf/black
+          rev: 23.10.0
+          hooks:
+          - id: black
+
+        - repo: https://github.com/keewis/blackdoc
+          rev: 3.9.0
+          hooks:
+            - id: blackdoc
+              additional_dependencies: ["black==22.0.1"]
+        """,
+            """\
+        hooks:
+        - repo: https://github.com/psf/black
+          rev: 23.10.0
+          hooks:
+          - id: black
+
+        - repo: https://github.com/keewis/blackdoc
+          rev: 3.9.0
+          hooks:
+            - id: blackdoc
+              additional_dependencies: ["black==23.10.0"]
+        """,
+        ),
+    ),
+)
+def test_main(tmp_path, content, expected):
+    path = tmp_path.joinpath(".pre-commit-config.yaml")
+    path.write_text(content)
+
+    stat = path.stat()
+
+    return_value = autoupdate.main(path)
+
+    updated = path.read_text()
+
+    assert updated == expected
+    if content == expected:
+        assert path.stat() == stat
+        assert return_value == 0
+    else:
+        assert return_value == 1
