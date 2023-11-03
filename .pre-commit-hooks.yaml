@@ -14,4 +14,4 @@
   language_version: python3
   require_serial: true
   types: [file]
-  files: \.pre-commit-config\.yaml
+  files: ^\.pre-commit-config\.yaml$
