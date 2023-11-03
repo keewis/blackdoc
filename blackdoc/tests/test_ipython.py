@@ -10,15 +10,33 @@ from .data import ipython as data
 
 
 @pytest.mark.parametrize(
-    "lines,expected",
+    ["lines", "expected"],
     (
-        pytest.param(data.lines[0], None, id="no_line"),
+        pytest.param("xyz def", None, id="no_line"),
         pytest.param(
-            data.lines[9], ((1, 2), ipython.name, data.lines[9]), id="single_line"
+            "    In [2]: file",
+            ((1, 2), ipython.name, "    In [2]: file"),
+            id="single_line",
         ),
         pytest.param(
-            data.lines[4:8],
-            ((1, 5), ipython.name, "\n".join(data.lines[4:8])),
+            [
+                "In [1]: file = open(",
+                '   ...:     "very_long_filepath",',
+                '   ...:     mode="a",',
+                "   ...: )",
+            ],
+            (
+                (1, 5),
+                ipython.name,
+                textwrap.dedent(
+                    """\
+            In [1]: file = open(
+               ...:     "very_long_filepath",
+               ...:     mode="a",
+               ...: )
+            """.rstrip()
+                ),
+            ),
             id="multiple_lines",
         ),
     ),
