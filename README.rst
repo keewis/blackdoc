@@ -72,3 +72,36 @@ It is also possible to use the entrypoint script:
 .. code:: bash
 
     blackdoc --help
+
+pre-commit
+----------
+This repository defines a ``pre-commit`` hook:
+
+.. code:: yaml
+
+   hooks:
+   ...
+   - repo: https://github.com/keewis/blackdoc
+     rev: 3.8.0
+     hooks:
+     - id: blackdoc
+
+It is recommended to *pin* ``black`` in order to avoid having different versions for each contributor. To automatically synchronize this pin with the version of the ``black`` hook, use the ``blackdoc-autoupdate-black`` hook:
+
+.. code:: yaml
+
+   hooks:
+   ...
+   - repo: https://github.com/psf/black
+     rev: 23.10.1
+     hooks:
+     - id: black
+   ...
+   - repo: https://github.com/keewis/blackdoc
+     rev: 3.8.0
+     hooks:
+     - id: blackdoc
+       additional_dependencies: ["black==23.10.1"]
+     - id: blackdoc-autoupdate-black
+
+Note that this hook is *not* run on ``pre-commit autoupdate``.
