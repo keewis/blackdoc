@@ -1,7 +1,10 @@
 import argparse
 import re
 
-version_re = re.compile(r"black\s+rev: (.+)\s+hooks:\s+- id: black")
+version_re = re.compile(
+    r"https://github.com/(?:.+)/(?:black|black-pre-commit-mirror)\s+"
+    r"rev: (.+)\s+hooks:\s+- id: black"
+)
 black_pin_re = re.compile(
     r"(- id: blackdoc.+?additional_dependencies:.+?black==)[.\w]+",
     re.DOTALL,
