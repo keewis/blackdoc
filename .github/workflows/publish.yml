@@ -38,6 +38,7 @@ jobs:
     name: Upload to PyPI
     runs-on: ubuntu-latest
     needs: build
+    if: github.event_name == 'release'
 
     environment:
       name: pypi
@@ -53,6 +54,7 @@ jobs:
           path: dist/
 
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@37f50c210e3d2f9450da2cd423303d6a14a6e29f
+        uses: pypa/gh-action-pypi-publish@b7f401de30cb6434a1e19f805ff006643653240e
         with:
           verify_metadata: true
+          verbose: true
