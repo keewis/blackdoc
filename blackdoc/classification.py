@@ -1,6 +1,6 @@
 import more_itertools
 
-from .formats import detection_funcs
+from blackdoc.formats import detection_funcs
 
 
 def detect_format(lines):

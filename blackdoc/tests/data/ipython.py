@@ -1,4 +1,4 @@
-from .utils import from_dict
+from blackdoc.tests.data.utils import from_dict
 
 docstring = """ a function to open files
 

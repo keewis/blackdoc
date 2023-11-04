@@ -1,6 +1,6 @@
 import pytest
 
-from .. import report
+from blackdoc import report
 
 
 @pytest.mark.parametrize(

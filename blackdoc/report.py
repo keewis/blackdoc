@@ -1,6 +1,6 @@
 from rich.text import Text
 
-from .colors import FileHighlighter
+from blackdoc.colors import FileHighlighter
 
 highlighter = FileHighlighter()
 

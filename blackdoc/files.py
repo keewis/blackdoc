@@ -1,12 +1,12 @@
 from black import Report
 
-from .blackcompat import (
+from blackdoc.blackcompat import (
     find_project_root,
     gen_python_files,
     get_gitignore,
     normalize_path_maybe_ignore,
 )
-from .console import err
+from blackdoc.console import err
 
 
 def collect_files(src, include, exclude, extend_exclude, force_exclude, quiet, verbose):

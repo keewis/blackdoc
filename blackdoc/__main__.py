@@ -5,13 +5,13 @@ import sys
 import black
 from rich.text import Text
 
-from . import __version__, format_lines, formats
-from .blackcompat import read_pyproject_toml
-from .colors import DiffHighlighter
-from .console import err, out
-from .diff import unified_diff
-from .files import collect_files
-from .report import Report
+from blackdoc import __version__, format_lines, formats
+from blackdoc.blackcompat import read_pyproject_toml
+from blackdoc.colors import DiffHighlighter
+from blackdoc.console import err, out
+from blackdoc.diff import unified_diff
+from blackdoc.files import collect_files
+from blackdoc.report import Report
 
 diff_highlighter = DiffHighlighter()
 
