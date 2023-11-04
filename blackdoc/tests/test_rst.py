@@ -3,9 +3,9 @@ import textwrap
 import more_itertools
 import pytest
 
-from .. import blacken
-from ..formats import rst
-from .data import rst as data
+from blackdoc import blacken
+from blackdoc.formats import rst
+from blackdoc.tests.data import rst as data
 
 
 @pytest.mark.parametrize(

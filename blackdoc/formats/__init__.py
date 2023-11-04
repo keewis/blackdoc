@@ -2,13 +2,17 @@ import textwrap
 
 import more_itertools
 
-from . import doctest, ipython, none, rst
-from .errors import InvalidFormatError  # noqa
-from .register import detection_funcs  # noqa
-from .register import disable  # noqa
-from .register import format_include_patterns  # noqa
-from .register import include_patterns  # noqa
-from .register import extraction_funcs, reformatting_funcs, register_format
+from blackdoc.formats import doctest, ipython, none, rst
+from blackdoc.formats.errors import InvalidFormatError  # noqa
+from blackdoc.formats.register import detection_funcs  # noqa
+from blackdoc.formats.register import disable  # noqa
+from blackdoc.formats.register import format_include_patterns  # noqa
+from blackdoc.formats.register import include_patterns  # noqa
+from blackdoc.formats.register import (
+    extraction_funcs,
+    reformatting_funcs,
+    register_format,
+)
 
 
 def extract_code(line_unit, code_format):

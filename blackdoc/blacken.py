@@ -4,7 +4,7 @@ import re
 import black
 from blib2to3.pgen2.tokenize import TokenError
 
-from .formats import extract_code, reformat_code
+from blackdoc.formats import extract_code, reformat_code
 
 
 def parse_message(message):

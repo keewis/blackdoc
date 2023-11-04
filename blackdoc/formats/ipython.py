@@ -3,7 +3,7 @@ import re
 
 import more_itertools
 
-from .errors import InvalidFormatError
+from blackdoc.formats.errors import InvalidFormatError
 
 name = "ipython"
 

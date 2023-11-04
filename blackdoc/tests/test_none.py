@@ -1,6 +1,5 @@
 from blackdoc.formats import none
-
-from .data.doctest import lines
+from blackdoc.tests.data.doctest import lines
 
 
 def test_detection_func():

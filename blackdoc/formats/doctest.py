@@ -8,7 +8,7 @@ from tokenize import TokenError
 
 import more_itertools
 
-from .errors import InvalidFormatError
+from blackdoc.formats.errors import InvalidFormatError
 
 name = "doctest"
 prompt_length = 4

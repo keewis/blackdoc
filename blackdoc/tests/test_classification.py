@@ -1,9 +1,8 @@
 import pytest
 
 from blackdoc import classification, formats
-
-from . import data
-from .data import print_classification, to_classification_format
+from blackdoc.tests import data
+from blackdoc.tests.data import print_classification, to_classification_format
 
 
 @pytest.mark.parametrize("format", ("rst", "doctest", "ipython"))

@@ -1,8 +1,8 @@
 from importlib.metadata import version
 
-from .blacken import blacken
-from .classification import detect_format
-from .formats import InvalidFormatError, register_format  # noqa
+from blackdoc.blacken import blacken
+from blackdoc.classification import detect_format
+from blackdoc.formats import InvalidFormatError, register_format  # noqa
 
 try:
     __version__ = version("blackdoc")

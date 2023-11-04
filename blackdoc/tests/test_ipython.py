@@ -5,8 +5,7 @@ import pytest
 
 from blackdoc import blacken
 from blackdoc.formats import ipython
-
-from .data import ipython as data
+from blackdoc.tests.data import ipython as data
 
 
 @pytest.mark.parametrize(

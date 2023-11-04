@@ -1,4 +1,4 @@
-from .utils import from_dict
+from blackdoc.tests.data.utils import from_dict
 
 content = """\
 Long description of the function's assumptions and on how to call it.
