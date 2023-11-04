@@ -1,5 +1,9 @@
 Changelog
 =========
+v0.3.10 (*unreleased*)
+----------------------
+
+
 v0.3.9 (04 November 2023)
 -------------------------
 - support synchronizing the version of the ``black`` hook in more cases (:pull:`180`)
