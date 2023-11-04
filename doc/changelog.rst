@@ -5,6 +5,7 @@ v0.3.9 (*unreleased*)
 - support synchronizing the version of the ``black`` hook in more cases (:pull:`180`)
 - document the ``pre-commit`` hooks (:issue:`176`, :pull:`181`)
 - officially support python 3.12 (:pull:`185`)
+- drop support for running on python 3.7 (:pull:`186`)
 
 v0.3.8 (03 November 2022)
 -------------------------
