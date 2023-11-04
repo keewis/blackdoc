@@ -16,7 +16,9 @@ concurrency:
 jobs:
   detect-test-upstream-trigger:
     name: "Detect CI Trigger: [test-upstream]"
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    if: |
+      github.repository_owner == 'keewis'
+      && (github.event_name == 'push' || github.event_name == 'pull_request')
     runs-on: ubuntu-latest
     outputs:
       triggered: ${{ steps.detect-trigger.outputs.trigger-found }}
@@ -36,11 +38,14 @@ jobs:
 
     if: |
       always()
-      && github.repository == 'keewis/blackdoc'
+      && github.repository_owner == 'keewis'
       && (
-        github.event_name == 'schedule'
-        || github.event_name == 'workflow_dispatch'
+        (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         || needs.detect-test-upstream-trigger.outputs.triggered == 'true'
+        || (
+            github.event_name == 'pull_request'
+            && contains(github.event.pull_request.labels.*.name, 'run-upstream')
+        )
       )
 
     strategy:
