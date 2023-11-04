@@ -7,7 +7,6 @@ Its dependencies are:
 - `rich`_
 - `tomli`_
 - `pathspec`_
-- `importlib-metadata`_ (on **python** < 3.8)
 
 
 To install it, use
@@ -28,4 +27,3 @@ or with ``conda``:
 .. _rich: https://rich.readthedocs.io/en/latest/
 .. _tomli: https://github.com/hukkin/tomli
 .. _pathspec: https://python-path-specification.readthedocs.io/en/latest/
-.. _importlib-metadata: https://importlib-metadata.readthedocs.io/en/latest/
