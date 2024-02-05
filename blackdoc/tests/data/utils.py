@@ -1,8 +1,10 @@
 def from_dict(labels):
     line_ranges = tuple(
-        (lineno - 1, lineno)
-        if not isinstance(lineno, tuple)
-        else tuple(n - 1 for n in lineno)
+        (
+            (lineno - 1, lineno)
+            if not isinstance(lineno, tuple)
+            else tuple(n - 1 for n in lineno)
+        )
         for lineno in labels.keys()
     )
     line_labels = tuple(labels.values())
