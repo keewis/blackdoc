@@ -2,5 +2,3 @@ more-itertools
 black
 rich
 pytest
-flake8
-isort
