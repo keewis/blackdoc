@@ -12,7 +12,7 @@ import tomli
 from pathspec import PathSpec
 
 
-@lru_cache()
+@lru_cache
 def find_project_root(srcs):
     """Return a directory containing .git, .hg, or pyproject.toml.
 
@@ -75,7 +75,7 @@ def find_pyproject_toml(path_search_start):
         return None
 
 
-@lru_cache()
+@lru_cache
 def find_user_pyproject_toml():
     r"""Return the path to the top-level user configuration for black.
 
@@ -119,7 +119,7 @@ def read_pyproject_toml(source, config_path):
     try:
         config = parse_pyproject_toml(config_path)
     except (ValueError, OSError) as e:
-        raise IOError(
+        raise OSError(
             f"Error reading configuration file ({config_path}): {e}"
         ) from None
 
@@ -156,7 +156,7 @@ def path_is_excluded(normalized_path, pattern):
     return bool(match and match.group(0))
 
 
-@lru_cache()
+@lru_cache
 def get_gitignore(root):
     """Return a PathSpec matching gitignore content if present."""
     gitignore = root / ".gitignore"
@@ -167,7 +167,7 @@ def get_gitignore(root):
     return PathSpec.from_lines("gitwildmatch", lines)
 
 
-@lru_cache()
+@lru_cache
 def jupyter_dependencies_are_installed(*, verbose, quiet):
     try:
         import IPython  # noqa:F401
