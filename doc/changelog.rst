@@ -2,7 +2,7 @@ Changelog
 =========
 v0.3.10 (*unreleased*)
 ----------------------
-
+- drop support for running on python 3.8 (:pull:`215`)
 
 v0.3.9 (04 November 2023)
 -------------------------

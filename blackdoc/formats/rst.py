@@ -6,9 +6,8 @@ import more_itertools
 
 from blackdoc.formats.doctest import prompt_re as doctest_prompt_re
 from blackdoc.formats.errors import InvalidFormatError
-from blackdoc.formats.ipython import hide_magic
+from blackdoc.formats.ipython import hide_magic, reveal_magic
 from blackdoc.formats.ipython import prompt_re as ipython_prompt_re
-from blackdoc.formats.ipython import reveal_magic
 
 name = "rst"
 

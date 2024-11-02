@@ -2,11 +2,10 @@ name: blackdoc
 channels:
   - conda-forge
 dependencies:
-  - python=3.10
+  - python
   - black
   - rich
   - more-itertools
-  - flake8
-  - isort
+  - ruff
   - pytest
   - pip
