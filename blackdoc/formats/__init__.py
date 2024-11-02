@@ -4,12 +4,12 @@ import more_itertools
 
 from blackdoc.formats import doctest, ipython, none, rst
 from blackdoc.formats.errors import InvalidFormatError  # noqa
-from blackdoc.formats.register import detection_funcs  # noqa
-from blackdoc.formats.register import disable  # noqa
-from blackdoc.formats.register import format_include_patterns  # noqa
-from blackdoc.formats.register import include_patterns  # noqa
 from blackdoc.formats.register import (
+    detection_funcs,  # noqa
+    disable,  # noqa
     extraction_funcs,
+    format_include_patterns,  # noqa
+    include_patterns,  # noqa
     reformatting_funcs,
     register_format,
 )
