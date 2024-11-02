@@ -6,7 +6,6 @@ dependencies:
   - black
   - rich
   - more-itertools
-  - flake8
-  - isort
+  - ruff
   - pytest
   - pip
