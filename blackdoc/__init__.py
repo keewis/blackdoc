@@ -2,7 +2,7 @@ from importlib.metadata import version
 
 from blackdoc.blacken import blacken
 from blackdoc.classification import detect_format
-from blackdoc.formats import InvalidFormatError, register_format  # noqa
+from blackdoc.formats import InvalidFormatError, register_format  # noqa: F401
 
 try:
     __version__ = version("blackdoc")

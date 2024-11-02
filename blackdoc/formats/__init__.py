@@ -3,13 +3,13 @@ import textwrap
 import more_itertools
 
 from blackdoc.formats import doctest, ipython, none, rst
-from blackdoc.formats.errors import InvalidFormatError  # noqa
+from blackdoc.formats.errors import InvalidFormatError  # noqa: F401
 from blackdoc.formats.register import (
-    detection_funcs,  # noqa
-    disable,  # noqa
+    detection_funcs,  # noqa: F401
+    disable,  # noqa: F401
     extraction_funcs,
-    format_include_patterns,  # noqa
-    include_patterns,  # noqa
+    format_include_patterns,  # noqa: F401
+    include_patterns,  # noqa: F401
     reformatting_funcs,
     register_format,
 )
