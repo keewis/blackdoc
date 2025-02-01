@@ -54,7 +54,7 @@ jobs:
           path: dist/
 
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@fb13cb306901256ace3dab689990e13a5550ffaa
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc
         with:
           verify_metadata: true
           verbose: true
