@@ -27,7 +27,6 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -38,7 +37,7 @@ classifiers = [
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Topic :: Software Development :: Quality Assurance",
 ]
-requires-python = ">= 3.9"
+requires-python = ">= 3.10"
 dependencies = [
   "black",
   "more-itertools",
@@ -58,7 +57,7 @@ Documentation = "https://blackdoc.readthedocs.io/en/stable"
 blackdoc = "blackdoc.__main__:main"
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 builtins = ["ellipsis"]
 exclude = [
   ".git",
@@ -71,9 +70,10 @@ line-length = 100
 
 [tool.ruff.lint]
 ignore = [
-  "E402", # E402: module level import not at top of file
-  "E501", # E501: line too long - let black worry about that
-  "E731", # E731: do not assign a lambda expression, use a def
+  "E402",  # E402: module level import not at top of file
+  "E501",  # E501: line too long - let black worry about that
+  "E731",  # E731: do not assign a lambda expression, use a def
+  "UP038", # UP038: use type union instead of tuples for isinstance
 ]
 select = [
   "F",   # Pyflakes
