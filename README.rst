@@ -1,8 +1,8 @@
 blackdoc
 ========
 
-.. image:: https://github.com/keewis/blackdoc/workflows/CI/badge.svg?branch=main
-    :target: https://github.com/keewis/blackdoc/actions
+.. image:: https://github.com/keewis/blackdoc/actions/workflows/ci.yml/badge.svg?branch=main
+    :target: https://github.com/keewis/blackdoc/actions/workflows/ci.yml
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/python/black
 .. image:: https://readthedocs.org/projects/blackdoc/badge/?version=latest
