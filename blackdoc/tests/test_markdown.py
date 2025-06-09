@@ -105,3 +105,122 @@ def test_detection_func(string, expected):
     actual = markdown.detection_func(code_fragment)
 
     assert actual == construct_expected(expected, string.rstrip())
+
+
+@pytest.mark.parametrize(
+    ["code", "expected"],
+    (
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ```python
+                10 * 5
+                ```
+                """.rstrip()
+            ),
+            (
+                {
+                    "language": "python",
+                    "fences": "```",
+                    "prompt_length": 0,
+                },
+                "10 * 5",
+            ),
+            id="backticks",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ``` python
+                10 * 5
+                ```
+                """.rstrip()
+            ),
+            (
+                {
+                    "language": "python",
+                    "prompt_length": 0,
+                    "fences": "```",
+                },
+                "10 * 5",
+            ),
+            id="backticks-with_space",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ```{python}
+                10 * 5
+                ```
+                """.rstrip()
+            ),
+            (
+                {
+                    "language": "python",
+                    "prompt_length": 0,
+                    "fences": "```",
+                },
+                "10 * 5",
+            ),
+            id="backticks-with_braces",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                :::python
+                10 * 5
+                :::
+                """.rstrip()
+            ),
+            (
+                {
+                    "language": "python",
+                    "prompt_length": 0,
+                    "fences": ":::",
+                },
+                "10 * 5",
+            ),
+            id="colons",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ::: python
+                10 * 5
+                :::
+                """.rstrip()
+            ),
+            (
+                {
+                    "language": "python",
+                    "prompt_length": 0,
+                    "fences": ":::",
+                },
+                "10 * 5",
+            ),
+            id="colons-with_space",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                :::{python}
+                10 * 5
+                :::
+                """.rstrip()
+            ),
+            (
+                {
+                    "language": "python",
+                    "prompt_length": 0,
+                    "fences": ":::",
+                },
+                "10 * 5",
+            ),
+            id="colons-with_braces",
+        ),
+    ),
+)
+def test_extraction_func(code, expected):
+    actual = markdown.extraction_func(code)
+
+    assert expected == actual
