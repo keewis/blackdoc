@@ -1,5 +1,9 @@
 Changelog
 =========
+v0.3.11 (*unreleased*)
+----------------------
+
+
 v0.3.10 (09 June 2025)
 ----------------------
 - formatting support for markdown (:pull:`225`)
