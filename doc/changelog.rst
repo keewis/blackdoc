@@ -1,6 +1,6 @@
 Changelog
 =========
-v0.3.10 (*unreleased*)
+v0.3.10 (09 June 2025)
 ----------------------
 - formatting support for markdown (:pull:`225`)
 - print absolute filepaths (:issue:`210`, :pull:`228`)
