@@ -9,6 +9,7 @@ The currently supported formats are:
 - doctest
 - ipython
 - rst
+- markdown (``python`` blocks only for now, no ``pycon`` blocks)
 
 Documentation
 -------------
