@@ -2,7 +2,7 @@ import textwrap
 
 import more_itertools
 
-from blackdoc.formats import doctest, ipython, none, rst
+from blackdoc.formats import doctest, ipython, markdown, none, rst
 from blackdoc.formats.errors import InvalidFormatError  # noqa: F401
 from blackdoc.formats.register import (
     detection_funcs,  # noqa: F401
@@ -39,5 +39,5 @@ def reformat_code(line_unit, code_format, indentation_depth, **parameters):
     return textwrap.indent(reformatted, " " * indentation_depth)
 
 
-for module in (none, doctest, ipython, rst):
+for module in (none, doctest, ipython, rst, markdown):
     register_format(module.name, module)
