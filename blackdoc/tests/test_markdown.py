@@ -224,3 +224,44 @@ def test_extraction_func(code, expected):
     actual = markdown.extraction_func(code)
 
     assert expected == actual
+
+
+@pytest.mark.parametrize(
+    ("code", "directive", "expected"),
+    (
+        pytest.param(
+            "10 * 5",
+            {
+                "language": "python",
+                "fences": "```",
+            },
+            textwrap.dedent(
+                """\
+                ```python
+                10 * 5
+                ```
+                """.rstrip()
+            ),
+            id="backticks",
+        ),
+        pytest.param(
+            "10 * 5",
+            {
+                "language": "python",
+                "fences": ":::",
+            },
+            textwrap.dedent(
+                """\
+                :::python
+                10 * 5
+                :::
+                """.rstrip()
+            ),
+            id="colons",
+        ),
+    ),
+)
+def test_reformatting_func(code, directive, expected):
+    actual = markdown.reformatting_func(code, **directive)
+
+    assert expected == actual
