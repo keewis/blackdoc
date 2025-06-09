@@ -3,6 +3,7 @@ Changelog
 v0.3.10 (*unreleased*)
 ----------------------
 - formatting support for markdown (:pull:`225`)
+- print absolute filepaths (:issue:`210`, :pull:`228`)
 - officially support running on python 3.13 (:pull:`216`)
 - drop support for running on python 3.8 and 3.9 (:pull:`215`, :pull:`226`)
 
