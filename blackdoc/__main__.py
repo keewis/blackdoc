@@ -180,7 +180,8 @@ def process(args):
     action = actions.get(args.action)
 
     changed_sources = {
-        source: action(source, mode, **action_kwargs) for source in sorted(sources)
+        source: action(source.resolve(), mode, **action_kwargs)
+        for source in sorted(sources)
     }
 
     conditional = args.action == "check"
