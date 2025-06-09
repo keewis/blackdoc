@@ -99,6 +99,8 @@ def process(args):
         formats.disable(
             set(formats.detection_funcs.keys()) - set(selected_formats) - {"none"}
         )
+    else:
+        formats.disable({"markdown"})
 
     disabled_formats = getattr(args, "disable_formats", None)
     if disabled_formats:
