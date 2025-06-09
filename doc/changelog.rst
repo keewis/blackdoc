@@ -3,7 +3,7 @@ Changelog
 v0.3.10 (*unreleased*)
 ----------------------
 - officially support running on python 3.13 (:pull:`216`)
-- drop support for running on python 3.8 (:pull:`215`)
+- drop support for running on python 3.8 and 3.9 (:pull:`215`, :pull:`226`)
 
 v0.3.9 (04 November 2023)
 -------------------------
