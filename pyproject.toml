@@ -70,9 +70,10 @@ line-length = 100
 
 [tool.ruff.lint]
 ignore = [
-  "E402", # E402: module level import not at top of file
-  "E501", # E501: line too long - let black worry about that
-  "E731", # E731: do not assign a lambda expression, use a def
+  "E402",  # E402: module level import not at top of file
+  "E501",  # E501: line too long - let black worry about that
+  "E731",  # E731: do not assign a lambda expression, use a def
+  "UP038", # UP038: use type union instead of tuples for isinstance
 ]
 select = [
   "F",   # Pyflakes
