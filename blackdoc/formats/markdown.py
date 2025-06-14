@@ -15,6 +15,7 @@ name = "markdown"
 
 directive_re = re.compile(
     r"""(?x)
+    ^
     (?P<indent>[ ]*)
     (?P<fences>[`:]{3})
     \s*
@@ -22,6 +23,7 @@ directive_re = re.compile(
       (?P<braces>\{\s*(?P<block_type1>[-a-z0-9]+)\s*\})
       |(?P<block_type2>[-a-z0-9]+)
     )
+    $
     """
 )
 include_pattern = r"\.md$"
