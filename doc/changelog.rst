@@ -1,7 +1,7 @@
 Changelog
 =========
-v0.3.11 (*unreleased*)
-----------------------
+v0.4.0 (14 June 2025)
+---------------------
 - extended support for markdown (:pull:`225`)
 - enable markdown in `pre-commit` (:pull:`233`)
 
