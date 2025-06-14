@@ -37,6 +37,30 @@ from blackdoc.formats import markdown
             textwrap.dedent(
                 """\
                 ```python
+                >>> 10 * 5
+                ```
+                """
+            ),
+            None,
+            id="doctest_prompt",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ```python
+                In [1]: 10 * 5
+                Out[1]:
+                50
+                ```
+                """
+            ),
+            None,
+            id="ipython_prompt",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ```python
                 10 * 5
                 ```
                 """

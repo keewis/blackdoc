@@ -5,6 +5,7 @@ import textwrap
 import more_itertools
 
 from blackdoc.formats.errors import InvalidFormatError
+from blackdoc.formats.rst import has_prompt
 
 name = "markdown"
 
@@ -83,6 +84,12 @@ def extract_options(lines, fences):
 
 def continuation_lines(lines, indent, fences):
     options = extract_options(lines, fences)
+    newlines = tuple(take_while(lines, lambda x: not x[1].strip()))
+
+    _, next_line = lines.peek((0, None))
+    if has_prompt(next_line):
+        lines.prepend(*options, *newlines)
+        raise RuntimeError("prompt detected")
 
     yield from options
     yield from take_while(lines, lambda x: x[1].strip() != fences)
