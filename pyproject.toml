@@ -17,14 +17,13 @@ name = "blackdoc"
 authors = [
   { name = "Justus Magin", email = "keewis@posteo.de" },
 ]
-license = { text = "MIT License" }
+license = "MIT"
 description = "run black on documentation code snippets"
 readme = "README.rst"
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3.10",
