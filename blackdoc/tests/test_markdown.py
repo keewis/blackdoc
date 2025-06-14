@@ -168,6 +168,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": "```",
                     "braces": False,
+                    "options": (),
                 },
                 "10 * 5",
             ),
@@ -187,6 +188,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": "```",
                     "braces": False,
+                    "options": (),
                 },
                 "10 * 5",
             ),
@@ -206,6 +208,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": "```",
                     "braces": True,
+                    "options": (),
                 },
                 "10 * 5",
             ),
@@ -225,6 +228,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": "```",
                     "braces": True,
+                    "options": (),
                 },
                 "10 * 5",
             ),
@@ -244,6 +248,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": ":::",
                     "braces": False,
+                    "options": (),
                 },
                 "10 * 5",
             ),
@@ -263,6 +268,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": ":::",
                     "braces": False,
+                    "options": (),
                 },
                 "10 * 5",
             ),
@@ -282,6 +288,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": ":::",
                     "braces": True,
+                    "options": (),
                 },
                 "10 * 5",
             ),
@@ -301,6 +308,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": ":::",
                     "braces": True,
+                    "options": (),
                 },
                 "10 * 5",
             ),
@@ -323,6 +331,7 @@ def test_extraction_func(code, expected):
                 "block_type": "python",
                 "fences": "```",
                 "options": (),
+                "braces": False,
             },
             textwrap.dedent(
                 """\
@@ -339,15 +348,20 @@ def test_extraction_func(code, expected):
                 "block_type": "jupyter-execute",
                 "fences": "```",
                 "braces": True,
+                "options": ("hide-code: true", "hide-output: true"),
             },
             textwrap.dedent(
                 """\
                 ```{jupyter-execute}
+                ---
+                hide-code: true
+                hide-output: true
+                ---
                 10 * 5
                 ```
                 """.rstrip()
             ),
-            id="jupyter-execute-with_braces",
+            id="jupyter-execute-with_options-with_braces",
         ),
         pytest.param(
             "10 * 5",
@@ -355,6 +369,7 @@ def test_extraction_func(code, expected):
                 "block_type": "python",
                 "fences": ":::",
                 "braces": False,
+                "options": (),
             },
             textwrap.dedent(
                 """\

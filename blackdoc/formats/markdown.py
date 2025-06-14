@@ -52,7 +52,37 @@ def take_while(iterable, predicate):
         yield taken
 
 
+def extract_options(lines, fences):
+    taken = lines.peek()
+    line = taken if isinstance(taken, str) else taken[1]
+
+    if line.strip() != "---":
+        return ()
+
+    options = [next(line)]
+    # potentially found options
+    while True:
+        try:
+            taken = next(line)
+        except StopIteration:
+            break
+
+        options.append(taken)
+
+        line = taken if isinstance(taken, str) else taken[1]
+        if line.strip() == "---":
+            break
+        elif line.strip() == fences:
+            lines.prepend(*options)
+            return ()
+
+    return tuple(options)
+
+
 def continuation_lines(lines, indent, fences):
+    options = extract_options(lines, fences)
+
+    yield from options
     yield from take_while(lines, lambda x: x[1].strip() != fences)
 
 
@@ -112,6 +142,7 @@ def extraction_func(code):
 
     directive = preprocess_directive(match.groupdict())
     directive.pop("indent")
+    directive["options"] = extract_options(lines, directive["fences"])
 
     lines_ = tuple(lines)
     if len(lines_) == 0:
