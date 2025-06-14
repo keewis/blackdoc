@@ -14,9 +14,28 @@ name = "markdown"
 # the word can be wrapped by curly braces
 
 directive_re = re.compile(
-    r"(?P<indent>[ ]*)(?P<fences>[`:]{3})\s*\{?\s*(?P<block_type>[-a-z]+)\s*\}?"
+    r"""(?x)
+    (?P<indent>[ ]*)
+    (?P<fences>[`:]{3})
+    \s*
+    (?:
+      (?P<braces>\{\s*(?P<block_type1>[-a-z]+)\s*\})
+      |(?P<block_type2>[-a-z]+)
+    )
+    """
 )
 include_pattern = r"\.md$"
+
+
+def preprocess_directive(directive):
+    block_type1 = directive.pop("block_type1")
+    block_type2 = directive.pop("block_type2")
+
+    new = dict(directive)
+    new["block_type"] = block_type1 or block_type2
+    new["braces"] = new["braces"] is not None
+
+    return new
 
 
 def take_while(iterable, predicate):
@@ -47,7 +66,7 @@ def detection_func(lines):
     if not match:
         return None
 
-    directive = match.groupdict()
+    directive = preprocess_directive(match.groupdict())
     if directive["block_type"] not in ("python", "jupyter-execute"):
         return None
 
@@ -91,7 +110,7 @@ def extraction_func(code):
     if not match:
         raise InvalidFormatError(f"misformatted code block:\n{code}")
 
-    directive = match.groupdict()
+    directive = preprocess_directive(match.groupdict())
     directive.pop("indent")
 
     lines_ = tuple(lines)

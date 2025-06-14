@@ -167,6 +167,7 @@ def test_detection_func(string, expected):
                     "block_type": "python",
                     "prompt_length": 0,
                     "fences": "```",
+                    "braces": False,
                 },
                 "10 * 5",
             ),
@@ -185,6 +186,7 @@ def test_detection_func(string, expected):
                     "block_type": "python",
                     "prompt_length": 0,
                     "fences": "```",
+                    "braces": False,
                 },
                 "10 * 5",
             ),
@@ -203,6 +205,7 @@ def test_detection_func(string, expected):
                     "block_type": "python",
                     "prompt_length": 0,
                     "fences": "```",
+                    "braces": True,
                 },
                 "10 * 5",
             ),
@@ -221,6 +224,7 @@ def test_detection_func(string, expected):
                     "block_type": "jupyter-execute",
                     "prompt_length": 0,
                     "fences": "```",
+                    "braces": True,
                 },
                 "10 * 5",
             ),
@@ -239,6 +243,7 @@ def test_detection_func(string, expected):
                     "block_type": "python",
                     "prompt_length": 0,
                     "fences": ":::",
+                    "braces": False,
                 },
                 "10 * 5",
             ),
@@ -257,6 +262,7 @@ def test_detection_func(string, expected):
                     "block_type": "python",
                     "prompt_length": 0,
                     "fences": ":::",
+                    "braces": False,
                 },
                 "10 * 5",
             ),
@@ -275,6 +281,7 @@ def test_detection_func(string, expected):
                     "block_type": "python",
                     "prompt_length": 0,
                     "fences": ":::",
+                    "braces": True,
                 },
                 "10 * 5",
             ),
@@ -293,6 +300,7 @@ def test_detection_func(string, expected):
                     "block_type": "jupyter-execute",
                     "prompt_length": 0,
                     "fences": ":::",
+                    "braces": True,
                 },
                 "10 * 5",
             ),
@@ -314,6 +322,7 @@ def test_extraction_func(code, expected):
             {
                 "block_type": "python",
                 "fences": "```",
+                "options": (),
             },
             textwrap.dedent(
                 """\
@@ -329,6 +338,7 @@ def test_extraction_func(code, expected):
             {
                 "block_type": "jupyter-execute",
                 "fences": "```",
+                "braces": True,
             },
             textwrap.dedent(
                 """\
@@ -344,6 +354,7 @@ def test_extraction_func(code, expected):
             {
                 "block_type": "python",
                 "fences": ":::",
+                "braces": False,
             },
             textwrap.dedent(
                 """\
