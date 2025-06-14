@@ -19,8 +19,8 @@ directive_re = re.compile(
     (?P<fences>[`:]{3})
     \s*
     (?:
-      (?P<braces>\{\s*(?P<block_type1>[-a-z]+)\s*\})
-      |(?P<block_type2>[-a-z]+)
+      (?P<braces>\{\s*(?P<block_type1>[-a-z0-9]+)\s*\})
+      |(?P<block_type2>[-a-z0-9]+)
     )
     """
 )
@@ -97,7 +97,7 @@ def detection_func(lines):
         return None
 
     directive = preprocess_directive(match.groupdict())
-    if directive["block_type"] not in ("python", "jupyter-execute"):
+    if directive["block_type"] not in ("python", "python3", "jupyter-execute"):
         return None
 
     indent = len(directive.pop("indent"))
