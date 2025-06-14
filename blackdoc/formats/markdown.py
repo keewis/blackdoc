@@ -5,6 +5,8 @@ import textwrap
 import more_itertools
 
 from blackdoc.formats.errors import InvalidFormatError
+from blackdoc.formats.ipython import hide_magic, reveal_magic
+from blackdoc.formats.rst import has_prompt
 
 name = "markdown"
 
@@ -14,9 +16,30 @@ name = "markdown"
 # the word can be wrapped by curly braces
 
 directive_re = re.compile(
-    r"(?P<indent>[ ]*)(?P<fences>[`:]{3})\s*\{?\s*(?P<language>python)\s*\}?"
+    r"""(?x)
+    ^
+    (?P<indent>[ ]*)
+    (?P<fences>[`:]{3})
+    \s*
+    (?:
+      (?P<braces>\{\s*(?P<block_type1>[-a-z0-9]+)\s*\})
+      |(?P<block_type2>[-a-z0-9]+)
+    )
+    $
+    """
 )
 include_pattern = r"\.md$"
+
+
+def preprocess_directive(directive):
+    block_type1 = directive.pop("block_type1")
+    block_type2 = directive.pop("block_type2")
+
+    new = dict(directive)
+    new["block_type"] = block_type1 or block_type2
+    new["braces"] = new["braces"] is not None
+
+    return new
 
 
 def take_while(iterable, predicate):
@@ -33,7 +56,43 @@ def take_while(iterable, predicate):
         yield taken
 
 
+def extract_options(lines, fences):
+    taken = lines.peek()
+    line = taken if isinstance(taken, str) else taken[1]
+
+    if line.strip() != "---":
+        return ()
+
+    options = [next(lines)]
+    # potentially found options
+    while True:
+        try:
+            taken = next(lines)
+        except StopIteration:
+            break
+
+        options.append(taken)
+
+        line = taken if isinstance(taken, str) else taken[1]
+        if line.strip() == "---":
+            break
+        elif line.strip() == fences:
+            lines.prepend(*options)
+            return ()
+
+    return tuple(options)
+
+
 def continuation_lines(lines, indent, fences):
+    options = extract_options(lines, fences)
+    newlines = tuple(take_while(lines, lambda x: not x[1].strip()))
+
+    _, next_line = lines.peek((0, None))
+    if has_prompt(next_line):
+        lines.prepend(*options, *newlines)
+        raise RuntimeError("prompt detected")
+
+    yield from options
     yield from take_while(lines, lambda x: x[1].strip() != fences)
 
 
@@ -47,7 +106,10 @@ def detection_func(lines):
     if not match:
         return None
 
-    directive = match.groupdict()
+    directive = preprocess_directive(match.groupdict())
+    if directive["block_type"] not in ("python", "python3", "jupyter-execute"):
+        return None
+
     indent = len(directive.pop("indent"))
 
     start_line = more_itertools.first(lines)
@@ -88,8 +150,9 @@ def extraction_func(code):
     if not match:
         raise InvalidFormatError(f"misformatted code block:\n{code}")
 
-    directive = match.groupdict()
+    directive = preprocess_directive(match.groupdict())
     directive.pop("indent")
+    directive["options"] = extract_options(lines, directive["fences"])[1:-1]
 
     lines_ = tuple(lines)
     if len(lines_) == 0:
@@ -100,10 +163,29 @@ def extraction_func(code):
 
     code_ = textwrap.dedent("\n".join(lines_[:-1]))
 
-    return directive, code_
+    return directive, hide_magic(code_)
 
 
-def reformatting_func(code, language, fences):
-    directive = f"{fences}{language}"
+def reformatting_func(code, block_type, fences, braces, options):
+    if braces:
+        brace_open = "{"
+        brace_close = "}"
+    else:
+        brace_open = ""
+        brace_close = ""
 
-    return "\n".join(line for line in (directive, code, fences) if line is not None)
+    directive = f"{fences}{brace_open}{block_type}{brace_close}"
+    parts = [directive]
+    if options:
+        parts.append(
+            "\n".join(
+                [
+                    "---",
+                    *options,
+                    "---",
+                ]
+            )
+        )
+    parts.extend([reveal_magic(code), fences])
+
+    return "\n".join(part for part in parts if part is not None)
