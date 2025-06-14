@@ -5,7 +5,7 @@
   language_version: python3
   require_serial: true
   types: [file]
-  types_or: [python, rst]
+  types_or: [python, rst, markdown]
 
 - id: blackdoc-autoupdate-black
   name: autoupdate-black
