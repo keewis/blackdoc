@@ -1,5 +1,9 @@
 Changelog
 =========
+v0.4.1 (*unreleased*)
+---------------------
+
+
 v0.4.0 (14 June 2025)
 ---------------------
 - extended support for markdown (:pull:`225`)
