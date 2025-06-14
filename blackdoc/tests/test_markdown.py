@@ -91,6 +91,20 @@ from blackdoc.formats import markdown
         pytest.param(
             textwrap.dedent(
                 """\
+                ```{jupyter-execute}
+                ---
+                hide-code: true
+                ---
+                10 * 5
+                ```
+                """
+            ),
+            "markdown",
+            id="jupyter-execute-braces-with_options",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
                 :::python
                 10 * 5
                 :::
@@ -240,6 +254,7 @@ def test_detection_func(string, expected):
                 ```{jupyter-execute}
                 ---
                 hide-code: true
+                hide-output: true
                 ---
                 10 * 5
                 ```
@@ -251,7 +266,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": "```",
                     "braces": True,
-                    "options": ("hide-code: true",),
+                    "options": ("hide-code: true", "hide-output: true"),
                 },
                 "10 * 5",
             ),
