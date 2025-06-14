@@ -376,6 +376,32 @@ def test_detection_func(string, expected):
             ),
             id="colons-jupyter-execute",
         ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                :::python
+                %load_ext extension
+                10 * 5
+                :::
+                """.rstrip()
+            ),
+            (
+                {
+                    "block_type": "python",
+                    "fences": ":::",
+                    "braces": False,
+                    "options": (),
+                    "prompt_length": 0,
+                },
+                textwrap.dedent(
+                    """\
+                    # <ipython-magic>%load_ext extension
+                    10 * 5
+                    """.rstrip()
+                ),
+            ),
+            id="ipython_magic",
+        ),
     ),
 )
 def test_extraction_func(code, expected):
@@ -441,6 +467,29 @@ def test_extraction_func(code, expected):
                 """.rstrip()
             ),
             id="colons",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                # <ipython-magic>%load_ext extension
+                10 * 5
+                """.rstrip()
+            ),
+            {
+                "block_type": "python",
+                "fences": ":::",
+                "braces": False,
+                "options": (),
+            },
+            textwrap.dedent(
+                """\
+                :::python
+                %load_ext extension
+                10 * 5
+                :::
+                """.rstrip()
+            ),
+            id="ipython_magic",
         ),
     ),
 )

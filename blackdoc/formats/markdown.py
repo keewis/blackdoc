@@ -5,6 +5,7 @@ import textwrap
 import more_itertools
 
 from blackdoc.formats.errors import InvalidFormatError
+from blackdoc.formats.ipython import hide_magic, reveal_magic
 from blackdoc.formats.rst import has_prompt
 
 name = "markdown"
@@ -162,7 +163,7 @@ def extraction_func(code):
 
     code_ = textwrap.dedent("\n".join(lines_[:-1]))
 
-    return directive, code_
+    return directive, hide_magic(code_)
 
 
 def reformatting_func(code, block_type, fences, braces, options):
@@ -185,6 +186,6 @@ def reformatting_func(code, block_type, fences, braces, options):
                 ]
             )
         )
-    parts.extend([code, fences])
+    parts.extend([reveal_magic(code), fences])
 
     return "\n".join(part for part in parts if part is not None)
