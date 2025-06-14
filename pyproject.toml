@@ -17,7 +17,7 @@ name = "blackdoc"
 authors = [
   { name = "Justus Magin", email = "keewis@posteo.de" },
 ]
-license = { text = "MIT License" }
+license = "MIT"
 description = "run black on documentation code snippets"
 readme = "README.rst"
 classifiers = [
