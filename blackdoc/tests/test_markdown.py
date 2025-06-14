@@ -237,6 +237,29 @@ def test_detection_func(string, expected):
         pytest.param(
             textwrap.dedent(
                 """\
+                ```{jupyter-execute}
+                ---
+                hide-code: true
+                ---
+                10 * 5
+                ```
+                """.rstrip()
+            ),
+            (
+                {
+                    "block_type": "jupyter-execute",
+                    "prompt_length": 0,
+                    "fences": "```",
+                    "braces": True,
+                    "options": ("hide-code: true",),
+                },
+                "10 * 5",
+            ),
+            id="backticks-jupyter-execute-with_options",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
                 :::python
                 10 * 5
                 :::

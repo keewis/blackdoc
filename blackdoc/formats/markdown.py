@@ -59,11 +59,11 @@ def extract_options(lines, fences):
     if line.strip() != "---":
         return ()
 
-    options = [next(line)]
+    options = [next(lines)]
     # potentially found options
     while True:
         try:
-            taken = next(line)
+            taken = next(lines)
         except StopIteration:
             break
 
@@ -142,7 +142,7 @@ def extraction_func(code):
 
     directive = preprocess_directive(match.groupdict())
     directive.pop("indent")
-    directive["options"] = extract_options(lines, directive["fences"])
+    directive["options"] = extract_options(lines, directive["fences"])[1:-1]
 
     lines_ = tuple(lines)
     if len(lines_) == 0:
