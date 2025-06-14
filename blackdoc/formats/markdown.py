@@ -14,7 +14,7 @@ name = "markdown"
 # the word can be wrapped by curly braces
 
 directive_re = re.compile(
-    r"(?P<indent>[ ]*)(?P<fences>[`:]{3})\s*\{?\s*(?P<language>python)\s*\}?"
+    r"(?P<indent>[ ]*)(?P<fences>[`:]{3})\s*\{?\s*(?P<block_type>[-a-z]+)\s*\}?"
 )
 include_pattern = r"\.md$"
 
@@ -48,6 +48,9 @@ def detection_func(lines):
         return None
 
     directive = match.groupdict()
+    if directive["block_type"] not in ("python", "jupyter-execute"):
+        return None
+
     indent = len(directive.pop("indent"))
 
     start_line = more_itertools.first(lines)
