@@ -156,7 +156,26 @@ def extraction_func(code):
     return directive, code_
 
 
-def reformatting_func(code, language, fences):
-    directive = f"{fences}{language}"
+def reformatting_func(code, block_type, fences, braces, options):
+    if braces:
+        brace_open = "{"
+        brace_close = "}"
+    else:
+        brace_open = ""
+        brace_close = ""
 
-    return "\n".join(line for line in (directive, code, fences) if line is not None)
+    directive = f"{fences}{brace_open}{block_type}{brace_close}"
+    parts = [directive]
+    if options:
+        parts.append(
+            "\n".join(
+                [
+                    "---",
+                    *options,
+                    "---",
+                ]
+            )
+        )
+    parts.extend([code, fences])
+
+    return "\n".join(part for part in parts if part is not None)
