@@ -129,6 +129,21 @@ from blackdoc.formats import markdown
         pytest.param(
             textwrap.dedent(
                 """\
+                ```{jupyter-execute}
+                ---
+                hide-code: true
+                ---
+
+                10 * 5
+                ```
+                """
+            ),
+            "markdown",
+            id="jupyter-execute-braces-with_options-with_newlines",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
                 :::python
                 10 * 5
                 :::
