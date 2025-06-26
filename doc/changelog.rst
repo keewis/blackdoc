@@ -1,6 +1,6 @@
 Changelog
 =========
-v0.4.1 (*unreleased*)
+v0.4.1 (26 June 2025)
 ---------------------
 - don't crash on newlines before the code (:pull:`239`)
 - don't check jupyter deps (:pull:`238`)
