@@ -93,6 +93,7 @@ def continuation_lines(lines, indent, fences):
         raise RuntimeError("prompt detected")
 
     yield from options
+    yield from newlines
     yield from take_while(lines, lambda x: x[1].strip() != fences)
 
 
