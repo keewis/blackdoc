@@ -9,7 +9,7 @@ build:
       - (git --no-pager log --pretty="tformat:%s" -1 | grep -vqF "[skip-rtd]") || exit 183
       - git fetch --unshallow || true
     pre_install:
-      - git update-index --assume-unchanged docs/conf.py ci/requirements/doc.txt
+      - git update-index --assume-unchanged doc/conf.py ci/requirements/doc.txt
 
 python:
   install:
