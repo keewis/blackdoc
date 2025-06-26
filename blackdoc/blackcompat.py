@@ -251,10 +251,10 @@ def gen_python_files(
             )
 
         elif child.is_file():
-            if child.suffix == ".ipynb" and not jupyter_dependencies_are_installed(
-                verbose=verbose, quiet=quiet
-            ):
-                continue
+            # if child.suffix == ".ipynb" and not jupyter_dependencies_are_installed(
+            #     verbose=verbose, quiet=quiet
+            # ):
+            #     continue
             include_match = include.search(normalized_path) if include else True
             if include_match:
                 yield child
