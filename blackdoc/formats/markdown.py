@@ -25,11 +25,15 @@ directive_re = re.compile(
       (?P<braces>\{\s*(?P<block_type1>[-a-z0-9]+)\s*\})
       |(?P<block_type2>[-a-z0-9]+)
     )
+    (?:
+      \s+
+      (?P<language>[a-z]+)
+    )?
     $
     """
 )
 include_pattern = r"\.md$"
-supported_blocks = ("python", "python3", "jupyter-execute")
+supported_blocks = ("python", "python3", "jupyter-execute", "code-cell")
 
 
 def preprocess_directive(directive):
@@ -111,6 +115,8 @@ def detection_func(lines):
     directive = preprocess_directive(match.groupdict())
     if directive["block_type"] not in supported_blocks:
         return None
+    if directive["block_type"] in {"code-cell"} and directive["language"] != "python":
+        return None
 
     indent = len(directive.pop("indent"))
 
@@ -168,7 +174,7 @@ def extraction_func(code):
     return directive, hide_magic(code_)
 
 
-def reformatting_func(code, block_type, fences, braces, options):
+def reformatting_func(code, block_type, language, fences, braces, options):
     if braces:
         brace_open = "{"
         brace_close = "}"
@@ -177,6 +183,8 @@ def reformatting_func(code, block_type, fences, braces, options):
         brace_close = ""
 
     directive = f"{fences}{brace_open}{block_type}{brace_close}"
+    if language is not None:
+        directive = f"{directive} {language}"
     parts = [directive]
     if options:
         parts.append(
