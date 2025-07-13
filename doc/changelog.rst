@@ -2,7 +2,7 @@ Changelog
 =========
 v0.4.2 (*unreleased*)
 ---------------------
-
+- support ``code-cell`` markdown blocks (:pull:`243`)
 
 v0.4.1 (26 June 2025)
 ---------------------
