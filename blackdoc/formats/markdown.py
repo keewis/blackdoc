@@ -29,6 +29,7 @@ directive_re = re.compile(
     """
 )
 include_pattern = r"\.md$"
+supported_blocks = ("python", "python3", "jupyter-execute")
 
 
 def preprocess_directive(directive):
@@ -108,7 +109,7 @@ def detection_func(lines):
         return None
 
     directive = preprocess_directive(match.groupdict())
-    if directive["block_type"] not in ("python", "python3", "jupyter-execute"):
+    if directive["block_type"] not in supported_blocks:
         return None
 
     indent = len(directive.pop("indent"))
