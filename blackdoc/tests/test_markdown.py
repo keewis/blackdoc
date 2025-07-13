@@ -221,6 +221,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": "```",
                     "braces": False,
+                    "language": None,
                     "options": (),
                 },
                 "10 * 5",
@@ -241,6 +242,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": "```",
                     "braces": False,
+                    "language": None,
                     "options": (),
                 },
                 "10 * 5",
@@ -261,6 +263,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": "```",
                     "braces": True,
+                    "language": None,
                     "options": (),
                 },
                 "10 * 5",
@@ -281,6 +284,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": "```",
                     "braces": True,
+                    "language": None,
                     "options": (),
                 },
                 "10 * 5",
@@ -305,6 +309,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": "```",
                     "braces": True,
+                    "language": None,
                     "options": ("hide-code: true", "hide-output: true"),
                 },
                 "10 * 5",
@@ -325,6 +330,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": ":::",
                     "braces": False,
+                    "language": None,
                     "options": (),
                 },
                 "10 * 5",
@@ -345,6 +351,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": ":::",
                     "braces": False,
+                    "language": None,
                     "options": (),
                 },
                 "10 * 5",
@@ -365,6 +372,7 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": ":::",
                     "braces": True,
+                    "language": None,
                     "options": (),
                 },
                 "10 * 5",
@@ -385,11 +393,163 @@ def test_detection_func(string, expected):
                     "prompt_length": 0,
                     "fences": ":::",
                     "braces": True,
+                    "language": None,
                     "options": (),
                 },
                 "10 * 5",
             ),
             id="colons-jupyter-execute",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ```{python}
+                10 * 5
+                ```
+                """.rstrip()
+            ),
+            (
+                {
+                    "block_type": "python",
+                    "prompt_length": 0,
+                    "fences": "```",
+                    "braces": True,
+                    "language": None,
+                    "options": (),
+                },
+                "10 * 5",
+            ),
+            id="backticks-with_braces",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ```{jupyter-execute}
+                10 * 5
+                ```
+                """.rstrip()
+            ),
+            (
+                {
+                    "block_type": "jupyter-execute",
+                    "prompt_length": 0,
+                    "fences": "```",
+                    "braces": True,
+                    "language": None,
+                    "options": (),
+                },
+                "10 * 5",
+            ),
+            id="backticks-jupyter-execute-with_braces",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ```{jupyter-execute}
+                ---
+                hide-code: true
+                hide-output: true
+                ---
+                10 * 5
+                ```
+                """.rstrip()
+            ),
+            (
+                {
+                    "block_type": "jupyter-execute",
+                    "prompt_length": 0,
+                    "fences": "```",
+                    "braces": True,
+                    "language": None,
+                    "options": ("hide-code: true", "hide-output: true"),
+                },
+                "10 * 5",
+            ),
+            id="backticks-jupyter-execute-with_options",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                :::python
+                10 * 5
+                :::
+                """.rstrip()
+            ),
+            (
+                {
+                    "block_type": "python",
+                    "prompt_length": 0,
+                    "fences": ":::",
+                    "braces": False,
+                    "language": None,
+                    "options": (),
+                },
+                "10 * 5",
+            ),
+            id="colons",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ::: python
+                10 * 5
+                :::
+                """.rstrip()
+            ),
+            (
+                {
+                    "block_type": "python",
+                    "prompt_length": 0,
+                    "fences": ":::",
+                    "braces": False,
+                    "language": None,
+                    "options": (),
+                },
+                "10 * 5",
+            ),
+            id="colons-with_space",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                :::{python}
+                10 * 5
+                :::
+                """.rstrip()
+            ),
+            (
+                {
+                    "block_type": "python",
+                    "prompt_length": 0,
+                    "fences": ":::",
+                    "braces": True,
+                    "language": None,
+                    "options": (),
+                },
+                "10 * 5",
+            ),
+            id="colons-with_braces",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ```{code-cell} python
+                10 * 5
+                ```
+                """.rstrip()
+            ),
+            (
+                {
+                    "block_type": "code-cell",
+                    "prompt_length": 0,
+                    "fences": "```",
+                    "braces": True,
+                    "language": "python",
+                    "options": (),
+                },
+                "10 * 5",
+            ),
+            id="code-cell",
         ),
         pytest.param(
             textwrap.dedent(
@@ -406,6 +566,7 @@ def test_detection_func(string, expected):
                     "fences": ":::",
                     "braces": False,
                     "options": (),
+                    "language": None,
                     "prompt_length": 0,
                 },
                 textwrap.dedent(
@@ -434,6 +595,7 @@ def test_extraction_func(code, expected):
                 "block_type": "python",
                 "fences": "```",
                 "options": (),
+                "language": None,
                 "braces": False,
             },
             textwrap.dedent(
@@ -451,6 +613,7 @@ def test_extraction_func(code, expected):
                 "block_type": "jupyter-execute",
                 "fences": "```",
                 "braces": True,
+                "language": None,
                 "options": ("hide-code: true", "hide-output: true"),
             },
             textwrap.dedent(
@@ -472,6 +635,7 @@ def test_extraction_func(code, expected):
                 "block_type": "python",
                 "fences": ":::",
                 "braces": False,
+                "language": None,
                 "options": (),
             },
             textwrap.dedent(
@@ -494,6 +658,7 @@ def test_extraction_func(code, expected):
                 "block_type": "python",
                 "fences": ":::",
                 "braces": False,
+                "language": None,
                 "options": (),
             },
             textwrap.dedent(
@@ -505,6 +670,24 @@ def test_extraction_func(code, expected):
                 """.rstrip()
             ),
             id="ipython_magic",
+        ),
+        pytest.param(
+            "10 * 5",
+            {
+                "block_type": "code-cell",
+                "fences": ":::",
+                "braces": True,
+                "language": "python",
+                "options": (),
+            },
+            textwrap.dedent(
+                """\
+                :::{code-cell} python
+                10 * 5
+                :::
+                """.rstrip()
+            ),
+            id="code-cell-colons",
         ),
     ),
 )
