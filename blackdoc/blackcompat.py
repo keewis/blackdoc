@@ -3,12 +3,14 @@
 For the license, see /licenses/black
 """
 
+import io
 import os
 import sys
 from functools import lru_cache
 from pathlib import Path
 
 import tomli
+from black.mode import Encoding, FileContent, Mode, NewLine, Preview, tokenize
 from pathspec import PathSpec
 
 
@@ -258,3 +260,38 @@ def gen_python_files(
             include_match = include.search(normalized_path) if include else True
             if include_match:
                 yield child
+
+
+def decode_bytes(src: bytes, mode: Mode) -> tuple[FileContent, Encoding, NewLine]:
+    """Return a tuple of (decoded_contents, encoding, newline).
+
+    `newline` is either CRLF or LF but `decoded_contents` is decoded with
+    universal newlines (i.e. only contains LF).
+    """
+    srcbuf = io.BytesIO(src)
+    encoding, lines = tokenize.detect_encoding(srcbuf.readline)
+    if not lines:
+        return "", encoding, "\n"
+
+    if Preview.normalize_cr_newlines in mode:
+        if lines[0][-2:] == b"\r\n":
+            if b"\r" in lines[0][:-2]:
+                newline = "\r"
+            else:
+                newline = "\r\n"
+        elif lines[0][-1:] == b"\n":
+            if b"\r" in lines[0][:-1]:
+                newline = "\r"
+            else:
+                newline = "\n"
+        else:
+            if b"\r" in lines[0]:
+                newline = "\r"
+            else:
+                newline = "\n"
+    else:
+        newline = "\r\n" if lines[0][-2:] == b"\r\n" else "\n"
+
+    srcbuf.seek(0)
+    with io.TextIOWrapper(srcbuf, encoding) as tiow:
+        return tiow.read(), encoding, newline
