@@ -3,6 +3,7 @@ Changelog
 v0.4.2 (*unreleased*)
 ---------------------
 - support ``code-cell`` markdown blocks (:pull:`243`)
+- compatibility with ``black>=25.9.0`` (:pull:`249`)
 
 v0.4.1 (26 June 2025)
 ---------------------
