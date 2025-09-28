@@ -10,7 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import tomli
-from black.mode import Encoding, FileContent, Mode, NewLine, Preview, tokenize
+from black import Encoding, FileContent, Mode, NewLine, Preview, tokenize
 from pathspec import PathSpec
 
 
