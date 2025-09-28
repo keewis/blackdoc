@@ -6,7 +6,7 @@ import black
 from rich.text import Text
 
 from blackdoc import __version__, format_lines, formats
-from blackdoc.blackcompat import read_pyproject_toml
+from blackdoc.blackcompat import decode_bytes, read_pyproject_toml
 from blackdoc.colors import DiffHighlighter
 from blackdoc.console import err, out
 from blackdoc.diff import unified_diff
@@ -32,7 +32,7 @@ def check_format_names(string):
 def format_and_overwrite(path, mode):
     try:
         with open(path, mode="rb") as f:
-            content, encoding, newline = black.decode_bytes(f.read())
+            content, encoding, newline = decode_bytes(f.read(), mode)
 
         lines = content.split("\n")
 
