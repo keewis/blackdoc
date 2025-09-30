@@ -1,5 +1,9 @@
 Changelog
 =========
+v0.4.4 (*unreleased*)
+---------------------
+
+
 v0.4.3 (30 September 2025)
 --------------------------
 - forgotten instance of the single argument call of ``decode_bytes`` (:pull:`253`)
