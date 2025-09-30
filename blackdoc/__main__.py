@@ -58,7 +58,7 @@ def format_and_overwrite(path, mode):
 def format_and_check(path, mode, diff=False, color=False):
     try:
         with open(path, mode="rb") as f:
-            content, _, _ = black.decode_bytes(f.read())
+            content, _, _ = decode_bytes(f.read())
 
         lines = content.split("\n")
 
