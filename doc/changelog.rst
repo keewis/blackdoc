@@ -2,7 +2,7 @@ Changelog
 =========
 v0.4.3 (*unreleased*)
 ---------------------
-
+- forgotten instance of the single argument call of ``decode_bytes`` (:pull:`253`)
 
 v0.4.2 (28 September 2025)
 --------------------------
