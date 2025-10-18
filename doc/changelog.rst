@@ -1,7 +1,7 @@
 Changelog
 =========
-v0.4.4 (*unreleased*)
----------------------
+v0.4.4 (18 October 2025)
+------------------------
 - add the required ``mode`` parameter to the call of ``decode_bytes`` (:pull:`256`)
 
 v0.4.3 (30 September 2025)
