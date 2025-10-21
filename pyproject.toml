@@ -38,7 +38,7 @@ classifiers = [
 ]
 requires-python = ">= 3.10"
 dependencies = [
-  "black",
+  "black>=24.4",    # 18 months window
   "more-itertools",
   "tomli",
   "pathspec",
