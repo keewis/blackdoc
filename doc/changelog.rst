@@ -1,5 +1,8 @@
 Changelog
 =========
+v0.4.6 (*unreleased*)
+---------------------
+
 v0.4.5 (21 October 2025)
 ------------------------
 - backwards-compatibility towards ``black>=24.4`` (a 18 months window) (:pull:`262`)
