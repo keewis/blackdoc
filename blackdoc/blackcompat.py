@@ -274,7 +274,8 @@ def decode_bytes(src: bytes, mode: Mode) -> tuple[FileContent, Encoding, NewLine
         return "", encoding, "\n"
 
     normalize_cr_newlines = getattr(Preview, "normalize_cr_newlines", None)
-    if normalize_cr_newlines in mode:
+    # by default disabled
+    if normalize_cr_newlines is not None and normalize_cr_newlines in mode:
         if lines[0][-2:] == b"\r\n":
             if b"\r" in lines[0][:-2]:
                 newline = "\r"
