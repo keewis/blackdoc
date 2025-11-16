@@ -1,5 +1,9 @@
 Changelog
 =========
+v0.4.7 (*unreleased*)
+---------------------
+
+
 v0.4.6 (16 November 2025)
 -------------------------
 - Don't try to use dynamic typing with ``black`` functions (:pull:`268`)
