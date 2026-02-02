@@ -16,21 +16,17 @@ class FormatResult:
 
 @pytest.fixture()
 def sample_code():
-    unformatted = textwrap.dedent(
-        """\
+    unformatted = textwrap.dedent("""\
     >>> import a
     >>> def f(a:int=None)->str :
     ...     return  'b'
-    """.rstrip()
-    )
+    """.rstrip())
 
-    formatted = textwrap.dedent(
-        """\
+    formatted = textwrap.dedent("""\
     >>> import a
     >>> def f(a: int = None) -> str:
     ...     return "b"
-    """.rstrip()
-    )
+    """.rstrip())
     result = "reformatted"
 
     yield FormatResult(
