@@ -17,24 +17,20 @@ from blackdoc.tests.data import doctest as data
         pytest.param('"""a"""', '"""', id="double quotes"),
         pytest.param('"a"""', None, id="trailing empty string"),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 '''
                 multiple lines
                 '''
-                """
-            ).rstrip(),
+                """).rstrip(),
             "'''",
             id="multiple lines single quotes",
         ),
         pytest.param(
-            textwrap.dedent(
-                '''\
+            textwrap.dedent('''\
                 """
                 multiple lines
                 """
-                '''
-            ).rstrip(),
+                ''').rstrip(),
             '"""',
             id="multiple lines double quotes",
         ),
@@ -54,46 +50,38 @@ def test_detect_docstring_quotes(string, expected):
         pytest.param(">>> 10 * 5", "doctest", id="single_line"),
         pytest.param("    >>> 10 * 5", "doctest", id="single_line_with_indent"),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> a = [
                 ...     1,
                 ...     2,
                 ... ]
-                """
-            ),
+                """),
             "doctest",
             id="multiple_lines",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> ''' arbitrary triple-quoted string
                 ...
                 ... with empty continuation line
                 ... '''
-                """
-            ),
+                """),
             "doctest",
             id="multiple_lines_with_empty_continuation_line",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>>
                 ... '''arbitrary triple-quoted string'''
-                """
-            ),
+                """),
             "doctest",
             id="multiple_lines_with_leading_empty_continuation_line",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> '''arbitrary triple-quoted string'''
                 ...
-                """
-            ),
+                """),
             "doctest",
             id="multiple_lines_with_trailing_empty_continuation_line",
         ),
@@ -127,26 +115,22 @@ def test_detection_func(string, expected):
             id="single_line",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> a = [
                 ...     1,
                 ...     2,
                 ...     3,
                 ... ]
-                """.rstrip()
-            ),
+                """.rstrip()),
             (
                 {"prompt_length": 4, "docstring_quotes": None},
-                textwrap.dedent(
-                    """\
+                textwrap.dedent("""\
                     a = [
                         1,
                         2,
                         3,
                     ]
-                    """.rstrip()
-                ),
+                    """.rstrip()),
             ),
             id="multiple_lines",
         ),
@@ -167,24 +151,20 @@ def test_detection_func(string, expected):
             id="triple_quoted_string-double_quotes",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> ''' arbitrary triple-quoted string
                 ...
                 ... with empty continuation line
                 ... '''
-                """.rstrip()
-            ),
+                """.rstrip()),
             (
                 {"prompt_length": 4, "docstring_quotes": "'''"},
-                textwrap.dedent(
-                    """\
+                textwrap.dedent("""\
                     ''' arbitrary triple-quoted string
 
                     with empty continuation line
                     '''
-                    """.rstrip()
-                ),
+                    """.rstrip()),
             ),
             id="multiple_lines_with_empty_continuation_line",
         ),
@@ -224,140 +204,110 @@ def prepare_lines(lines, remove_prompt=False):
             id="single-line triple-quoted string",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 a = [
                     1,
                     2,
                 ]
-                """.rstrip()
-            ),
+                """.rstrip()),
             None,
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> a = [
                 ...     1,
                 ...     2,
                 ... ]
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="multiple lines",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 print("abc")
                 print("def")
-                """
-            ),
+                """),
             None,
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> print("abc")
                 >>> print("def")
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="multiple lines multiple statements",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 # comment
                 print("abc")
-                """
-            ),
+                """),
             None,
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> # comment
                 ... print("abc")
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="multiple lines with comment",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 # comment
                 def func():
                     pass
-                """
-            ),
+                """),
             None,
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> # comment
                 ... def func():
                 ...     pass
                 ...
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="multiple lines comment before block",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 @decorator
                 def func():
                     pass
-                """
-            ),
+                """),
             None,
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> @decorator
                 ... def func():
                 ...     pass
                 ...
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="multiple lines function decorator",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 @decorator
                 class A:
                     pass
-                """
-            ),
+                """),
             None,
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> @decorator
                 ... class A:
                 ...     pass
                 ...
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="multiple lines class decorator",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 '''
                 docstring content
                 '''
-                """.rstrip()
-            ),
+                """.rstrip()),
             "'''",
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> '''
                 ... docstring content
                 ... '''
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="multi-line triple-quoted string-single quotes",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 s = '''
                     triple-quoted string
                 '''
-                """
-            ).rstrip(),
+                """).rstrip(),
             '"""',
             textwrap.dedent(
                 '''\
@@ -395,29 +345,23 @@ def prepare_lines(lines, remove_prompt=False):
             id="triple-quoted string with inverted quotes",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 def myfunc(arg1, arg2):
                     pass
-                """
-            ),
+                """),
             None,
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> def myfunc(arg1, arg2):
                 ...     pass
                 ...
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="trailing newline at the end of a block",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 a = 1
 
-                """
-            ),
+                """),
             None,
             ">>> a = 1",
             id="trailing newline at the end of a normal line",
@@ -429,26 +373,22 @@ def prepare_lines(lines, remove_prompt=False):
             id="trailing colon at the end of a comment",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 def f(arg1, arg2):
                     ''' nested docstring
 
                     parameter description
                     '''
-                """
-            ),
+                """),
             "'''",
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> def f(arg1, arg2):
                 ...     ''' nested docstring
                 ...
                 ...     parameter description
                 ...     '''
                 ...
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="nested docstring",
         ),
         pytest.param(
@@ -458,41 +398,33 @@ def prepare_lines(lines, remove_prompt=False):
             id="triple-quoted string",
         ),
         pytest.param(
-            textwrap.dedent(
-                '''\
+            textwrap.dedent('''\
                 def f(arg1, arg2):
                     """ docstring """
                     s = "trailing empty string"""
-                '''
-            ),
+                '''),
             "'''",
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> def f(arg1, arg2):
                 ...     ''' docstring '''
                 ...     s = "trailing empty string\"""
                 ...
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="docstring and trailing empty string",
         ),
         pytest.param(
-            textwrap.dedent(
-                '''\
+            textwrap.dedent('''\
                 def f(arg1, arg2):
                     """ docstring """
                     s = """triple-quoted string"""
-                '''
-            ),
+                '''),
             "'''",
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 >>> def f(arg1, arg2):
                 ...     ''' docstring '''
                 ...     s = '''triple-quoted string'''
                 ...
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="docstring and triple-quoted string",
         ),
     ),

@@ -15,8 +15,7 @@ name = "markdown"
 # block fences are three backticks or colons (myst)
 # the word can be wrapped by curly braces
 
-directive_re = re.compile(
-    r"""(?x)
+directive_re = re.compile(r"""(?x)
     ^
     (?P<indent>[ ]*)
     (?P<fences>[`:]{3})
@@ -30,8 +29,7 @@ directive_re = re.compile(
       (?P<language>[a-z]+)
     )?
     $
-    """
-)
+    """)
 include_pattern = r"\.md$"
 supported_blocks = ("python", "python3", "jupyter-execute", "code-cell")
 

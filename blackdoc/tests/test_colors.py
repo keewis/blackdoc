@@ -10,32 +10,26 @@ from blackdoc import colors
     ["text", "spans"],
     (
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 - >>> a
                 + >>> a + 1
-                """.rstrip()
-            ),
+                """.rstrip()),
             [Span(0, 7, "red"), Span(8, 19, "green")],
             id="simple replacement",
         ),
         pytest.param(
-            textwrap.dedent(
-                f"""\
+            textwrap.dedent(f"""\
                 - >>> a{' ' * 5}
                 + >>> a + 1
-                """.rstrip()
-            ),
+                """.rstrip()),
             [Span(0, 7, "red"), Span(7, 12, "red on red"), Span(13, 24, "green")],
             id="trailing whitespace",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 --- file1 time1
                 +++ file2 time2
-                """
-            ),
+                """),
             [Span(0, 15, "bold"), Span(16, 31, "bold")],
             id="header",
         ),
