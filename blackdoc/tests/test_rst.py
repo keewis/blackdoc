@@ -14,64 +14,53 @@ from blackdoc.tests.data import rst as data
         pytest.param("", None, id="empty string"),
         pytest.param("Some string.", None, id="no_code"),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. note::
 
                     This is not a code block.
-                """
-            ),
+                """),
             None,
             id="block",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. code:: sh
 
                     find . -name "*.py"
-                """
-            ),
+                """),
             None,
             id="code_other_language",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. code:: python
 
                     10 * 5
-                """
-            ),
+                """),
             "rst",
             id="code",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. code-block:: python
 
                     10 * 5
-                """
-            ),
+                """),
             "rst",
             id="code-block",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. ipython:: python
 
                     %%time
                     10 * 5
-                """
-            ),
+                """),
             "rst",
             id="ipython",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. ipython::
 
                     In [1]: 10 * 5
@@ -80,65 +69,54 @@ from blackdoc.tests.data import rst as data
                     In [2]: %%time
                        ...: ".".join("abc")
                     Out[2]: 'a.b.c'
-                """
-            ),
+                """),
             None,
             id="ipython-prompt",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. ipython::
                     :okerror:
 
                     @verbatim
                     In [1]: 10 * 5
                     Out[1]: 50
-                """
-            ),
+                """),
             None,
             id="ipython-prompt-cell-decorator",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. testsetup::
 
                     10 * 5
-                """
-            ),
+                """),
             "rst",
             id="testsetup",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. testcode::
 
                     10 * 5
-                """
-            ),
+                """),
             "rst",
             id="testcode",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. testcleanup::
 
                     10 * 5
-                """
-            ),
+                """),
             "rst",
             id="testcleanup",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. ipython:: python
                     print("abc")
-                """
-            ),
+                """),
             "rst",
             id="missing option separator",
         ),
@@ -165,13 +143,11 @@ def test_detection_func(string, expected):
     "code,expected",
     (
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. code:: python
 
                    10 * 5
-                """.rstrip()
-            ),
+                """.rstrip()),
             (
                 {
                     "name": "code",
@@ -185,14 +161,12 @@ def test_detection_func(string, expected):
             id="code",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. code:: python
                    :okwarning:
 
                    10 * 5
-                """.rstrip()
-            ),
+                """.rstrip()),
             (
                 {
                     "name": "code",
@@ -206,13 +180,11 @@ def test_detection_func(string, expected):
             id="code_with_options",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. code-block:: python
 
                    10 * 5
-                """.rstrip()
-            ),
+                """.rstrip()),
             (
                 {
                     "name": "code-block",
@@ -226,14 +198,12 @@ def test_detection_func(string, expected):
             id="code-block",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. ipython::
 
                     %%time
                     10 * 5
-                """.rstrip()
-            ),
+                """.rstrip()),
             (
                 {
                     "name": "ipython",
@@ -242,22 +212,18 @@ def test_detection_func(string, expected):
                     "prompt_length": 4,
                     "n_header_lines": 2,
                 },
-                textwrap.dedent(
-                    """\
+                textwrap.dedent("""\
                     # <ipython-magic>%%time
                     10 * 5
-                    """.rstrip()
-                ),
+                    """.rstrip()),
             ),
             id="ipython",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. ipython:: python
                     10 * 5
-                """.rstrip()
-            ),
+                """.rstrip()),
             (
                 {
                     "name": "ipython",
@@ -271,12 +237,10 @@ def test_detection_func(string, expected):
             id="missing_eof_line",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. ipython:: python
                     print("abc")
-                """.rstrip()
-            ),
+                """.rstrip()),
             (
                 {
                     "name": "ipython",
@@ -308,13 +272,11 @@ def test_extraction_func(code, expected):
                 "options": (),
                 "prompt_length": 3,
             },
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. code:: python
 
                    10 * 5
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="code",
         ),
         pytest.param(
@@ -325,26 +287,22 @@ def test_extraction_func(code, expected):
                 "options": (":okwarning:",),
                 "prompt_length": 4,
             },
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. code-block:: python
                     :okwarning:
 
                     10 * 5
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="code-block_with_options",
         ),
         pytest.param(
             "10 * 5",
             {"name": "ipython", "language": None, "options": (), "prompt_length": 4},
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 .. ipython::
 
                     10 * 5
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="ipython",
         ),
     ),
