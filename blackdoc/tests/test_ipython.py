@@ -27,14 +27,12 @@ from blackdoc.tests.data import ipython as data
             (
                 (1, 5),
                 ipython.name,
-                textwrap.dedent(
-                    """\
+                textwrap.dedent("""\
             In [1]: file = open(
                ...:     "very_long_filepath",
                ...:     mode="a",
                ...: )
-            """.rstrip()
-                ),
+            """.rstrip()),
             ),
             id="multiple_lines",
         ),
@@ -58,14 +56,12 @@ def test_detection_func(lines, expected):
             id="single_line",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
             In [1]: file = open(
                ...:     "very_long_filepath",
                ...:     mode="a",
                ...: )
-            """.rstrip()
-            ),
+            """.rstrip()),
             (
                 {"count": 1},
                 "\n".join(
@@ -80,42 +76,34 @@ def test_detection_func(lines, expected):
             id="multiple_lines",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
             In [4]: %%time
                ...: file.close()
-            """.rstrip()
-            ),
+            """.rstrip()),
             (
                 {"count": 4},
-                textwrap.dedent(
-                    f"""\
+                textwrap.dedent(f"""\
                 # {ipython.magic_comment}%%time
                 file.close()
-                """.rstrip()
-                ),
+                """.rstrip()),
             ),
             id="lines_with_cell_magic",
         ),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 In [5]: @savefig simple.png width=4in
                    ...: @property
                    ...: def my_property(self):
                    ...:     pass
-                """.rstrip()
-            ),
+                """.rstrip()),
             (
                 {"count": 5},
-                textwrap.dedent(
-                    f"""\
+                textwrap.dedent(f"""\
                     # {ipython.magic_comment}@savefig simple.png width=4in
                     @property
                     def my_property(self):
                         pass
-                    """.rstrip()
-                ),
+                    """.rstrip()),
             ),
             id="lines_with_line_decorator",
         ),
@@ -132,59 +120,47 @@ def test_extraction_func(line, expected):
     (
         pytest.param("file", 2, "In [2]: file", id="single_line"),
         pytest.param(
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 file = open(
                     "very_long_filepath",
                     mode="a",
                 )
-                """.rstrip()
-            ),
+                """.rstrip()),
             1,
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 In [1]: file = open(
                    ...:     "very_long_filepath",
                    ...:     mode="a",
                    ...: )
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="multiple_lines",
         ),
         pytest.param(
-            textwrap.dedent(
-                f"""\
+            textwrap.dedent(f"""\
                 # {ipython.magic_comment}%%time
                 file.close()
-                """.rstrip()
-            ),
+                """.rstrip()),
             4,
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 In [4]: %%time
                    ...: file.close()
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="lines_with_cell_magic",
         ),
         pytest.param(
-            textwrap.dedent(
-                f"""\
+            textwrap.dedent(f"""\
                 # {ipython.magic_comment}@savefig simple.png width=4in
                 @property
                 def my_property(self):
                     pass
-                """.rstrip()
-            ),
+                """.rstrip()),
             5,
-            textwrap.dedent(
-                """\
+            textwrap.dedent("""\
                 In [5]: @savefig simple.png width=4in
                    ...: @property
                    ...: def my_property(self):
                    ...:     pass
-                """.rstrip()
-            ),
+                """.rstrip()),
             id="lines_with_line_decorator",
         ),
     ),
