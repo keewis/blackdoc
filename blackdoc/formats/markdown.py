@@ -32,6 +32,7 @@ directive_re = re.compile(
     $
     """
 )
+shorthand_option_re = re.compile(r"^\s*:[-\w]+:")
 include_pattern = r"\.md$"
 supported_blocks = ("python", "python3", "jupyter-execute", "code-cell")
 
@@ -61,11 +62,21 @@ def take_while(iterable, predicate):
         yield taken
 
 
+def extract_shorthand_options(lines):
+    def is_option(taken):
+        line = taken if isinstance(taken, str) else taken[1]
+        return shorthand_option_re.match(line) is not None
+
+    return tuple(take_while(lines, is_option))
+
+
 def extract_options(lines, fences):
     taken = lines.peek()
     line = taken if isinstance(taken, str) else taken[1]
 
-    if line.strip() != "---":
+    if shorthand_option_re.match(line):
+        return extract_shorthand_options(lines)
+    elif line.strip() != "---":
         return ()
 
     options = [next(lines)]
@@ -160,7 +171,10 @@ def extraction_func(code):
 
     directive = preprocess_directive(match.groupdict())
     directive.pop("indent")
-    directive["options"] = extract_options(lines, directive["fences"])[1:-1]
+    options = extract_options(lines, directive["fences"])
+    if options and options[0].strip() == "---":
+        options = options[1:-1]
+    directive["options"] = options
 
     lines_ = tuple(lines)
     if len(lines_) == 0:
@@ -186,7 +200,9 @@ def reformatting_func(code, block_type, language, fences, braces, options):
     if language is not None:
         directive = f"{directive} {language}"
     parts = [directive]
-    if options:
+    if options and shorthand_option_re.match(options[0]):
+        parts.append("\n".join(options))
+    elif options:
         parts.append(
             "\n".join(
                 [

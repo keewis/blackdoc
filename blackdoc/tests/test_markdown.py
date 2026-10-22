@@ -185,6 +185,32 @@ from blackdoc.formats import markdown
             "markdown",
             id="myst-jupyter-execute-braces",
         ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ```{code-cell} python
+                :tags: [hide-cell]
+                10 * 5
+                ```
+                """
+            ),
+            "markdown",
+            id="code-cell-with_shorthand_options",
+        ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ```{code-cell} python
+                :tags: [hide-cell]
+                :other-option: value
+
+                10 * 5
+                ```
+                """
+            ),
+            "markdown",
+            id="code-cell-with_shorthand_options-with_newlines",
+        ),
     ),
 )
 def test_detection_func(string, expected):
@@ -578,6 +604,29 @@ def test_detection_func(string, expected):
             ),
             id="ipython_magic",
         ),
+        pytest.param(
+            textwrap.dedent(
+                """\
+                ```{code-cell} python
+                :tags: [hide-cell]
+                :other-option: value
+                10 * 5
+                ```
+                """.rstrip()
+            ),
+            (
+                {
+                    "block_type": "code-cell",
+                    "prompt_length": 0,
+                    "fences": "```",
+                    "braces": True,
+                    "language": "python",
+                    "options": (":tags: [hide-cell]", ":other-option: value"),
+                },
+                "10 * 5",
+            ),
+            id="code-cell-with_shorthand_options",
+        ),
     ),
 )
 def test_extraction_func(code, expected):
@@ -688,6 +737,26 @@ def test_extraction_func(code, expected):
                 """.rstrip()
             ),
             id="code-cell-colons",
+        ),
+        pytest.param(
+            "10 * 5",
+            {
+                "block_type": "code-cell",
+                "fences": "```",
+                "braces": True,
+                "language": "python",
+                "options": (":tags: [hide-cell]", ":other-option: value"),
+            },
+            textwrap.dedent(
+                """\
+                ```{code-cell} python
+                :tags: [hide-cell]
+                :other-option: value
+                10 * 5
+                ```
+                """.rstrip()
+            ),
+            id="code-cell-with_shorthand_options",
         ),
     ),
 )

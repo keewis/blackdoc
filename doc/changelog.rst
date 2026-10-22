@@ -2,6 +2,7 @@ Changelog
 =========
 v0.4.7 (*unreleased*)
 ---------------------
+- support the short-hand ``:key: value`` options syntax in myst code blocks
 
 
 v0.4.6 (16 November 2025)
