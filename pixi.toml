@@ -1,0 +1,9 @@
+[workspace]
+channels = ['conda-forge']
+name = "blackdoc"
+platforms = ['linux-64']
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]

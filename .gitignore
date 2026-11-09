@@ -61,3 +61,6 @@ doc/_build/
 # IPython
 profile_default/
 ipython_config.py
+# pixi environments
+.pixi/*
+!.pixi/config.toml
