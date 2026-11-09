@@ -3,7 +3,52 @@ channels = ['conda-forge']
 name = "blackdoc"
 platforms = ['linux-64']
 version = "0.1.0"
+preview = ["pixi-build"]
+
+[package]
+name = "blackdoc"
+version = "9999.0.0"
+
+[package.build]
+backend = { name = "pixi-build-python", version = "*" }
+
+[package.host-dependencies]
+setuptools = ">=82"
+setuptools-scm = ">=8"
+
+[package.run-dependencies]
+black = ">=25.1"
+more-itertools = "*"
+tomli = "*"
+pathspec = "*"
+rich = "*"
 
 [tasks]
 
 [dependencies]
+blackdoc = { path = "." }
+
+[feature.py312.dependencies]
+python = "3.12.*"
+[feature.py314.dependencies]
+python = "3.14.*"
+[feature.py315.dependencies]
+python = "3.15.*"
+
+[feature.tests.dependencies]
+pytest = "*"
+pytest-cov = "*"
+
+[feature.tests.tasks]
+tests = { cmd = "pytest --cov=blackdoc", default-environment = "default", cwd = "." }
+
+[feature.dev.dependencies]
+ipython = "*"
+pdbpp = "*"
+pyinstrument = "*"
+
+[environments]
+default = ["py315", "tests", "dev"]
+ci-py312 = ["py312", "tests"]
+ci-py314 = ["py314", "tests"]
+ci-py315 = ["py315", "tests"]
