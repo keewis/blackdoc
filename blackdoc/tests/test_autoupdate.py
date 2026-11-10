@@ -240,14 +240,12 @@ def test_main_missing_file(tmp_path, capsys):
 
 def test_main_without_black_hook(tmp_path, capsys):
     path = tmp_path.joinpath(".pre-commit-config.yaml")
-    path.write_text(
-        """\
+    path.write_text("""\
         - repo: https://github.com/pre-commit/pre-commit-hooks
           rev: 4.4.0
           hooks:
             - id: trailing-whitespace
-        """
-    )
+        """)
 
     return_value = autoupdate.main(path)
 
