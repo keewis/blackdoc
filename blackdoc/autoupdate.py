@@ -24,10 +24,19 @@ def update_black_pin(content, version):
 
 
 def main(path):
-    with open(path) as f:
-        content = f.read()
+    try:
+        with open(path) as f:
+            content = f.read()
+    except OSError as e:
+        print(f"error: cannot read {path}: {e.strerror or e}")
+        return 1
 
-    version = find_black_version(content)
+    try:
+        version = find_black_version(content)
+    except ValueError as e:
+        print(f"error: cannot update {path}: {e}")
+        return 1
+
     replaced = update_black_pin(content, version)
 
     if content != replaced:

@@ -227,3 +227,29 @@ def test_main(tmp_path, content, expected):
         assert return_value == 0
     else:
         assert return_value == 1
+
+
+def test_main_missing_file(tmp_path, capsys):
+    path = tmp_path.joinpath(".pre-commit-config.yaml")
+
+    return_value = autoupdate.main(path)
+
+    assert return_value == 1
+    assert "No such file or directory" in capsys.readouterr().out
+
+
+def test_main_without_black_hook(tmp_path, capsys):
+    path = tmp_path.joinpath(".pre-commit-config.yaml")
+    path.write_text(
+        """\
+        - repo: https://github.com/pre-commit/pre-commit-hooks
+          rev: 4.4.0
+          hooks:
+            - id: trailing-whitespace
+        """
+    )
+
+    return_value = autoupdate.main(path)
+
+    assert return_value == 1
+    assert "cannot find the black hook" in capsys.readouterr().out
