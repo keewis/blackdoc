@@ -46,8 +46,10 @@ tests = { cmd = "pytest --cov=blackdoc", default-environment = "default", cwd = 
 
 [feature.dev.dependencies]
 ipython = "*"
-pdbpp = "*"
 pyinstrument = "*"
+
+[feature.dev.target.unix.dependencies]
+pdbpp = ">=0.12"
 
 [feature.docs.dependencies]
 sphinx = "*"
