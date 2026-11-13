@@ -90,7 +90,7 @@ jobs:
 
       - name: run tests
         run: |
-          pixi run -e $ENV build-docs
+          pixi run -e $ENV docs
 
   actions-lockfile:
     name: Check actions lockfile
