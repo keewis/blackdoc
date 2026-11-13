@@ -1,0 +1,26 @@
+[workspace]
+channels = ['conda-forge']
+name = "nightly"
+platforms = ['linux-64']
+preview = ["pixi-build"]
+
+[tasks]
+
+[feature.nightly.dependencies]
+python = "3.15.*"
+black = { git = "https://github.com/psf/black", package.build.backend = { name = "pixi-build-python", version = "*" }, package.version = "9999.0.0", package.host-dependencies = { hatchling = "*", hatch-fancy-pypi-readme = "*", hatch-vcs = "*" }, package.run-dependencies = { click = "*", mypy_extensions = "*", packaging = "*", pathspec = "*", platformdirs = "*", pytokens = "*" } }
+more-itertools = { git = "https://github.com/more-itertools/more-itertools", package.build.backend = { name = "pixi-build-python", version = "*" }, package.version = "9999.0.0", package.host-dependencies = { flit-core = "*" } }
+pathspec = { git = "https://github.com/cpburnz/python-pathspec", package.build.backend = { name = "pixi-build-python", version = "*" }, package.host-dependencies = { flit-core = "*" } }
+rich = { git = "https://github.com/textualize/rich", package.build.backend = { name = "pixi-build-python", version = "*" } }
+tomli = { git = "https://github.com/hukkin/tomli", package.build.backend = { name = "pixi-build-python", version = "*" }, package.host-dependencies = { flit-core = "*" } }
+
+[feature.tests.dependencies]
+pytest = "*"
+pytest-cov = "*"
+pytest-reportlog = "*"
+
+[feature.tests.tasks]
+tests = { cmd = "pytest --cov=blackdoc", cwd = "../.." }
+
+[environments]
+nightly = ["tests", "nightly"]
