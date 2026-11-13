@@ -37,6 +37,7 @@ jobs:
     if: needs.detect-skip-ci-trigger.outputs.triggered == 'false'
 
     strategy:
+      fail-fast: false
       matrix:
         env: ["ci-py311", "ci-py314", "ci-py315"]
         os: ["ubuntu-latest", "windows-latest", "macos-latest"]
@@ -68,6 +69,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         env: ["docs"]
 
