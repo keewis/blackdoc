@@ -10,7 +10,7 @@ from blackdoc.formats import extract_code, reformat_code
 def parse_message(message):
     line_re = re.compile(
         r"^(?P<message>[^:]+): (?P<line_number>\d+):"
-        r"(?P<column_number>\d+): (?P<faulty_line>.+)$"
+        r"(?P<column_number>\d+)(?:(?::[\w]+)(?P<faulty_line>.+))?"
     )
 
     types = {
@@ -24,7 +24,14 @@ def parse_message(message):
     if match is None:
         raise ValueError(f"invalid error message: {message}")
 
-    return tuple(types[key](value) for key, value in match.groupdict().items())
+    values = match.groupdict()
+    if values["faulty_line"] is None:
+        # try multiline format
+        lines = message.splitlines()
+        # skip standard message
+        values["faulty_line"] = "\n".join(lines[1:])
+
+    return tuple(types[key](value) for key, value in values.items())
 
 
 def blacken(lines, mode=None):
@@ -58,7 +65,10 @@ def blacken(lines, mode=None):
             message, apparent_line_number, column, faulty_line = parse_message(str(e))
 
             lineno = original_line_number + (apparent_line_number - 1)
-            raise black.InvalidInput(f"{message}: {lineno}:{column}: {faulty_line}")
+
+            common = f"{message}: {lineno}:{column}:"
+            sep = "\n" if len(faulty_line.splitlines()) > 1 else " "
+            raise black.InvalidInput(sep.join([common, faulty_line]))
         except IndentationError as e:
             lineno = original_line_number + (e.lineno - 1)
             line = e.text.rstrip()
