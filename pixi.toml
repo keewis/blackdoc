@@ -57,6 +57,14 @@ ipython = "*"
 [feature.docs.tasks]
 docs = { cmd = "python -m sphinx -M html -d _build/doctrees -Ea -WT --keep-going -n . _build/html", cwd = "doc" }
 
+[feature.release.dependencies]
+python-build = "*"
+twine = "*"
+
+[feature.release.tasks]
+build-wheels = { cmd = "python -m build . --outdir dist/", cwd = "." }
+check-wheels = { cmd = "twine check dist/*", cwd = "." }
+
 [environments]
 default = ["py315", "tests", "dev"]
 ci-py311 = ["py311", "tests"]
@@ -64,3 +72,4 @@ ci-py312 = ["py312", "tests"]
 ci-py314 = ["py314", "tests"]
 ci-py315 = ["py315", "tests"]
 docs = ["py315", "docs"]
+release = { features = ["release"], no-default-feature = true }
