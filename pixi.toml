@@ -37,6 +37,9 @@ python = "3.14.*"
 [feature.py315.dependencies]
 python = "3.15.*"
 
+[feature.newest-black.dependencies]
+black = ">=26.5"
+
 [feature.tests.dependencies]
 pytest = "*"
 pytest-cov = "*"
@@ -72,7 +75,7 @@ check-wheels = { cmd = "twine check dist/*", cwd = "." }
 default = ["py315", "tests", "dev"]
 ci-py311 = ["py311", "tests"]
 ci-py312 = ["py312", "tests"]
-ci-py314 = ["py314", "tests"]
+ci-py314 = ["py314", "tests", "newest-black"]
 ci-py315 = ["py315", "tests"]
 docs = ["py315", "docs"]
 release = { features = ["release"], no-default-feature = true }

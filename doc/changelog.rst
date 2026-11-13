@@ -2,7 +2,7 @@ Changelog
 =========
 v0.4.7 (*unreleased*)
 ---------------------
-
+- Support the multiline error format in newer versions of ``black`` (:issue:`281`, :pull:`290`)
 
 v0.4.6 (16 November 2025)
 -------------------------
