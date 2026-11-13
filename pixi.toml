@@ -58,6 +58,7 @@ ipython = "*"
 
 [feature.docs.tasks]
 docs = { cmd = "python -m sphinx -M html -d _build/doctrees -Ea -WT --keep-going -n . _build/html", cwd = "doc" }
+docs-rtd = { cmd = "python -m sphinx -M html -d _build/doctrees -Ea -WT --keep-going -n . $READTHEDOCS_OUTPUT/html", cwd = "doc" }
 
 [feature.release.dependencies]
 python-build = "*"
