@@ -11,7 +11,7 @@ from blackdoc.formats import extract_code, reformat_code
 def parse_message(message):
     line_re = re.compile(
         r"^(?P<message>[^:]+): (?P<line_number>\d+):"
-        r"(?P<column_number>\d+)(?:(?::[\w]+)(?P<faulty_line>.+))?"
+        r"(?P<column_number>\d+)(?:(?::[\s]+)(?P<faulty_line>.+))?"
     )
 
     types = {
