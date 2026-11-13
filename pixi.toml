@@ -15,6 +15,7 @@ backend = { name = "pixi-build-python", version = "*" }
 [package.host-dependencies]
 setuptools = ">=82"
 setuptools-scm = ">=8"
+git = "*"
 
 [package.run-dependencies]
 black = ">=25.1"
