@@ -72,7 +72,7 @@ The repository also defines a ``pre-commit`` hook:
    hooks:
    ...
    - repo: https://github.com/keewis/blackdoc
-     rev: 3.8.0
+     rev: 0.0.0
      hooks:
      - id: blackdoc
 
@@ -83,15 +83,15 @@ It is recommended to *pin* ``black`` in order to avoid having different versions
    hooks:
    ...
    - repo: https://github.com/psf/black
-     rev: 23.10.1
+     rev: 0.0.0
      hooks:
      - id: black
    ...
    - repo: https://github.com/keewis/blackdoc
-     rev: 3.8.0
+     rev: 0.0.0
      hooks:
      - id: blackdoc
-       additional_dependencies: ["black==23.10.1"]
+       additional_dependencies: ["black==0.0.0"]
      - id: blackdoc-autoupdate-black
 
 Note that this hook is *not* run on ``pre-commit autoupdate``.
