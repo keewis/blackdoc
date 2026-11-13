@@ -36,6 +36,10 @@ jobs:
     needs: detect-skip-ci-trigger
     if: needs.detect-skip-ci-trigger.outputs.triggered == 'false'
 
+    defaults:
+      run:
+        shell: bash -l {0}
+
     strategy:
       fail-fast: false
       matrix:
@@ -68,6 +72,10 @@ jobs:
     name: Docs
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        shell: bash -l {0}
+
     strategy:
       fail-fast: false
       matrix:
@@ -75,6 +83,7 @@ jobs:
 
     env:
       ENV: ${{ matrix.env }}
+
     steps:
       - name: checkout the repository
         uses: actions/checkout@v6.1.0
