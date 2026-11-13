@@ -68,7 +68,7 @@ jobs:
           persist-credentials: false
 
       - name: setup environment
-        uses: prefix-dev/setup-pixi@v0.10.2
+        uses: prefix-dev/setup-pixi@v0.11.3
         with:
           environments: "${{ matrix.env }}"
           cache: false
