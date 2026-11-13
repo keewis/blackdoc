@@ -28,6 +28,8 @@ rich = "*"
 [dependencies]
 blackdoc = { path = "." }
 
+[feature.py311.dependencies]
+python = "3.11.*"
 [feature.py312.dependencies]
 python = "3.12.*"
 [feature.py314.dependencies]
@@ -47,8 +49,18 @@ ipython = "*"
 pdbpp = "*"
 pyinstrument = "*"
 
+[feature.docs.dependencies]
+sphinx = "*"
+furo = "*"
+ipython = "*"
+
+[feature.docs.tasks]
+docs = { cmd = "python -m sphinx -M html -d _build/doctrees -Ea -WT --keep-going -n . _build/html", cwd = "doc" }
+
 [environments]
 default = ["py315", "tests", "dev"]
+ci-py311 = ["py311", "tests"]
 ci-py312 = ["py312", "tests"]
 ci-py314 = ["py314", "tests"]
 ci-py315 = ["py315", "tests"]
+docs = ["py315", "docs"]
