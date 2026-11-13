@@ -21,7 +21,7 @@ jobs:
     outputs:
       triggered: ${{ steps.detect-trigger.outputs.trigger-found }}
     steps:
-      - uses: actions/checkout@v6.1.0
+      - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 2
           persist-credentials: false
@@ -51,14 +51,14 @@ jobs:
 
     steps:
       - name: checkout the repository
-        uses: actions/checkout@v6.1.0
+        uses: actions/checkout@v7.0.1
         with:
           # need to fetch all tags to get a correct version
           fetch-depth: 0 # fetch all branches and tags
           persist-credentials: false
 
       - name: setup environment
-        uses: prefix-dev/setup-pixi@v0.10.2
+        uses: prefix-dev/setup-pixi@v0.11.3
         with:
           environments: "${{ matrix.env }}"
           cache: true
@@ -86,12 +86,12 @@ jobs:
 
     steps:
       - name: checkout the repository
-        uses: actions/checkout@v6.1.0
+        uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
 
       - name: setup environment
-        uses: prefix-dev/setup-pixi@v0.10.2
+        uses: prefix-dev/setup-pixi@v0.11.3
         with:
           environments: "${{ matrix.env }}"
           cache: true
