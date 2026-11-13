@@ -1,5 +1,6 @@
 import copy
 import re
+import textwrap
 
 import black
 from blib2to3.pgen2.tokenize import TokenError
@@ -29,7 +30,7 @@ def parse_message(message):
         # try multiline format
         lines = message.splitlines()
         # skip standard message
-        values["faulty_line"] = "\n".join(lines[1:])
+        values["faulty_line"] = textwrap.indent("\n".join(lines[1:]), "  ")
 
     return tuple(types[key](value) for key, value in values.items())
 
