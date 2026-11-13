@@ -86,7 +86,7 @@ jobs:
         run: |
           pixi run --manifest-path $MANIFEST_PATH -e $ENV tests --report-log=pytest-log.jsonl
 
-      - uses: actions/upload-artifact@v7.0.1
+      - uses: actions/upload-artifact@v7.0.2
         if: failure() && steps.tests.outcome == 'failure'
         with:
           name: log file
