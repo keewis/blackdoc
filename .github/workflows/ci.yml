@@ -21,11 +21,11 @@ jobs:
     outputs:
       triggered: ${{ steps.detect-trigger.outputs.trigger-found }}
     steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - uses: actions/checkout@v6.1.0
         with:
           fetch-depth: 2
           persist-credentials: false
-      - uses: xarray-contrib/ci-trigger@10cd2bfec3484946a4058a421ddf9cfad101e715 # v1.2.1
+      - uses: xarray-contrib/ci-trigger@v1.2.1
         id: detect-trigger
         with:
           keyword: "[skip-ci]"
@@ -46,14 +46,14 @@ jobs:
 
     steps:
       - name: checkout the repository
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        uses: actions/checkout@v6.1.0
         with:
           # need to fetch all tags to get a correct version
           fetch-depth: 0 # fetch all branches and tags
           persist-credentials: false
 
       - name: setup environment
-        uses: prefix-dev/setup-pixi@d3f436a425481402e6a95a1d1fc10331c708cd9e # v0.10.2
+        uses: prefix-dev/setup-pixi@v0.10.2
         with:
           environments: "${{ matrix.env }}"
           cache: true
@@ -75,12 +75,12 @@ jobs:
       ENV: ${{ matrix.env }}
     steps:
       - name: checkout the repository
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        uses: actions/checkout@v6.1.0
         with:
           persist-credentials: false
 
       - name: setup environment
-        uses: prefix-dev/setup-pixi@d3f436a425481402e6a95a1d1fc10331c708cd9e # v0.10.2
+        uses: prefix-dev/setup-pixi@v0.10.2
         with:
           environments: "${{ matrix.env }}"
           cache: true
@@ -89,3 +89,30 @@ jobs:
       - name: run tests
         run: |
           pixi run -e $ENV build-docs
+
+  actions-lockfile:
+    name: Check actions lockfile
+    runs-on: ubuntu-slim
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - run: gh extension install github/gh-actions-lock --pin v0.4.1
+      - run: gh actions-lock --verify
+
+  zizmor:
+    name: GHA Security Analysis using Zizmor
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write # Required for upload-sarif (used by zizmor-action) to upload SARIF files.
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@v0.8.1
