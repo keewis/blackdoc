@@ -95,7 +95,7 @@ jobs:
   report:
     name: report upstream-dev failures
     runs-on: ubuntu-latest
-    needs: tests
+    needs: upstream-dev
 
     if: |
       needs.tests.result == 'failure'
