@@ -1,7 +1,7 @@
 Changelog
 =========
-v0.4.7 (*unreleased*)
----------------------
+v0.4.7 (14 November 2026)
+-------------------------
 - support the short-hand ``:key: value`` options syntax in myst code blocks (:pull:`282`)
 - Support the multiline error format in newer versions of ``black`` (:issue:`281`, :pull:`290`)
 
