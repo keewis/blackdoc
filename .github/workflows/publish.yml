@@ -3,6 +3,8 @@ name: Upload package to PyPI
 on:
   release:
     types: [published]
+  pull_request:
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -14,7 +16,18 @@ jobs:
   build:
     name: Build packages
     runs-on: ubuntu-latest
-    if: github.repository == 'keewis/blackdoc'
+    if: |
+      (
+        github.repository == 'keewis/blackdoc'
+        && (
+          github.event_name == 'release'
+          || (
+            github.event_name == 'pull_request'
+            && contains(github.event.pull_request.labels.*.name, 'release')
+          )
+        )
+      )
+
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
