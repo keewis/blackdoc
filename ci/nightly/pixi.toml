@@ -6,6 +6,9 @@ preview = ["pixi-build"]
 
 [tasks]
 
+[dependencies]
+blackdoc = { path = "../.." }
+
 [feature.nightly.dependencies]
 python = "3.15.*"
 black = { git = "https://github.com/psf/black", package.build.backend = { name = "pixi-build-python", version = "*" }, package.version = "9999.0.0", package.host-dependencies = { hatchling = "*", hatch-fancy-pypi-readme = "*", hatch-vcs = "*" }, package.run-dependencies = { click = "*", mypy_extensions = "*", packaging = "*", pathspec = "*", platformdirs = "*", pytokens = "*" } }
